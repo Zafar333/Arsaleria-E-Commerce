@@ -1,0 +1,15 @@
+.custom-border .ant-input {
+    border-color: gainsboro; /* Customize the Ant Design input border */
+  }
+  .custom-border .ant-btn-primary { 
+    /* @apply bg-lightGreen text-white; */
+    background-color: lightgreen !important; 
+    /* Tailwind CSS background and text color utilities */
+   }
+  .custom-placeholder .ant-input::placeholder {
+    /* @apply text-lg;  */
+     font-size: medium
+    /* Adjust the size as needed (e.g., text-sm, text-md, text-lg, text-xl) */
+  }
+
+
