@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="border border-red-700">
+      <body className="">
          <ReduxProvider>
         <AuthProvider>
           {children}

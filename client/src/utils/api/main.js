@@ -1,3 +1,4 @@
 const DevelopmentBaseUrl=process.env.NEXT_PUBLIC_WEBSITE_DEVELOPMENT_BASE_URL
+const frontendDevelopmentBaseUrl=process.env.NEXT_PUBLIC_WEBSITE_FRONTEND_DEVELOPMENT_BASE_URL
 const ProductionBaseUrl=process.env.NEXT_PUBLIC_WEBSITE_PRODUCTION_BASE_URL
-export{DevelopmentBaseUrl,ProductionBaseUrl}
+export{DevelopmentBaseUrl,ProductionBaseUrl,frontendDevelopmentBaseUrl}

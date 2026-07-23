@@ -1,0 +1,10 @@
+.custom-datepicker input::placeholder {
+  font-size: 8px !important;
+}
+@media (min-width: 768px) {
+  .custom-datepicker input::placeholder {
+  font-size: 14px !important;
+}
+
+  /* CSS for screens 768px or smaller */
+}

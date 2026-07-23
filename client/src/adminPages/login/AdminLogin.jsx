@@ -18,6 +18,8 @@ import ForgotPasswordModal from '@/components/forgotPasswordModals/forgotPasswor
 import SuccessModal from '@/components/forgotPasswordModals/successModal/SuccessModal';
 import { useDispatch } from 'react-redux';
 import { setAdminLoginDetailDispatch } from '@/store/adminDetailSlice';
+import { Spin } from "antd";
+
 
 
 
@@ -29,6 +31,8 @@ const AdminLogin = () => {
   const [forgotEmailModal, setForgotEmailModal] = useState(false);
   const [forgotOtpModal, setForgotOtpModal] = useState(false);
   const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
+
   const [successModal, setSuccessModal] = useState(false);
 
 
@@ -75,6 +79,7 @@ const adminLoginFun=async(val)=>{
         // console.log("adminlogin data",result)
         dispatch(setAdminLoginDetailDispatch([{id:result.id,adminaccestoken:result?.adminaccestoken}]))
         setLoading(false)
+        setPageLoading(true)
         toast.success(result?.message)
         navigate.replace(`/admin?id=${result?.id}`)
       }
@@ -95,6 +100,7 @@ const adminLoginFun=async(val)=>{
 
   return (
     <div className='bg-lightGreen adminContainer flex justify-center items-center '>
+      {pageLoading==false?(
       <div className='mx-[20px] my-[15px] sm:my-0 sm:mx-0 h-[460px] shadow-lg bg-white w-[600px] rounded-md'>
       <div className='my-[30px] mx-[25px]'>
         <div className='mb-[5px]'><RiAdminLine className='text-lightGreen text-[50px] sm:text-[80px] m-auto'/>
@@ -177,6 +183,12 @@ const adminLoginFun=async(val)=>{
         </Form>
         </div>
         </div>
+        ):(
+<div className="flex justify-center items-center h-screen">
+                <Spin size="large" />
+            </div>
+
+        )}
         {forgotEmailModal?(
         <ForgotEmailModal setForgotOtpModal={setForgotOtpModal} forgotEmailModal={forgotEmailModal} setForgotEmailModal={setForgotEmailModal}/>
       ):null}

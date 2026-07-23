@@ -7,7 +7,12 @@ const { adminProfileDetailController } = require("../../controllers/admin/adminP
 const { checkAdminJwtToken } = require("../../middleware/checkAdminJwtToken")
 const { adminAddProductCategoriesController } = require("../../controllers/admin/adminAddProductCategoriesController")
 const { adminGetAllCategoriesController } = require("../../controllers/admin/adminGetAllCategoriesController")
-
+const { adminDeleteCategoriesController } = require("../../controllers/admin/adminDeleteCategoriesController")
+const { adminGetAllBottomCategoriesController } = require("../../controllers/admin/adminGetAllBottomCategoriesController")
+const multer = require("multer");
+const { adminGeneratePreSignedUrlAddProductController } = require("../../controllers/admin/adminAddProductControllerfile/adminGeneratePreSignedUrlAddProductController")
+const { adminDeleteHalfUploadedFileCloudinaryController } = require("../../controllers/admin/adminAddProductControllerfile/adminDeleteHalfUploadedFileCloudinaryController")
+const { adminAddProductController } = require("../../controllers/admin/adminAddProductControllerfile/adminAddProductController")
 const router=express.Router()
 
 router.post("/signup",adminSignup)
@@ -17,5 +22,30 @@ router.post("/verifyOtp",verifyOtp)
 router.get("/profileDetail",adminProfileDetailController)
 router.get("/getAllCategories",adminGetAllCategoriesController)
 router.post("/addProductCategories",checkAdminJwtToken,adminAddProductCategoriesController)
+router.get("/getAllBottomCategories",checkAdminJwtToken,adminGetAllBottomCategoriesController)
+router.delete("/deleteCategorie/:id",checkAdminJwtToken,adminDeleteCategoriesController)
+
+
+////////////
+// admin addproduct  route url is start from here all routes is the part addproduct 
+// direct upload from browser first make presigned url from clodinary route is start from here
+router.get("/addProductGeneratePreSignedUrl",checkAdminJwtToken,adminGeneratePreSignedUrlAddProductController)
+// direct upload from browser first make presigned url from clodinary route is end here
+
+//  half upload data on cloudinary delete request route is start here
+router.post("/api/cloudinary/delete-halfUploadedFile",adminDeleteHalfUploadedFileCloudinaryController)
+//  half upload data on cloudinary delete request route is end here
+
+// addproduct in to backe route is start from here
+router.post("/addProduct",checkAdminJwtToken,adminAddProductController)
+// addproduct in to backe route is end here
+// admin addproduct all routes is the part addproduct is end here
+//////////
+
+
+ 
+
+
+
 
 module.exports=router

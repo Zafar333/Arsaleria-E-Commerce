@@ -4,7 +4,8 @@ import { Button, Drawer } from 'antd';
 import "./adminsidebar.css"
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from "next/navigation";
-import { usePathname } from "next/navigation";
+import { usePathname } from "next/navigation"
+import { frontendDevelopmentBaseUrl } from '@/utils/api/main';
  const AdminSidebar = ({openSidebar,setOpensSidebar}) => {
 //  const [sidebarstate,setsidebarstate]=useState(["addcategories","addproducts","products","home","login"])
  const [sidebarstate,setsidebarstate]=useState("addcategories")
@@ -12,9 +13,11 @@ import { usePathname } from "next/navigation";
  const router =useRouter();
  const searchquerparams=useSearchParams();
  const pathname = usePathname();
- useEffect(()=>{
-  console.log("urlpath",pathname)
- },[pathname])
+//  useEffect(()=>{
+//   console.log("urlpath",pathname)
+//   console.log("urlpath window",window.location.href)
+
+//  },[pathname])
  
  useEffect(()=>{
   // console.log("quer",querparams)
@@ -32,10 +35,10 @@ import { usePathname } from "next/navigation";
     console.log("color",val)
     setsidebarstate(val)
       if(val=="addcategories"){
-      router?.replace(`/admin?id=${queryparams?.id}`)
+      router?.replace(`${frontendDevelopmentBaseUrl}/admin?id=${queryparams?.id}`)
     }
     if(val=="addproducts"){
-      router?.push(`/admin?id=${queryparams?.id}/addProducts`)
+      router?.replace(`${frontendDevelopmentBaseUrl}/admin/addProducts?id=${queryparams?.id}`)
     }
  }
 
@@ -68,11 +71,11 @@ import { usePathname } from "next/navigation";
     
       >
     <div className='flex flex-col gap-6 lg:gap-10 w-full '>
-        <span className={`${sidebarstate=="addcategories"?("bg-lightGreen text-darkGreen"):("text-lightGreen")}  text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen  hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addcategories")}>Add Categories </span>
-        <span className={`${sidebarstate=="addproducts"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addproducts")}>Add Product </span>
-        <span className={`${sidebarstate=="products"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer `} onClick={()=>gotoAddCategoriesFun("products")}>Products </span>
-        <span className={`${sidebarstate=="home"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("home")}>Home </span>
-        <span className={`${sidebarstate=="login"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("login")}>Login </span>
+        <span className={`${sidebarstate=="addcategories"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen  hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addcategories")}>Add Categories </span>
+        <span className={`${sidebarstate=="addproducts"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addproducts")}>Add Product </span>
+        <span className={`${sidebarstate=="products"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer `} onClick={()=>gotoAddCategoriesFun("products")}>Products </span>
+        <span className={`${sidebarstate=="home"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("home")}>Home </span>
+        <span className={`${sidebarstate=="logout"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("logout")}>Logout </span>
         </div>
       </Drawer>
     </div>

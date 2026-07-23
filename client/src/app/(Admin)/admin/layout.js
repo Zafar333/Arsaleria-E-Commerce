@@ -7,22 +7,28 @@ import { redirect } from "next/navigation";
 
 const layout = async({children}) => {
 
-  const cookieStore=await cookies()
-  const adminaccestoken=cookieStore.get("AdminAccessToken")
-  const adminrefreshtoken=cookieStore.get("AdminRefreshToken")
+  // const cookieStore=await cookies()
+  // const adminaccestoken=cookieStore.get("AdminAccessToken")
+  // const adminrefreshtoken=cookieStore.get("AdminRefreshToken")
 
 
   
   return (
     <>
-    {adminaccestoken&&adminrefreshtoken?(
+    <div>
+         <Dashboard/>
+     {children}
+     </div>
+    
+    
+     {/* {adminaccestoken&&adminrefreshtoken?(
      <div className=''>
       <Dashboard/>
      {children}
     
     </div>
 
-    ):(redirect("/adminLogin"))}
+    ):(redirect("/adminLogin"))} */}
     
     </>
 

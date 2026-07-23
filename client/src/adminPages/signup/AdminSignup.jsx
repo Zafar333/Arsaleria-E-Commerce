@@ -11,13 +11,17 @@ import { adminLoginEndpoints } from '@/utils/api/admin/adminLogin';
 import { DevelopmentBaseUrl } from '@/utils/api/main';
 import { useRouter } from 'next/navigation';
 import { AiOutlineMail } from "react-icons/ai";
+import { Spin } from "antd";
+
 
 const AdminSignup = () => {
   const navigate=useRouter()
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setpageLoading] = useState(false);
 
   // goToAdminSignupModal is start from here
   const goToAdminLoginModal=()=>{
+        setpageLoading(true)
     navigate.push("/adminLogin")
   }
   // goToAdminSignupModal is end here
@@ -53,8 +57,9 @@ const adminLoginFun=async(val)=>{
       const result = await response.json();
       if(result?.status>=200 && result?.status<=300){
         setLoading(false)
+        setpageLoading(true)
         toast.success(result?.message)
-        navigate.replace("adminLogin")
+        navigate.replace("/adminLogin")
       }
       if(result?.status>=400&& result?.status<=550){
         setLoading(false)
@@ -71,6 +76,7 @@ const adminLoginFun=async(val)=>{
 // login fun is start end here
   return (
     <div className='bg-lightGreen adminSignupContainer flex justify-center items-center'>
+         {pageLoading==false?(
           <div className='mx-[20px] my-[15px] sm:my-0 sm:mx-0 h-[540px] shadow-lg bg-white w-[600px] rounded-md'>
           <div className='my-[30px] mx-[25px]'>
             <div className='mb-[5px]'><RiAdminLine className='text-lightGreen text-[50px] sm:text-[80px] m-auto'/>
@@ -161,7 +167,11 @@ const adminLoginFun=async(val)=>{
                   </div>
             </Form>
             </div>
-            </div>
+            </div>):(
+              <div className="flex justify-center items-center h-screen">
+                              <Spin size="large" />
+                          </div>
+            )}
         </div>
   )
 }

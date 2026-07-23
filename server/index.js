@@ -11,7 +11,7 @@ const app = express();
 // Custom configuration (recommended):
 app.use(cors({
   origin: process.env.FRONTEND_DEVELOPMENT_BASE_URL, // Allow only this origin
-  methods: ['GET', 'POST', 'PUT'], // Allowed methods
+  methods: ['GET', 'POST', 'PUT','DELETE','PATCH'], // Allowed methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
   credentials: true, 
 }));

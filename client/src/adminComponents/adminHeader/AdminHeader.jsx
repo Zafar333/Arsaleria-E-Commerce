@@ -57,7 +57,7 @@ const opensidebarfun=()=>{
 
         </div>
 
-        <AdminSidebar openSidebar={openSidebar} setOpensSidebar={setOpensSidebar} />
+        <AdminSidebar openSidebar={openSidebar} setOpensSidebar={setOpensSidebar}  />
         </div>
   )
 }

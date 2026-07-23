@@ -7,16 +7,16 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 function Dashboard() {
-  const router=useRouter()
-  const [adminProfileData,setAdminProfileData]=useState([])
-  const [pageLoader,setPageLoader]=useState(false)
+  const router = useRouter()
+  const [adminProfileData, setAdminProfileData] = useState([])
+  const [pageLoader, setPageLoader] = useState(false)
   const searchParams = useSearchParams();
 
-   useEffect(() => {
+  useEffect(() => {
     getAdminLoginDetailApiFun()
   }, [])
 
-  
+
 
 
   // getAdminLoginDetailApiFun is start from here
@@ -25,6 +25,7 @@ function Dashboard() {
     try {
       setPageLoader(true)
       const data = Object?.fromEntries(searchParams?.entries())
+      // console.log("dashboard", data)
       if (!data) {
         return toast.error(" server error")
 
@@ -41,19 +42,25 @@ function Dashboard() {
       if (result?.status >= 200 && result?.status < 400) {
         setPageLoader(false)
         setAdminProfileData(result?.data)
-
+        return
         // toast.success(result?.message)
       }
-      if (result?.status == 401 ) {
-         router.replace("/adminLogin")
-        toast.error(result?.message)
+      if (result?.status == 401) {
+        setPageLoader(true)
+
+        router.replace("/adminLogin")
+        return toast.error(result?.message)
       }
-      if (result?.status >= 402 && result?.status <= 550|| result?.status==400) {
-        toast.error(result?.message)
+      if (result?.status >= 402 && result?.status <= 550 || result?.status == 400) {
+        setPageLoader(false)
+        return toast.error(result?.message)
       }
     } catch (error) {
+
+      setPageLoader(false)
+
       // console.log("error", error?.message)
-      toast.error("catch server error")
+      return toast.error("server error")
 
     }
 
@@ -64,7 +71,7 @@ function Dashboard() {
 
   return (
     <div className="">
-      <AdminHeader adminProfileData={adminProfileData}/>
+      <AdminHeader adminProfileData={adminProfileData} />
 
     </div>
   );

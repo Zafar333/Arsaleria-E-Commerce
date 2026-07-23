@@ -1,12 +1,14 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Form, Input, Switch } from "antd";
+import { Modal, Button, Form, Input, Switch, ColorPicker } from "antd";
 import { IoAddSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { DevelopmentBaseUrl } from "@/utils/api/main";
 import { adminEndpoints } from "@/utils/api/admin/adminEndpoints";
 import { v4 as uuidv4 } from "uuid";
 import { Spin } from "antd";
+import { MdDeleteOutline } from "react-icons/md";
+import { usePathname, useSearchParams } from "next/navigation";
 
 // imports start here
 import {
@@ -17,6 +19,7 @@ import {
     SettingOutlined,
 } from '@ant-design/icons';
 import { Divider, Menu, } from 'antd';
+import { useRouter } from "next/navigation";
 // imports end here
 
 
@@ -81,116 +84,260 @@ import { Divider, Menu, } from 'antd';
 
 
 const AddProductCategory = () => {
+    const router = useRouter()
     const key = uuidv4();
     const [openModal, setOpenModal] = useState(false);
     const [allCategories, setAllCategories] = useState([]);
-    const [items1, setItems] = useState([]);
+    const [items, setItems] = useState([]);
+    // const [, setItems] = useState([]);
     const [parentIdState, setParentIdState] = useState(null);
     const [btnLoader, setBtnLoader] = useState(false);
     const [pageLoading, setPageLoading] = useState(false);
+
+    
+const pathname = usePathname();
+const searchparams=useSearchParams()
     const [form] = Form.useForm();
 
     useEffect(() => {
         getAllCtategoriesFun()
     }, [])
 
+// for route changes useffect calling the fun mange page loading start here
+useEffect(()=>{
+    browserUrlChangePageloadingfun()
+
+},[pathname])
+// for route changes useffect calling the fun mange page end here
 
 
     useEffect(() => {
 
-        if (allCategories?.length < 1) return;
-        makeDynamicCategoriesFun()
+        if (allCategories?.length == 0 || allCategories?.length == null) {
+            return
+
+        }
+        if (allCategories?.length > 0) {
+            makeDynamicCategoriesFun()
+        }
 
     }, [allCategories])
+
+// browserUrlChangePageloadingfun is start from here
+    const browserUrlChangePageloadingfun=()=>{
+        // console.log("pageloadinfun call",pathname)
+        const queryparam=searchparams.getAll("id")
+        // console.log("pageloadinfun call",queryparam[0])
+
+        
+        if(`${DevelopmentBaseUrl}/admin?id=${queryparam[0]}`== `${DevelopmentBaseUrl}${pathname}?id=${queryparam[0]}`){
+            // console.log("inblock")
+            setPageLoading(false)
+        }else{
+            console.log("else")
+            setPageLoading(true)
+        }
+    }
+// browserUrlChangePageloadingfun is end here
+
+    // getAllCtategoriesFun IS START FROM HERE
+    const getAllCtategoriesFun = async () => {
+        setPageLoading(true)
+
+        try {
+            const res = await fetch(`${DevelopmentBaseUrl}${adminEndpoints?.adminGetAllCategories}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                // cache:"no-store"
+            });
+            const result = await res.json();
+            if (result?.status == 200) {
+                setPageLoading(false)
+                setAllCategories(result?.data)
+                toast?.success(result?.message)
+
+
+            }
+            if (result?.status >= 201 && result?.status < 400) {
+                setPageLoading(false)
+                setAllCategories(result?.data)
+            }
+
+            if (result?.status == 401) {
+                router.replace("/adminLogin")
+                toast.error(result?.message)
+            }
+            if (result?.status >= 402 && result?.status <= 550 || result?.status == 400) {
+                setPageLoading(false)
+                toast.error(result?.message)
+            }
+        } catch (error) {
+            setPageLoading(false)
+
+            // console.log("error", error?.message)
+            toast.error("server error")
+        }
+    }
+    // getAllCtategoriesFun IS END HERE
+
+
+    // deleteCategoryFun is start from here
+    const deleteCategoryFun = async (catid) => {
+        setPageLoading(true)
+
+        try {
+            const res = await fetch(`${DevelopmentBaseUrl}${adminEndpoints?.adminDeleteCategories}/${catid}`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            });
+            const result = await res.json();
+
+            if (result?.status >= 200 && result?.status < 400) {
+                getAllCtategoriesFun()
+                toast.success(result?.message)
+                setPageLoading(false)
+            }
+            if (result?.status == 401) {
+                setPageLoading(true)
+                router.replace("/adminLogin")
+                toast.error(result?.message)
+            }
+            if (result?.status >= 402 && result?.status <= 550 || result?.status == 400) {
+                setPageLoading(false)
+                toast.error(result?.message)
+            }
+        } catch (error) {
+            setPageLoading(false)
+            // console.log("error", error?.message)
+            toast.error("server error", error?.message)
+        }
+
+
+    }
+    // deleteCategoryFun is end here
 
 
     // makeDynamicCategoriesFun IS START FROM HERE
     const makeDynamicCategoriesFun = () => {
         // Step 1: Get all parent categories
-        const parents = allCategories.filter(
+        const parents = allCategories?.filter(
             (item) => item?.parent_id == null
         );
 
         // console.log("data",parents)
 
         // Step 2: Build menu structure
-        console.log("parents", parents)
+        // console.log("parents", parents)
         const menuData = parents?.map((parent, ind) => (
             {
 
                 key: uuidv4()?.toString(),
                 label: parent?.category_name,
+                icon: <MdDeleteOutline className="text-red-600! text-[16px]! cursor-pointer z-10" onClick={() => deleteCategoryFun(parent?.id)} />,
                 id: parent?.id?.toString(),
                 parent_id: parent?.parent_id?.toString(),
                 is_parent: parent?.is_parent?.toString(),
                 isactive_category: parent?.isactive_category?.toString(),
 
-                children: allCategories
-                    .filter((child) => child?.parent_id == parent?.id)
-                    .map((child, ind) => ({
+                children: allCategories?.filter((child) => child?.parent_id == parent?.id)?.map((child, ind) => ({
+                    // for ist children
+                    key: uuidv4()?.toString(),
+                    label: child?.category_name,
+                    icon: <MdDeleteOutline className="text-red-600! text-[16px]! cursor-pointer z-10" onClick={() => deleteCategoryFun(child?.id)} />,
+                    id: child?.id?.toString(),
+                    parent_id: parent?.id?.toString(),
+                    is_parent: child?.is_parent?.toString(),
+                    isactive_category: child?.isactive_category?.toString(),
 
-                        // for ist children
-
+                    //  for 2nd children
+                    children: allCategories?.filter((newchild) => newchild?.parent_id == child?.id)?.map((newchild, ind) => ({
                         key: uuidv4()?.toString(),
-                        label: child?.category_name,
-                        id: child?.id?.toString(),
-                        parent_id: parent?.id?.toString(),
-                        is_parent: child?.is_parent?.toString(),
-                        isactive_category: child?.isactive_category?.toString(),
-
-                        //  for 2nd children
-                        children: allCategories
-                            .filter((newchild) => newchild?.parent_id == child?.id)
-                            .map((newchild, ind) => ({
-
-                                key: uuidv4()?.toString(),
-                                label: newchild?.category_name,
-                                id: newchild?.id?.toString(),
-                                parent_id: child?.id?.toString(),
-                                is_parent: newchild?.is_parent?.toString(),
-                                isactive_category: newchild?.isactive_category?.toString(),
+                        label: newchild?.category_name,
+                        icon: <MdDeleteOutline className="text-red-600! text-[16px]! cursor-pointer z-10" onClick={() => deleteCategoryFun(newchild?.id)} />,
+                        id: newchild?.id?.toString(),
+                        parent_id: child?.id?.toString(),
+                        is_parent: newchild?.is_parent?.toString(),
+                        isactive_category: newchild?.isactive_category?.toString(),
 
 
-                            })),
+                        children: allCategories?.filter((subnewchild) => subnewchild?.parent_id == newchild?.id)?.map((subnewchild, ind) => ({
+                            key: uuidv4()?.toString(),
+                            label: subnewchild?.category_name,
+                            icon: <MdDeleteOutline className="text-red-600! text-[16px]! cursor-pointer z-10" onClick={() => deleteCategoryFun(subnewchild?.id)} />,
+                            id: subnewchild?.id?.toString(),
+                            parent_id: newchild?.id?.toString(),
+                            is_parent: subnewchild?.is_parent?.toString(),
+                            isactive_category: subnewchild?.isactive_category?.toString(),
+
+
+                        })),
+
+
                     })),
+                })),
 
 
             })
         );
-        //  console.log("categories",menuData)
+        // console.log("categories", menuData)
 
         const newdata = menuData?.map((data, i) => {
             if (data?.is_parent == "true" && data?.children?.length > 0) {
-                data?.children?.map((chlddat, ind) => chlddat?.children?.push({
-                    key: uuidv4()?.toString(), icon: <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={() => { openCategoryModal(chlddat?.id) }} >Add Category
-                    </Button>
-                }))
+                // hello
+                data?.children?.map((chlddat, ind) => {
+                    if (chlddat?.is_parent == "true" && chlddat?.children?.length > 0) {
+                        chlddat?.children?.map((subchld, idx) => subchld?.children?.push({
+                            key: uuidv4()?.toString(), icon: <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={() => { openCategoryModal(subchld?.id) }} >Add Category
+                            </Button>
+
+                        }))
+                    }
+                    chlddat?.children?.push({
+                        key: uuidv4()?.toString(), icon: <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={() => { openCategoryModal(chlddat?.id) }} >Add Category
+                        </Button>
+                    })
+                }
+
+                )
+                // hello
                 data?.children?.push({
                     key: uuidv4()?.toString(), icon: <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={() => { openCategoryModal(data?.id) }} >Add Category
                     </Button>
                 })
 
-            } else {
-                // console.log("ist if data",data)
 
-                data?.children?.push({
-                    key: uuidv4()?.toString(), icon: <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={() => { openCategoryModal(data?.id) }} >Add Category
-                    </Button>
-                })
+            }
+            else {
+                if (data?.is_parent == "true") {
+                    data?.children?.push({
+                        key: uuidv4()?.toString(), icon: <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={() => { openCategoryModal(data?.id) }} >Add Category
+                        </Button>
+                    })
+
+                }
+
 
             }
 
             return data;
         });
-        console.log("newdata", newdata)
-        // Step 4: Set state
+        // console.log("newdata", newdata)
 
-        // setItems(newdata)
 
-        setItems([...newdata, {
-            key: "9kjhuj", icon: <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={openModalfun} >Add Category
-            </Button>
-        }]);
+        if (newdata) {
+            setItems([...newdata, {
+                key: uuidv4()?.toString(), icon: <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={() => setOpenModal(true)} >Add Category
+                </Button>
+            }
+            ]);
+            return
+        }
 
     }
     // makeDynamicCategoriesFun IS END HERE
@@ -199,7 +346,6 @@ const AddProductCategory = () => {
 
     // openCategoryModal fun is start from here
     const openCategoryModal = (id) => {
-        console.log("parentid", id)
         setParentIdState(id)
         // console.log("parentid state",parentIdState)
         setOpenModal(true)
@@ -214,12 +360,6 @@ const AddProductCategory = () => {
     }
     // openCategoryModal fun is start from here
 
-    // openModalfun is start from here
-    const openModalfun = () => {
-        setOpenModal(true)
-
-    }
-    // openModalfun is end here
 
     // modal function is start from here   
 
@@ -249,38 +389,10 @@ const AddProductCategory = () => {
     // form handleSubmit fun is end here
 
 
-    // getAllCtategoriesFun IS START FROM HERE
-    const getAllCtategoriesFun = async () => {
-        try {
-            const res = await fetch(`${DevelopmentBaseUrl}${adminEndpoints?.adminGetAllCategories}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            });
-            const result = await res.json();
-            if (result?.status >= 200 && result?.status < 400) {
-                setAllCategories(result?.data)
-            }
-            if (result?.status == 401) {
-                setPageLoading(true)
-                router.replace("/adminLogin")
-                toast.error(result?.message)
-            }
-            if (result?.status >= 402 && result?.status <= 550 || result?.status == 400) {
-                toast.error(result?.message)
-            }
-        } catch (error) {
-            console.log("error", error?.message)
-            toast.error("server error")
-        }
-    }
-    // getAllCtategoriesFun IS END HERE
 
     // adminAddCategory fun is start from here 
     const adminAddCategoryFun = async (val) => {
-        console.log("values", val)
+        // console.log("values", val)
         try {
             const response = await fetch(`${DevelopmentBaseUrl}${adminEndpoints?.adminAddCategories}`, {
                 method: 'POST',
@@ -311,7 +423,7 @@ const AddProductCategory = () => {
         } catch (error) {
             setBtnLoader(false)
 
-            console.log(error?.message)
+            // console.log(error?.message)
             toast.error("catch server error")
         }
     }
@@ -335,15 +447,16 @@ const AddProductCategory = () => {
 
         <div>{pageLoading == false ? (
             <div className=''>
-                {allCategories?.length == 0 ? (
-                    // <Button icon={<IoAddSharp className='text-[30px]' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! p-[22px]!' onClick={openModalfun} >Add Category
-                    // </Button>
-                    <div className="flex justify-center items-center h-screen">
-                        <Spin size="large" />
+                {allCategories?.length == 0 || allCategories?.length == null ? (
+
+                    <div className="mt-[50px]! ml-[200px]!">
+
+                        <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={() => setOpenModal(true)} >Add Category
+                        </Button>
                     </div>
 
                 ) : (
-                    <div className="flex w-full gap-[300px]">
+                    <div className="flex w-full px-[5vw]">
                         <br />
                         <br />
                         <Menu
@@ -352,8 +465,8 @@ const AddProductCategory = () => {
                             defaultOpenKeys={['sub1']}
                             mode={"vertical"}
                             // theme={theme}
-                            items={items1}
-                            className="border-2 border-black mt-[100px]!"
+                            items={items}
+                            className="border border-gray-300 mt-[100px]!"
 
                         />
                     </div>
