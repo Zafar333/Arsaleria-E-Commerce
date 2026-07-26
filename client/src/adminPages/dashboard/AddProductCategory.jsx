@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Button, Form, Input, Switch, ColorPicker } from "antd";
 import { IoAddSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
-import { DevelopmentBaseUrl } from "@/utils/api/main";
+import { DevelopmentBaseUrl, frontendDevelopmentBaseUrl } from "@/utils/api/main";
 import { adminEndpoints } from "@/utils/api/admin/adminEndpoints";
 import { v4 as uuidv4 } from "uuid";
 import { Spin } from "antd";
@@ -130,7 +130,7 @@ useEffect(()=>{
         // console.log("pageloadinfun call",queryparam[0])
 
         
-        if(`${DevelopmentBaseUrl}/admin?id=${queryparam[0]}`== `${DevelopmentBaseUrl}${pathname}?id=${queryparam[0]}`){
+        if(`${frontendDevelopmentBaseUrl}/admin?id=${queryparam[0]}`== `${frontendDevelopmentBaseUrl}${pathname}?id=${queryparam[0]}`){
             // console.log("inblock")
             setPageLoading(false)
         }else{
@@ -449,9 +449,9 @@ useEffect(()=>{
             <div className=''>
                 {allCategories?.length == 0 || allCategories?.length == null ? (
 
-                    <div className="mt-[50px]! ml-[200px]!">
+                    <div className="mt-[50px]! px-[10vw]!">
 
-                        <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! text-[18px]! font-Poppins! ' onClick={() => setOpenModal(true)} >Add Category
+                        <Button icon={<IoAddSharp className='text-[30px]!' />} className='bg-darkGreen! text-lightGreen! py-[18px]! text-[17px]! font-Poppins! ' onClick={() => setOpenModal(true)} >Add Category
                         </Button>
                     </div>
 

@@ -1,3 +1,4 @@
+"use client"
 import AddProducts from '@/adminPages/dashboard/AddProducts'
 import React from 'react'
 

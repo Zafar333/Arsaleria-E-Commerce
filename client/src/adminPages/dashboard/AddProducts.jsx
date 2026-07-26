@@ -23,7 +23,7 @@ import {
   SaveOutlined,
 } from "@ant-design/icons";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { DevelopmentBaseUrl } from '@/utils/api/main';
+import { DevelopmentBaseUrl, frontendDevelopmentBaseUrl } from '@/utils/api/main';
 import { adminEndpoints } from '@/utils/api/admin/adminEndpoints';
 import { toast } from 'react-toastify';
 
@@ -114,7 +114,7 @@ const AddProducts = () => {
     // console.log("pageloadinfun call",queryparam[0])
 
 
-    if (`${DevelopmentBaseUrl}/admin/addProducts?id=${queryparam[0]}` == `${DevelopmentBaseUrl}${pathname}?id=${queryparam[0]}`) {
+    if (`${frontendDevelopmentBaseUrl}/admin/addProducts?id=${queryparam[0]}` == `${frontendDevelopmentBaseUrl}${pathname}?id=${queryparam[0]}`) {
       // console.log("inblock")
       setPageLoading(false)
     } else {
@@ -436,6 +436,7 @@ const AddProducts = () => {
 
   return (
     <div>
+      {pageLoading==false?(
       <div
 
         className='bg-[#f5f5f5] px-[5px] py-[5px] xs:px-[15px] xs:py-[15px] sm:px-[24px] sm:py-[24px]'
@@ -959,6 +960,11 @@ const AddProducts = () => {
 
         </Form>
       </div>
+      ):(
+         <div className="flex justify-center items-center h-screen">
+                        <Spin size="large" />
+                    </div>
+      )}
     </div>
   )
 }
