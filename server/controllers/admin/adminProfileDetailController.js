@@ -4,7 +4,7 @@ const adminProfileDetailController = async (req, res) => {
     const id = req?.query?.id
 
     try {
-        if (!id || id == "undefined") {
+        if  (!req?.query || !req?.query==null || Object.keys(req?.query)?.length == 0 || !id  || id == "undefined") {
             return res.send({ status: 400, message: "invalid request" })
         }
         const result = await await pool.query(`SELECT id,name FROM admin WHERE id=$1`, [id])
@@ -16,7 +16,7 @@ const adminProfileDetailController = async (req, res) => {
         return res.send({ status: 200, data: result?.rows })
     } catch (error) {
         console.log("errors", error?.message)
-        res?.send({ status: 500, message: "backend server error" })
+        res?.send({ status: 500, message: "server error" })
 
     }
 

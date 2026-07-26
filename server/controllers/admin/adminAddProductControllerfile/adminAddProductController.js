@@ -25,23 +25,23 @@ const adminAddProductController = async (req, res) => {
       const productQuery = `
     INSERT INTO products
     (
-      productName,
-      actualproductPrice,
-      dairyFarmExpiryDate,
-      dairyFarmMaterial,
-      dairyFarmUnit,
-      dairyFarmWeight,
-      deliveryCharges,
-      deliveryType,
-      productBrandName,
-      productDescription,
-      productDiscount,
-      sellProductPrice,
-      productPromoCode,
-      productQuantity,
+      product_name,
+      actualproduct_price,
+      dairyfarm_expiryDate,
+      dairyfarm_material,
+      dairyfarm_unit,
+      dairyfarm_weight,
+      delivery_charges,
+      delivery_type,
+      productbrand_name,
+      product_description,
+      product_discount,
+      sellproduct_price,
+      productpromo_code,
+      product_quantity,
       sku,
-      stockStatus,
-      productCategory
+      stock_status,
+      product_category
     )
     VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
     RETURNING id;
@@ -96,9 +96,9 @@ const adminAddProductController = async (req, res) => {
         // console.log("placeholder",placeholders)
 
         const mediaQuery = `
-        INSERT INTO productsMedia
+        INSERT INTO products_media
         (
-      productsId,
+      products_id,
       asset_folder,
       secure_url,
       public_id,

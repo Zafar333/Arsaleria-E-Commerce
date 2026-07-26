@@ -13,6 +13,7 @@ const multer = require("multer");
 const { adminGeneratePreSignedUrlAddProductController } = require("../../controllers/admin/adminAddProductControllerfile/adminGeneratePreSignedUrlAddProductController")
 const { adminDeleteHalfUploadedFileCloudinaryController } = require("../../controllers/admin/adminAddProductControllerfile/adminDeleteHalfUploadedFileCloudinaryController")
 const { adminAddProductController } = require("../../controllers/admin/adminAddProductControllerfile/adminAddProductController")
+const { adminGetAllProductsController } = require("../../controllers/admin/AdminGetAllProductsController")
 const router=express.Router()
 
 router.post("/signup",adminSignup)
@@ -24,6 +25,10 @@ router.get("/getAllCategories",adminGetAllCategoriesController)
 router.post("/addProductCategories",checkAdminJwtToken,adminAddProductCategoriesController)
 router.get("/getAllBottomCategories",checkAdminJwtToken,adminGetAllBottomCategoriesController)
 router.delete("/deleteCategorie/:id",checkAdminJwtToken,adminDeleteCategoriesController)
+
+// admingetAllProducts route is start from here
+router.get("/getAllProducts",checkAdminJwtToken,adminGetAllProductsController)
+// admingetAllProducts route is end here
 
 
 ////////////

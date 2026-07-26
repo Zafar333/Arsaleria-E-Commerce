@@ -1,7 +1,7 @@
 const productsMediaModel = `   
-    CREATE TABLE IF NOT EXISTS productsMedia (
+    CREATE TABLE IF NOT EXISTS products_media (
       id SERIAL PRIMARY KEY,
-      productsId INTEGER REFERENCES products(id) ON DELETE CASCADE,
+      products_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
       asset_folder TEXT NOT NULL,
       public_id VARCHAR(500) NOT NULL,
       secure_url TEXT NOT NULL,
