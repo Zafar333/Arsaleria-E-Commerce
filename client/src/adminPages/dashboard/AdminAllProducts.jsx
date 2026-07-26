@@ -126,12 +126,12 @@ const AdminAllProducts = () => {
               </div>
               {/* card text Content */}
               <div className="mt-[10px]">
-                <p className="font-Poppins text-[22px] text-center text-darkGray bolder font-bold">
-                  product name
+                <p className="font-Poppins text-[20px] text-center text-darkGray bolder font-bold">
+                  {prod?.product_name}
                 </p>
-                <div className="grid grid-cols-3 items-center justify-center">
+                <div className="mt-[10px] grid grid-cols-3 items-center justify-center">
                   <p className="font-Poppins text-[18px] text-textLightGray text-end">
-                    $38.9
+                    {prod?.sellproduct_price}
                   </p>
                   <p className="flex justify-center items-center">|</p>
                   <p className="  ">
