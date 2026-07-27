@@ -2,9 +2,8 @@
 console.log("next.config.mjs loaded");
 const nextConfig = {
   /* config options here */
-  // reactCompiler: true,
+  reactCompiler: true,
     images: {
-      //  unoptimized: true,
     remotePatterns: [
       
       // new URL("https://res.cloudinary.com/**"),

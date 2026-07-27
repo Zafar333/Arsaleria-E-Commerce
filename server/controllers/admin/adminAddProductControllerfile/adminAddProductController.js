@@ -1,23 +1,34 @@
 const { pool } = require("../../../database/db");
-const cloudinary = require("../../../configFiles/cloudinaryCloudConfig")
+const cloudinary = require("../../../configFiles/cloudinaryCloudConfig");
 
 const adminAddProductController = async (req, res) => {
-  const getDdata = req?.body
-  //  console.log("bodydata",getDdata[0]?.files)
-
+  const getDdata = req?.body;
+  // console.log("bodydata",)
+  console.log("media", getDdata[0]?.files);
+  console.log("bodydata", getDdata[1]);
 
   const client = await pool.connect();
   try {
-    if (!req?.body || Object.keys(req?.body)?.length == 0 || req?.body?.length == 0) {
-      return res.json({ status: 500, message: "Bad Request" })
-    }
-    if (getDdata[0]?.files?.length > 0 && getDdata[1]?.productName &&
-      getDdata[1]?.actualproductPrice && getDdata[1]?.dairyFarmUnit && getDdata[1]?.dairyFarmWeight
-      && getDdata[1]?.deliveryType && getDdata[1]?.productDescription && getDdata[1]?.sellProductPrice
-      && getDdata[1]?.productQuantity && getDdata[1]?.stockStatus && getDdata[1]?.productCategory
-
+    if (
+      !req?.body ||
+      Object.keys(req?.body)?.length == 0 ||
+      req?.body == null
     ) {
-
+      return res.json({ status: 500, message: "please send valid data" });
+    }
+    if (
+      getDdata[0]?.files?.length > 0 &&
+      getDdata[1]?.productName &&
+      getDdata[1]?.actualproductPrice &&
+      getDdata[1]?.dairyFarmUnit &&
+      getDdata[1]?.dairyFarmWeight &&
+      getDdata[1]?.deliveryType &&
+      getDdata[1]?.productDescription &&
+      getDdata[1]?.sellProductPrice &&
+      getDdata[1]?.productQuantity!=null &&
+      getDdata[1]?.stockStatus &&
+      getDdata[1]?.productCategory
+    ) {
       // add product data insert query transaction is satart from here
       await client.query("BEGIN");
 
@@ -64,7 +75,6 @@ const adminAddProductController = async (req, res) => {
         getDdata[1]?.sku,
         getDdata[1]?.stockStatus,
         getDdata[1]?.productCategory
-
       ];
       // add product data insert query transaction is end here
       const productResult = await client.query(productQuery, productValues);
@@ -79,7 +89,7 @@ const adminAddProductController = async (req, res) => {
           const start = index * 7;
 
           placeholders.push(
-            `($${start + 1}, $${start + 2}, $${start + 3}, $${start + 4}, $${start + 5},$${start + 6},$${start + 7})`
+            `($${start + 1}, $${start + 2}, $${start + 3}, $${start + 4}, $${start + 5},$${start + 6},$${start + 7})`,
           );
 
           values.push(
@@ -114,32 +124,30 @@ const adminAddProductController = async (req, res) => {
         // 3. Commit transaction
         await client.query("COMMIT");
 
-
         return res.json({
           status: 200,
-          message: "product uploaded sucessfully"
+          message: "product uploaded sucessfully",
         });
       }
     } else {
       return res.json({
         status: 500,
-        message: "Bad request"
+        message: "please send valid data",
       });
     }
-
-
-
   } catch (error) {
-    console.log("adminAddProductController", error?.message)
+    console.log("adminAddProductController", error?.message);
     // If any query fails, rollback everything
     await client.query("ROLLBACK");
-    // if transaction is fail due to any error and rollback then delte images and video 
+    // if transaction is fail due to any error and rollback then delte images and video
     // from cloud clodinary is start from here
     try {
-
       // const {assets}=req?.body
-      if (req?.body?.length > 0 && req?.body[0]?.files?.length > 0 && req?.body[0]?.files[0]?.asset_folder) {
-
+      if (
+        req?.body?.length > 0 &&
+        req?.body[0]?.files?.length > 0 &&
+        req?.body[0]?.files[0]?.asset_folder
+      ) {
         const folder = req?.body[0]?.files[0]?.asset_folder;
         // console.log("cloudinar delete folder",folder)
 
@@ -156,34 +164,22 @@ const adminAddProductController = async (req, res) => {
         // console.log("images and videos",data1)
       }
       // console.log("folder delted",data1)
-
     } catch (error) {
-      console.log("adminDeleteHalfUploadedFileCloudinaryController", error?.message)
+      console.log(
+        "adminDeleteHalfUploadedFileCloudinaryController",
+        error?.message,
+      );
     }
-    // if transaction is fail due to any error and rollback then delte images and video 
+    // if transaction is fail due to any error and rollback then delte images and video
     // from cloud clodinary is end here
 
-
-
-    // if transaction is fail due to any error and rollback then delte images and video 
+    // if transaction is fail due to any error and rollback then delte images and video
     // from cloud clodinary is start from here
-    res.json({ status: 500, message: "server error" })
+    res.json({ status: 500, message: "server error" });
   } finally {
-
     // Always release the connection
     client.release();
-
   }
+};
 
-}
-
-module.exports = { adminAddProductController }
-
-
-
-
-
-
-
-
-
+module.exports = { adminAddProductController };

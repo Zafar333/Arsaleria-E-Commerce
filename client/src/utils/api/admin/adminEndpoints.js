@@ -13,8 +13,14 @@ const adminEndpoints={
     // on the cloud cloudinary end here
 
     // adminGetAllProducts route is start from here
-    adminGetAllProducts:"/admin/getAllProducts"
+    adminGetAllProducts:"/admin/getAllProducts",
+    getInStockProducts:"/admin/getInStockProducts",
+    getOutofStockProducts:"/admin/getOutofStockProducts",
     // adminGetAllProducts route is end here
+
+      // adminDeleteProduct route is start from here
+    adminDeleteProduct:"/admin/adminDeleteProduct"
+    // adminDeleteProduct route is end here
 
 
 

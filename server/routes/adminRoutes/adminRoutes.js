@@ -14,6 +14,9 @@ const { adminGeneratePreSignedUrlAddProductController } = require("../../control
 const { adminDeleteHalfUploadedFileCloudinaryController } = require("../../controllers/admin/adminAddProductControllerfile/adminDeleteHalfUploadedFileCloudinaryController")
 const { adminAddProductController } = require("../../controllers/admin/adminAddProductControllerfile/adminAddProductController")
 const { adminGetAllProductsController } = require("../../controllers/admin/AdminGetAllProductsController")
+const { adminDeleteSingleProductController } = require("../../controllers/admin/adminDeleteSingleProductController")
+const { adminGetInStockProductsController } = require("../../controllers/admin/adminGetInStockProductsController")
+const { adminGetOutofStockProductsController } = require("../../controllers/admin/adminGetOutofStockProductsController")
 const router=express.Router()
 
 router.post("/signup",adminSignup)
@@ -28,6 +31,8 @@ router.delete("/deleteCategorie/:id",checkAdminJwtToken,adminDeleteCategoriesCon
 
 // admingetAllProducts route is start from here
 router.get("/getAllProducts",checkAdminJwtToken,adminGetAllProductsController)
+router.get("/getInStockProducts",checkAdminJwtToken,adminGetInStockProductsController)
+router.get("/getOutofStockProducts",checkAdminJwtToken,adminGetOutofStockProductsController)
 // admingetAllProducts route is end here
 
 
@@ -46,6 +51,12 @@ router.post("/addProduct",checkAdminJwtToken,adminAddProductController)
 // addproduct in to backe route is end here
 // admin addproduct all routes is the part addproduct is end here
 //////////
+
+// /adminDeleteProduct route is start from here
+
+router.delete("/adminDeleteProduct",checkAdminJwtToken,adminDeleteSingleProductController)
+
+// /adminDeleteProduct route is end here
 
 
  

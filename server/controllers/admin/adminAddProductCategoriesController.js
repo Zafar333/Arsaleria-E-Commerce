@@ -3,7 +3,7 @@ const { pool } = require("../../database/db")
 const adminAddProductCategoriesController = async (req, res) => {
     const data = req?.body
     try {
-        if (!data?.categoryName && !data?.isParent && !data?.isActiveCategory) {
+        if ( Object.keys(req?.body)?.length==0 || !data?.categoryName && !data?.isParent && !data?.isActiveCategory) {
 
             return res.send({ status: 500, message: "server error" })
         }
