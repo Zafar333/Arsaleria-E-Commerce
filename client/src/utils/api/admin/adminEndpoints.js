@@ -1,4 +1,10 @@
 const adminEndpoints={
+
+  //  admin logout route is start from here
+    adminLogout:"/admin/logout",
+  //  admin logout route is end here
+
+
     adminProfile:"/admin/profileDetail",
     adminAddCategories:"/admin/addProductCategories",
     adminGetAllCategories:"/admin/getAllCategories",
@@ -16,6 +22,7 @@ const adminEndpoints={
     adminGetAllProducts:"/admin/getAllProducts",
     getInStockProducts:"/admin/getInStockProducts",
     getOutofStockProducts:"/admin/getOutofStockProducts",
+    getSearchFilterAllProducts:"/admin/getSearchFilterAllProducts",
     // adminGetAllProducts route is end here
 
       // adminDeleteProduct route is start from here

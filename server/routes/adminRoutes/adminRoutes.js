@@ -17,22 +17,38 @@ const { adminGetAllProductsController } = require("../../controllers/admin/Admin
 const { adminDeleteSingleProductController } = require("../../controllers/admin/adminDeleteSingleProductController")
 const { adminGetInStockProductsController } = require("../../controllers/admin/adminGetInStockProductsController")
 const { adminGetOutofStockProductsController } = require("../../controllers/admin/adminGetOutofStockProductsController")
+const { adminGetSearchFilterAllProductsController } = require("../../controllers/admin/adminSearchProductsFilterController/adminGetSearchFilterAllProductsController")
+const { adminLogoutController } = require("../../controllers/admin/adminLogoutController")
 const router=express.Router()
 
+
+// admin login routes start here
+router.patch("/logout",adminLogoutController)
 router.post("/signup",adminSignup)
 router.post("/login",adminLogin)
+// admin login routes end here
+
+// admin paasword rest routes is start from here
 router.post("/resetPassword",adminResetPassword)
 router.post("/verifyOtp",verifyOtp)
+// admin paasword rest routes is end here
+
 router.get("/profileDetail",adminProfileDetailController)
+
+
+// admin categories route is start from here
 router.get("/getAllCategories",adminGetAllCategoriesController)
 router.post("/addProductCategories",checkAdminJwtToken,adminAddProductCategoriesController)
 router.get("/getAllBottomCategories",checkAdminJwtToken,adminGetAllBottomCategoriesController)
 router.delete("/deleteCategorie/:id",checkAdminJwtToken,adminDeleteCategoriesController)
+// admin categories route is end here
+
 
 // admingetAllProducts route is start from here
 router.get("/getAllProducts",checkAdminJwtToken,adminGetAllProductsController)
 router.get("/getInStockProducts",checkAdminJwtToken,adminGetInStockProductsController)
 router.get("/getOutofStockProducts",checkAdminJwtToken,adminGetOutofStockProductsController)
+router.get("/getSearchFilterAllProducts",checkAdminJwtToken,adminGetSearchFilterAllProductsController)
 // admingetAllProducts route is end here
 
 

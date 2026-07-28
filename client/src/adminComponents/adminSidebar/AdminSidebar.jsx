@@ -5,11 +5,14 @@ import "./adminsidebar.css"
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation"
-import { frontendDevelopmentBaseUrl } from '@/utils/api/main';
+import { DevelopmentBaseUrl, frontendDevelopmentBaseUrl } from '@/utils/api/main';
+import { toast } from 'react-toastify';
+import { adminEndpoints } from '@/utils/api/admin/adminEndpoints';
  const AdminSidebar = ({openSidebar,setOpensSidebar}) => {
 //  const [sidebarstate,setsidebarstate]=useState(["addcategories","addproducts","products","home","login"])
  const [sidebarstate,setsidebarstate]=useState("addcategories")
  const [queryparams,setquerparams]=useState("addcategories")
+ const [btnLoader,setBtnLoader]=useState(false)
  const router =useRouter();
  const searchquerparams=useSearchParams();
  const pathname = usePathname();
@@ -28,7 +31,42 @@ import { frontendDevelopmentBaseUrl } from '@/utils/api/main';
 
  },[searchquerparams])
 
- 
+//  adminlogout fun is start from here
+ const adminlogoutfunapi=async()=>{
+  
+    try{
+      setBtnLoader(true);
+      const response = await fetch(
+        `${DevelopmentBaseUrl}${adminEndpoints?.adminLogout}?adminLogout=logout&id=${queryparams?.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        setBtnLoader(false);
+        toast.success(result?.message)
+        return router.replace(`${frontendDevelopmentBaseUrl}/`)
+      }
+      
+      if (
+        result?.status >= 400 && result?.status <= 550  ) {
+        
+            setBtnLoader(false);
+        return toast.error(result?.message);
+      }
+    } catch (error) {
+      setBtnLoader(false);
+      // console.log(error?.message)
+      return toast.error("server error");
+    }
+
+ }
+//  adminlogout fun is end here
  
  
  const gotoAddCategoriesFun=(val)=>{
@@ -45,6 +83,12 @@ import { frontendDevelopmentBaseUrl } from '@/utils/api/main';
     }
     if(val=="home"){
       router?.replace(`${frontendDevelopmentBaseUrl}/`)
+    }
+     if(val=="logout"){
+     return adminlogoutfunapi()
+    }
+    if(val=="orders"){
+      router?.replace(`${frontendDevelopmentBaseUrl}/admin/orders?id=${queryparams?.id}`)
     }
  }
 
@@ -77,11 +121,14 @@ import { frontendDevelopmentBaseUrl } from '@/utils/api/main';
     
       >
     <div className='flex flex-col gap-6 lg:gap-10 w-full '>
-        <span className={`${sidebarstate=="addcategories"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen  hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addcategories")}>Add Categories </span>
-        <span className={`${sidebarstate=="addproducts"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addproducts")}>Add Product </span>
-        <span className={`${sidebarstate=="products"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer `} onClick={()=>gotoAddCategoriesFun("products")}>All Products </span>
-        <span className={`${sidebarstate=="home"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("home")}>Home </span>
-        <span className={`${sidebarstate=="logout"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] lg:text-[20px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("logout")}>Logout </span>
+        <span className={`${sidebarstate=="addcategories"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] font-Poppins hover:text-darkGreen  hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addcategories")}>Add Categories </span>
+        <span className={`${sidebarstate=="addproducts"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addproducts")}>Add Product </span>
+        <span className={`${sidebarstate=="products"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer `} onClick={()=>gotoAddCategoriesFun("products")}>All Products </span>
+        <span className={`${sidebarstate=="orders"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("orders")}>Orders </span>
+        <span className={`${sidebarstate=="home"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("home")}>Home </span>
+       {btnLoader==false?(
+        <span className={`${sidebarstate=="logout"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("logout")}>Logout </span>
+        ):("loading...")}
         </div>
       </Drawer>
     </div>

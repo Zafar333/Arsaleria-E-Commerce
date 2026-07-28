@@ -6,7 +6,9 @@ const adminGetOutofStockProductsController = async (req, res) => {
 
   try {
 
-
+if(Object.keys(req?.query)?.length==0 || !req?.query || !req?.query?.stockStatus ){
+        return res?.json({status:500,message:"please send valid data"})
+       }
     const result = await await pool.query(`
             SELECT products.id,product_name,sellproduct_price,product_category,stock_status,
             json_agg(json_build_object(
@@ -19,11 +21,11 @@ const adminGetOutofStockProductsController = async (req, res) => {
             'format',products_media.format,
             'original_filename',products_media.original_filename)) AS media FROM products 
             LEFT JOIN products_media ON products.id=products_media.products_id
-            WHERE products.stock_status = 'UnAvailable'
+            WHERE products.stock_status =$1
               GROUP BY
         products.id,
         product_name,sellproduct_price,product_category,stock_status
-            `);
+            `,[req?.query?.stockStatus]);
 
     if (result?.rows?.length < 1) {
       return res.send({ status: 400, message: "No product found" });
