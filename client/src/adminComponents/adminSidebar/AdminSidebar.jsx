@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { Button, Drawer } from 'antd';
+import { Button, Drawer, Spin } from 'antd';
 import "./adminsidebar.css"
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from "next/navigation";
@@ -69,7 +69,7 @@ import { adminEndpoints } from '@/utils/api/admin/adminEndpoints';
 //  adminlogout fun is end here
  
  
- const gotoAddCategoriesFun=(val)=>{
+ const gotoNavigatePageFun=(val)=>{
     console.log("color",val)
     setsidebarstate(val)
       if(val=="addcategories"){
@@ -89,6 +89,9 @@ import { adminEndpoints } from '@/utils/api/admin/adminEndpoints';
     }
     if(val=="orders"){
       router?.replace(`${frontendDevelopmentBaseUrl}/admin/orders?id=${queryparams?.id}`)
+    }
+      if(val=="customers"){
+      router?.replace(`${frontendDevelopmentBaseUrl}/admin/customers?id=${queryparams?.id}`)
     }
  }
 
@@ -120,15 +123,16 @@ import { adminEndpoints } from '@/utils/api/admin/adminEndpoints';
         
     
       >
-    <div className='flex flex-col gap-6 lg:gap-10 w-full '>
-        <span className={`${sidebarstate=="addcategories"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] font-Poppins hover:text-darkGreen  hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addcategories")}>Add Categories </span>
-        <span className={`${sidebarstate=="addproducts"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("addproducts")}>Add Product </span>
-        <span className={`${sidebarstate=="products"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer `} onClick={()=>gotoAddCategoriesFun("products")}>All Products </span>
-        <span className={`${sidebarstate=="orders"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("orders")}>Orders </span>
-        <span className={`${sidebarstate=="home"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("home")}>Home </span>
+    <div className='flex flex-col gap-6 lg:gap-8 w-full '>
+        <span className={`${sidebarstate=="addcategories"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] font-Poppins hover:text-darkGreen  hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("addcategories")}>Add Categories </span>
+        <span className={`${sidebarstate=="addproducts"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("addproducts")}>Add Product </span>
+        <span className={`${sidebarstate=="products"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer `} onClick={()=>gotoNavigatePageFun("products")}>All Products </span>
+        <span className={`${sidebarstate=="orders"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("orders")}>Orders </span>
+        <span className={`${sidebarstate=="customers"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("customers")}>Customers </span>
+        <span className={`${sidebarstate=="home"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("home")}>Home </span>
        {btnLoader==false?(
-        <span className={`${sidebarstate=="logout"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoAddCategoriesFun("logout")}>Logout </span>
-        ):("loading...")}
+        <span className={`${sidebarstate=="logout"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("logout")}>Logout </span>
+        ):(<Spin className='bg-lightGreen py-2! rounded-sm' size='small'></Spin>)}
         </div>
       </Drawer>
     </div>

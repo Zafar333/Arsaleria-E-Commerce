@@ -2,6 +2,7 @@ const createUsersTable =
    `
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
+      key SERIAL,
       name VARCHAR NOT NULL,
       email VARCHAR NOT NULL,
       password VARCHAR,

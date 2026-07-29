@@ -55,10 +55,8 @@ const AdminAllProducts = () => {
       `${frontendDevelopmentBaseUrl}/admin/allProducts?id=${queryparam[0]}` ==
       `${frontendDevelopmentBaseUrl}${pathname}?id=${queryparam[0]}`
     ) {
-      console.log("inblock");
       setPageLoading(false);
     } else {
-      console.log("else");
       setPageLoading(true);
     }
   };
@@ -321,7 +319,8 @@ const AdminAllProducts = () => {
           <div className="mt-[80px] md:mt-[100px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[60px] md:gap-[20px] lg:gap-[40px]">
             {/* card */}
             {/* loop is apply this div */}
-            {adminAllProducts?.map((prod,ind)=>(
+            {adminAllProducts?.length>0?(
+            adminAllProducts?.map((prod,ind)=>(
             <Link key={ind}
               href={""}
               className="cursor-pointer border border-gray-200 rounded-sm"
@@ -353,7 +352,10 @@ const AdminAllProducts = () => {
                 </div>
               </div>
             </Link>
-            ))}
+            
+            ))):(<div className="flex justify-center items-center max-w-[1400px]  ">
+          <p className="text-[18px] font-Poppins text-darkGreen">No product found</p>
+        </div>)}
             {/* card text Content */}
             {/* loop is apply this div */}
             {/* {card} */}

@@ -19,6 +19,8 @@ const { adminGetInStockProductsController } = require("../../controllers/admin/a
 const { adminGetOutofStockProductsController } = require("../../controllers/admin/adminGetOutofStockProductsController")
 const { adminGetSearchFilterAllProductsController } = require("../../controllers/admin/adminSearchProductsFilterController/adminGetSearchFilterAllProductsController")
 const { adminLogoutController } = require("../../controllers/admin/adminLogoutController")
+const { getAllCustomersDataController } = require("../../controllers/admin/getAllCustomersDataController")
+const { getSearchCustomersFilterDataController } = require("../../controllers/admin/getSearchCustomersFilterDataController")
 const router=express.Router()
 
 
@@ -27,6 +29,13 @@ router.patch("/logout",adminLogoutController)
 router.post("/signup",adminSignup)
 router.post("/login",adminLogin)
 // admin login routes end here
+
+// get all customers or user registers data route is start from here
+router.get("/getAllCustomersData",checkAdminJwtToken,getAllCustomersDataController)
+router.get("/getSearchCustomersData",checkAdminJwtToken,getSearchCustomersFilterDataController)
+
+// get all customers or user registers data route is start from here
+
 
 // admin paasword rest routes is start from here
 router.post("/resetPassword",adminResetPassword)

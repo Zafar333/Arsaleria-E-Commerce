@@ -6,7 +6,7 @@ const adminGetSearchFilterAllProductsController=async(req,res)=>{
         return res?.json({status:500,message:"please send valid data"})
        }
     
-        const result = await await pool.query(`
+        const result = await pool.query(`
                 SELECT products.id,product_name,sellproduct_price,product_category,stock_status,
                 json_agg(json_build_object(
                 'media.id',products_media.id,

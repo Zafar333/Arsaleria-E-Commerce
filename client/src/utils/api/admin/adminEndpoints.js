@@ -4,6 +4,12 @@ const adminEndpoints={
     adminLogout:"/admin/logout",
   //  admin logout route is end here
 
+  
+  // get all users or customers route is start from here
+  getAllCustomersData:"/admin/getAllCustomersData",
+  getSearchCustomersData:"/admin/getSearchCustomersData",
+  // get all users or customers route is end here
+
 
     adminProfile:"/admin/profileDetail",
     adminAddCategories:"/admin/addProductCategories",

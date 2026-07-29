@@ -4,6 +4,7 @@ const { createAdminTable } = require("../models/adminModels/adminSignupModel");
 const { createProductCategoriesTable } = require("../models/adminModels/productCategoriesModel");
 const { productsModel } = require("../models/adminModels/productmodels/productsModel");
 const { productsMediaModel } = require("../models/adminModels/productmodels/productsMediaModel");
+const { orderDetailModel } = require("../models/adminModels/orderDetailModel");
 
 const pool = new Pool({
   host: "localhost",
@@ -22,6 +23,7 @@ async function initDB() {
       await pool.query(createProductCategoriesTable)
       await pool.query(productsModel)
       await pool.query(productsMediaModel)
+      await pool.query(orderDetailModel)
       
       console.log("✅ Tables created.");
 
