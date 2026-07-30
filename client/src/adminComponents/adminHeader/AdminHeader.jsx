@@ -33,7 +33,7 @@ const opensidebarfun=()=>{
 
 
   return (
-        <div className='bg-lightGreen px-4 md:px-10 lg:px-14 py-8'>
+        <div className='bg-lightGreen px-4 md:px-10 lg:px-14 py-4'>
         <div className='grid items-center grid-cols-[0.2fr_2fr_0.3fr] gap-3'>
         <div className="flex gap-2 " onClick={opensidebarfun}>
         {/* <span className="text-[18px] text-darkGreen font-Poppins">Menu</span> */}

@@ -93,7 +93,6 @@ const AdminAllProducts = () => {
         (result?.status >= 402 && result?.status <= 550) ||
         result?.status == 400
       ) {
-        setAdminAllProducts([])
         setPageLoading(false);
         return toast.error(result?.message);
       }
@@ -179,7 +178,6 @@ const AdminAllProducts = () => {
         (result?.status >= 402 && result?.status <= 550) ||
         result?.status == 400
       ) {
-        setAdminAllProducts([])
         setPageLoading(false);
         return toast.error(result?.message);
       }
@@ -222,7 +220,6 @@ const AdminAllProducts = () => {
         (result?.status >= 402 && result?.status <= 550) ||
         result?.status == 400
       ) {
-        setAdminAllProducts([])
         setPageLoading(false);
         return toast.error(result?.message);
       }
@@ -288,7 +285,6 @@ const AdminAllProducts = () => {
         (result?.status >= 402 && result?.status <= 550) ||
         result?.status == 400
       ) {
-        setAdminAllProducts([])
         setPageLoading(false);
         return toast.error(result?.message);
       }
@@ -307,7 +303,7 @@ const AdminAllProducts = () => {
     <div className="mx-[15px] xs:mx-[80px]  sm:mx-[20px]">
       {pageLoading == false ? (
         <div className="max-w-[1400px] mx-auto">
-          <div className="mt-[20px] flex justify-end">
+          <div className="mt-[50px] flex justify-end">
           <Search placeholder="search product with name"  onSearch={onSearch}  className="max-w-[300px]" />
           </div>
           <div className="overflow-x-auto rounded-sm mt-[50px] flex items-center gap-4 py-[9px] sm:py-[5px] bg-lightGreen w-full sm:max-w-fit px-[50px]">
@@ -316,7 +312,7 @@ const AdminAllProducts = () => {
             <p className={`${manageProductsFilter[0]=="outofstock"?"bg-white rounded-sm":""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`} onClick={()=>getProducts("outofstock")}>Out of Stock</p>
           </div>
           {/* //////// */}
-          <div className="mt-[80px] md:mt-[100px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[60px] md:gap-[20px] lg:gap-[40px]">
+          <div className="mt-[50px] md:mt-[60px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[60px] md:gap-[20px] lg:gap-[40px]">
             {/* card */}
             {/* loop is apply this div */}
             {adminAllProducts?.length>0?(

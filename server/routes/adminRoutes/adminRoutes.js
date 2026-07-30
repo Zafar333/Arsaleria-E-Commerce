@@ -19,8 +19,9 @@ const { adminGetInStockProductsController } = require("../../controllers/admin/a
 const { adminGetOutofStockProductsController } = require("../../controllers/admin/adminGetOutofStockProductsController")
 const { adminGetSearchFilterAllProductsController } = require("../../controllers/admin/adminSearchProductsFilterController/adminGetSearchFilterAllProductsController")
 const { adminLogoutController } = require("../../controllers/admin/adminLogoutController")
-const { getAllCustomersDataController } = require("../../controllers/admin/getAllCustomersDataController")
-const { getSearchCustomersFilterDataController } = require("../../controllers/admin/getSearchCustomersFilterDataController")
+const { getAllUsersDataController } = require("../../controllers/admin/getAllUsersDataController")
+const { getSearchUsersFilterDataController } = require("../../controllers/admin/getSearchUsersFilterDataController")
+const { adminDeleteUserController } = require("../../controllers/admin/adminDeleteUserController")
 const router=express.Router()
 
 
@@ -31,8 +32,9 @@ router.post("/login",adminLogin)
 // admin login routes end here
 
 // get all customers or user registers data route is start from here
-router.get("/getAllCustomersData",checkAdminJwtToken,getAllCustomersDataController)
-router.get("/getSearchCustomersData",checkAdminJwtToken,getSearchCustomersFilterDataController)
+router.get("/getAllUsersData",checkAdminJwtToken,getAllUsersDataController)
+router.get("/getSearchUsersFilterData",checkAdminJwtToken,getSearchUsersFilterDataController)
+router.delete("/adminDeleteUser/:userid",checkAdminJwtToken,adminDeleteUserController)
 
 // get all customers or user registers data route is start from here
 

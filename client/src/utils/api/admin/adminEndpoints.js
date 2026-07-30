@@ -6,8 +6,9 @@ const adminEndpoints={
 
   
   // get all users or customers route is start from here
-  getAllCustomersData:"/admin/getAllCustomersData",
-  getSearchCustomersData:"/admin/getSearchCustomersData",
+  getAllUsersData:"/admin/getAllUsersData",
+  adminDeleteUser:"/admin/adminDeleteUser",
+  getSearchUsersFilterData:"/admin/getSearchUsersFilterData",
   // get all users or customers route is end here
 
 

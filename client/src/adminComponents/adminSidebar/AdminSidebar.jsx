@@ -90,8 +90,8 @@ import { adminEndpoints } from '@/utils/api/admin/adminEndpoints';
     if(val=="orders"){
       router?.replace(`${frontendDevelopmentBaseUrl}/admin/orders?id=${queryparams?.id}`)
     }
-      if(val=="customers"){
-      router?.replace(`${frontendDevelopmentBaseUrl}/admin/customers?id=${queryparams?.id}`)
+      if(val=="allusers"){
+      router?.replace(`${frontendDevelopmentBaseUrl}/admin/allUsers?id=${queryparams?.id}`)
     }
  }
 
@@ -128,7 +128,7 @@ import { adminEndpoints } from '@/utils/api/admin/adminEndpoints';
         <span className={`${sidebarstate=="addproducts"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("addproducts")}>Add Product </span>
         <span className={`${sidebarstate=="products"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer `} onClick={()=>gotoNavigatePageFun("products")}>All Products </span>
         <span className={`${sidebarstate=="orders"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("orders")}>Orders </span>
-        <span className={`${sidebarstate=="customers"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("customers")}>Customers </span>
+        <span className={`${sidebarstate=="allusers"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("allusers")}>All Users </span>
         <span className={`${sidebarstate=="home"?("bg-lightGreen text-darkGreen "):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("home")}>Home </span>
        {btnLoader==false?(
         <span className={`${sidebarstate=="logout"?("bg-lightGreen text-darkGreen"):("text-lightGreen")} px-5 py-1 text-[14px] md:text-[17px] font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`} onClick={()=>gotoNavigatePageFun("logout")}>Logout </span>

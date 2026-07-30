@@ -9,7 +9,6 @@ require('dotenv').config()
 
 // user login req controller is start from here
  const userLogin=async (req,res)=>{
-    console.log("hello user login")
  
      let data=req?.body
      try{
@@ -31,7 +30,6 @@ require('dotenv').config()
             const dat = await pool?.query(`UPDATE users SET user_jwt_refereshToken=$1 WHERE id=$2`, [refreshtoken,result?.rows[0]?.id])
             
             if (dat?.rowCount == 0) {
-                console.log("data",dat)
                 return res.json({ status: 500, message: "server error" })
 
             }
@@ -40,8 +38,6 @@ require('dotenv').config()
             //  CREATE REFRESH and ACCESS JWT TOKEN FUN IS end HERE
 
             if (refreshtoken&& accesstoken) {
-                console.log("refreshtoken", refreshtoken)
-                console.log("accesstoken", accesstoken)
 
                 // ✅ Set Token in Cookie
                 res.cookie("userRefreshtoken", refreshtoken, {

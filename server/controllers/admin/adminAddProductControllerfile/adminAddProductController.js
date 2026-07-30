@@ -4,8 +4,8 @@ const cloudinary = require("../../../configFiles/cloudinaryCloudConfig");
 const adminAddProductController = async (req, res) => {
   const getDdata = req?.body;
   // console.log("bodydata",)
-  console.log("media", getDdata[0]?.files);
-  console.log("bodydata", getDdata[1]);
+  // console.log("media", getDdata[0]?.files);
+  // console.log("bodydata", getDdata[1]);
 
   const client = await pool.connect();
   try {

@@ -7,7 +7,6 @@ require('dotenv').config()
 
 
  const userSignup=async(req,res)=>{
-    console.log("hello user signup")
 
     let data=req?.body
     try{

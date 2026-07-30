@@ -1,6 +1,6 @@
 const { pool } = require("../../database/db");
 
-const getSearchCustomersFilterDataController = async (req, res) => {
+const getSearchUsersFilterDataController = async (req, res) => {
 //    return console.log("getSearchCustomersFilterDataController here",req?.query?.name)
   try {
     if (
@@ -28,4 +28,4 @@ const getSearchCustomersFilterDataController = async (req, res) => {
   }
 };
 
-module.exports = { getSearchCustomersFilterDataController };
+module.exports = { getSearchUsersFilterDataController };

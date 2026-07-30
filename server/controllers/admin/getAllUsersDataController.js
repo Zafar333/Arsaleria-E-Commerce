@@ -1,6 +1,6 @@
 const { pool } = require("../../database/db")
 
-const getAllCustomersDataController =async (req,res) => {
+const getAllUsersDataController =async (req,res) => {
         try {
        
         const result = await pool.query(`SELECT id,key,name,email,TO_CHAR(created_date, 'DD-MM-YYYY') AS created_date FROM users`) 
@@ -17,4 +17,4 @@ const getAllCustomersDataController =async (req,res) => {
  
 }
 
-module.exports={getAllCustomersDataController}
+module.exports={getAllUsersDataController}

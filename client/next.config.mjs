@@ -6,8 +6,6 @@ const nextConfig = {
     images: {
     remotePatterns: [
       
-      // new URL("https://res.cloudinary.com/**"),
-    
       {
         protocol: "https",
         hostname: "res.cloudinary.com"
