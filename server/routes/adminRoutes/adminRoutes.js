@@ -13,7 +13,6 @@ const multer = require("multer");
 const { adminGeneratePreSignedUrlAddProductController } = require("../../controllers/admin/adminAddProductControllerfile/adminGeneratePreSignedUrlAddProductController")
 const { adminDeleteHalfUploadedFileCloudinaryController } = require("../../controllers/admin/adminAddProductControllerfile/adminDeleteHalfUploadedFileCloudinaryController")
 const { adminAddProductController } = require("../../controllers/admin/adminAddProductControllerfile/adminAddProductController")
-const { adminGetAllProductsController } = require("../../controllers/admin/AdminGetAllProductsController")
 const { adminDeleteSingleProductController } = require("../../controllers/admin/adminDeleteSingleProductController")
 const { adminGetInStockProductsController } = require("../../controllers/admin/adminGetInStockProductsController")
 const { adminGetOutofStockProductsController } = require("../../controllers/admin/adminGetOutofStockProductsController")
@@ -22,6 +21,7 @@ const { adminLogoutController } = require("../../controllers/admin/adminLogoutCo
 const { getAllUsersDataController } = require("../../controllers/admin/getAllUsersDataController")
 const { getSearchUsersFilterDataController } = require("../../controllers/admin/getSearchUsersFilterDataController")
 const { adminDeleteUserController } = require("../../controllers/admin/adminDeleteUserController")
+const { adminGetAllProductsController } = require("../../controllers/admin/adminGetAllProductsController")
 const router=express.Router()
 
 

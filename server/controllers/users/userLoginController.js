@@ -1,8 +1,8 @@
 const bcrypt=require("bcrypt")
 const { pool } = require("../../database/db")
 const { checkPassword } = require("../../middleware/checkPassword")
-const { createJwtRefreshToken } = require("../../middleware/userJwtTokens/createjwtrefreshtoken")
 const { createJwtAccessToken } = require("../../middleware/userJwtTokens/createJwtAccessToken")
+const { createJwtRefreshToken } = require("../../middleware/userJwtTokens/createJwtRefreshToken")
 require('dotenv').config()
 
 

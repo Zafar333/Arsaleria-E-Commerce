@@ -1,6 +1,6 @@
 const { pool } = require("../../database/db");
 const { createJwtAccessToken } = require("../../middleware/userJwtTokens/createJwtAccessToken");
-const { createJwtRefreshToken } = require("../../middleware/userJwtTokens/createjwtrefreshtoken");
+const { createJwtRefreshToken } = require("../../middleware/userJwtTokens/createJwtRefreshToken");
 const { verifyGoogleToken } = require("../../middleware/verifySigninWithGoogleToken/verifyGoogleToken");
 require("dotenv").config()
 const signinWithGoogleLoginController = async (req, res) => {

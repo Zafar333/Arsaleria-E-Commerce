@@ -1,13 +1,13 @@
 const express=require("express")
-const { stripePaymentController } = require("../../controllers/users/stripepaymentcontroller")
 const { userSignup } = require("../../controllers/users/userSignupController")
 const { userLogin } = require("../../controllers/users/userLoginController")
 const { profileController } = require("../../controllers/users/userController")
 const { checkJwtToken } = require("../../middleware/userJwtTokens/checkJwtToken")
 const { userUpdateForgotPasswordController } = require("../../controllers/users/userForgotPassword/userUpdateForgotPasswordController")
 const { userForgotPasswordEmailController } = require("../../controllers/users/userForgotPassword/userForgotPasswordEmailController")
-const {userForgotPasswordVerifyOtpController} = require("../../controllers/users/userForgotPassword/userforgotPasswordVerifyOtpController")
-const { signinWithGoogleLoginController } = require("../../controllers/users/signinwithgooglelogincontroller")
+const {userForgotPasswordVerifyOtpController} = require("../../controllers/users/userForgotPassword/userForgotPasswordVerifyOtpController")
+const { signinWithGoogleLoginController } = require("../../controllers/users/signinWithGoogleLoginController")
+const { stripePaymentController } = require("../../controllers/users/stripePaymentController")
 const router=express.Router()
 
 // login,signup and authentication routes is start from herer

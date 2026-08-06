@@ -32,7 +32,7 @@ const port = process.env.BACKEND_DEVELOPMENT_PORT_URL || 5000;
   try{
   // await initDB(); // ✅ create tables before server starts
    app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is runing on port ${port}`);
   });
 
 }catch(err){

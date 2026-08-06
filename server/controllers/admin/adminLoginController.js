@@ -1,7 +1,7 @@
 const { pool } = require("../../database/db")
 const { checkPassword } = require("../../middleware/checkPassword")
 const { createJwtAccessToken } = require("../../middleware/userJwtTokens/createJwtAccessToken")
-const { createJwtRefreshToken } = require("../../middleware/userJwtTokens/createjwtrefreshtoken")
+const { createJwtRefreshToken } = require("../../middleware/userJwtTokens/createJwtRefreshToken")
 require("dotenv").config()
 
 const adminLogin = async (req, res) => {
