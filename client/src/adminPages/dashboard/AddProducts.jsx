@@ -23,7 +23,9 @@ import {
   frontendDevelopmentBaseUrl,
 } from "@/utils/api/main";
 import { InboxOutlined, SaveOutlined } from "@ant-design/icons";
+import { Table } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { MdDeleteOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 
 const { Dragger } = Upload;
@@ -37,6 +39,7 @@ const AddProducts = () => {
   const [totalSelectedFiles, setTotalSelectedFiles] = useState([]);
   const [temporaryUploadeFiles, setTemporaryUploadeFiles] = useState([]);
   const [deliveryType, setDeliveryType] = useState([]);
+  const [productAllVariants, setProductAllVariants] = useState([]);
   const [form] = Form.useForm();
 
   const [loader, setLoader] = useState(false);
@@ -103,6 +106,72 @@ const AddProducts = () => {
     { label: "4.500kg", value: "4.500kg" },
     { label: "5kg", value: "5kg" },
   ];
+
+  // table data section is start from here
+  const columns = [
+    {
+      title: "Id",
+      width: 100,
+      dataIndex: "key",
+      fixed: "start",
+    },
+    {
+      title: "weight",
+      width: 100,
+      dataIndex: "dairyFarmWeight",
+      fixed: "start",
+    },
+
+    {
+      title: "Price",
+      width: 100,
+      dataIndex: "sellProductPrice",
+    },
+    {
+      title: "Stock Status",
+      width: 100,
+      dataIndex: "stockStatus",
+    },
+    {
+      title: "Qunatity",
+      width: 100,
+      dataIndex: "productQuantity",
+    },
+    {
+      title: "Unit",
+      width: 100,
+      dataIndex: "dairyFarmUnit",
+    },
+    {
+      title: "Sku",
+      width: 100,
+      dataIndex: "sku",
+    },
+
+    {
+      title: "Action",
+      width: 100,
+      // dataIndex: "action",
+      render: (_, record) => (
+        <MdDeleteOutline
+          className="text-red-600 text-[17px]"
+          onClick={() => handleDeleteUser(record.key)}
+        />
+      ),
+      fixed: "end",
+    },
+  ];
+
+  // handleDeleteUser fun api is start from here
+  const handleDeleteUser = async (userid) => {
+    // console.log("userid", userid);
+    const prepareData = productAllVariants.filter(
+      (data, ind) => data?.key != userid,
+    );
+    setProductAllVariants(prepareData);
+  };
+  // handleDeleteUser fun api is end here
+  // table data section is end here
 
   useEffect(() => {
     getAllBottomCategoriesFunApi();
@@ -233,6 +302,7 @@ const AddProducts = () => {
 
   // onFinish success fun is start from here
   const onFinish = async (values) => {
+    // console.log("formvalues", values);
     try {
       // Create FormData
       setLoader(true);
@@ -243,7 +313,11 @@ const AddProducts = () => {
 
         return toast.error("please upload images");
       }
-      if (!values || Object.keys(values)?.length == 0) {
+      if (
+        !values ||
+        Object.keys(values)?.length == 0 ||
+        productAllVariants?.length == 0
+      ) {
         setLoader(false);
 
         return toast.error("please fill mandatory form fields");
@@ -351,12 +425,16 @@ const AddProducts = () => {
     // setLoader(false)
     // console.log("images and videos", fildata)
     // console.log("formvalues", val)
-    const data = [{ files: fildata }, val];
+    const data = [{ files: fildata }, val, productAllVariants];
     // console.log("bodydata", data)
     // toast.success("datuploaded sucessfully")
 
     try {
-      if (fildata?.length > 0 && Object.keys(val)?.length > 0) {
+      if (
+        fildata?.length > 0 &&
+        Object.keys(val)?.length > 0 &&
+        productAllVariants?.length > 0
+      ) {
         const res = await fetch(
           `${DevelopmentBaseUrl}${adminEndpoints?.adminaddProduct}`,
           {
@@ -374,6 +452,7 @@ const AddProducts = () => {
           form.resetFields();
           setTotalSelectedFiles([]);
           setTemporaryUploadeFiles([]);
+          setProductAllVariants([]);
           toast.success(result?.message);
           setLoader(false);
         }
@@ -411,6 +490,46 @@ const AddProducts = () => {
     // message?.warning("please must fill mandatory fields")
   };
   // onFinishFailed form fun is start from here
+
+  useEffect(() => {
+    console.log("allvariants", productAllVariants);
+  }, [productAllVariants]);
+
+  // addProductVariantFun is start from here
+  const addProductVariantFun = () => {
+    const values = form.getFieldsValue([
+      "dairyFarmWeight",
+      "sellProductPrice",
+      "stockStatus",
+      "productQuantity",
+      "dairyFarmUnit",
+      "sku",
+    ]);
+    if (
+      !values ||
+      Object.keys(values)?.length == 0 ||
+      !values?.dairyFarmWeight ||
+      !values?.sellProductPrice ||
+      !values?.stockStatus ||
+      !values?.productQuantity ||
+      !values?.dairyFarmUnit
+    ) {
+      return toast.error("please must fill mandatory fields");
+    }
+    // console.log("prdouct variant values", values);
+    const data = { ...values, key: crypto.randomUUID() };
+
+    setProductAllVariants((prev) => [...prev, data]);
+    form.resetFields([
+      "dairyFarmWeight",
+      "sellProductPrice",
+      "stockStatus",
+      "productQuantity",
+      "dairyFarmUnit",
+      "sku",
+    ]);
+  };
+  // addProductVariantFun is end here
 
   return (
     <div>
@@ -530,16 +649,16 @@ const AddProducts = () => {
                         <Form.Item
                           initialValue={null}
                           className="mb-1.5! sm:mb-2! md:mb-5!"
-                          name={"sku"}
                           label={
                             <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
-                              SKU (Optional)
+                              Material (optional)
                             </span>
                           }
+                          name={"dairyFarmMaterial"}
                         >
                           <Input
                             className="placeholder:text-[8px]!  md:placeholder:text-[14px]!"
-                            placeholder="Enter sku number"
+                            placeholder="Enter material"
                           />
                         </Form.Item>
                       </Col>
@@ -663,7 +782,7 @@ const AddProducts = () => {
                         </Form.Item>
                       </Col>
 
-                      <Col span={24} sm={12}>
+                      {/* <Col span={24} sm={12}>
                         <Form.Item
                           className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
                           name={"sellProductPrice"}
@@ -721,7 +840,7 @@ const AddProducts = () => {
                             options={stockStatusOption}
                           />
                         </Form.Item>
-                      </Col>
+                      </Col> */}
 
                       <Col span={12}>
                         <Form.Item
@@ -756,6 +875,26 @@ const AddProducts = () => {
                           <Input
                             className="placeholder:text-[8px]!  md:placeholder:text-[14px]!"
                             placeholder="Enter product promo code"
+                          />
+                        </Form.Item>
+                      </Col>
+
+                      <Col span={24}>
+                        <Form.Item
+                          initialValue={null}
+                          className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
+                          label={
+                            <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
+                              Expiry Date (optional)
+                            </span>
+                          }
+                          name="dairyFarmExpiryDate"
+                        >
+                          <DatePicker
+                            className="custom-datepicker"
+                            style={{ width: "100%" }}
+                            placeholder="Select expiry date"
+                            format="DD-MM-YYYY"
                           />
                         </Form.Item>
                       </Col>
@@ -812,21 +951,17 @@ const AddProducts = () => {
                     <Row gutter={16}>
                       <Col span={24}>
                         <Form.Item
-                          rules={[
-                            {
-                              required: true,
-                              message: (
-                                <span className="text-[8px] xs:text-[10px] mb-1!">
-                                  please select weight
-                                </span>
-                              ),
-                            },
-                          ]}
                           className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
                           label={
-                            <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
-                              Select Weight
-                            </span>
+                            <div className="flex gap-1 items-center justify-center">
+                              <span className="text-[12px] text-red-600">
+                                *
+                              </span>
+
+                              <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
+                                Select Weight
+                              </span>
+                            </div>
                           }
                           name={"dairyFarmWeight"}
                         >
@@ -836,7 +971,6 @@ const AddProducts = () => {
                                 Select weight
                               </span>
                             }
-                            mode="multiple"
                             showSearch={false}
                             options={dairyWeightOptions}
                           />
@@ -848,29 +982,24 @@ const AddProducts = () => {
                           /> */}
                         </Form.Item>
                       </Col>
-                      <Col span={12}>
+                      <Col span={24} sm={12}>
                         <Form.Item
                           className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
-                          name={"productQuantity"}
+                          name={"sellProductPrice"}
                           label={
-                            <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
-                              Quantity
-                            </span>
+                            <div className="flex gap-1 items-center justify-center">
+                              <span className="text-[12px] text-red-600">
+                                *
+                              </span>
+                              <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
+                                Product Sell Price
+                              </span>
+                            </div>
                           }
-                          rules={[
-                            {
-                              required: true,
-                              message: (
-                                <span className="text-[8px] xs:text-[10px] mb-1!">
-                                  Please enter product quantity{" "}
-                                </span>
-                              ),
-                            },
-                          ]}
                         >
                           <InputNumber
                             className="[&_.ant-input-number-input]:placeholder:text-[8px] md:[&_.ant-input-number-input]:placeholder:text-[14px]"
-                            placeholder="Enter product quantity in grams"
+                            placeholder="Enter product sell price"
                             type="number"
                             style={{ width: "100%" }}
                           />
@@ -879,21 +1008,65 @@ const AddProducts = () => {
 
                       <Col span={12}>
                         <Form.Item
-                          rules={[
-                            {
-                              required: true,
-                              message: (
-                                <span className="text-[8px] xs:text-[10px] mb-1!">
-                                  please select unit
-                                </span>
-                              ),
-                            },
-                          ]}
+                          className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
+                          name={"stockStatus"}
+                          label={
+                            <div className="flex gap-1 items-center justify-center">
+                              <span className="text-[12px] text-red-600">
+                                *
+                              </span>
+                              <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
+                                Product Stock Status
+                              </span>
+                            </div>
+                          }
+                        >
+                          <Select
+                            placeholder={
+                              <span className="text-[8px] md:text-[14px]">
+                                Select stock status
+                              </span>
+                            }
+                            options={stockStatusOption}
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
+                          name={"productQuantity"}
+                          label={
+                            <div className="flex gap-1 items-center justify-center">
+                              <span className="text-[12px] text-red-600">
+                                *
+                              </span>
+                              <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
+                                Quantity
+                              </span>
+                            </div>
+                          }
+                        >
+                          <InputNumber
+                            className="[&_.ant-input-number-input]:placeholder:text-[8px] md:[&_.ant-input-number-input]:placeholder:text-[14px]"
+                            placeholder="Enter product quantity"
+                            type="number"
+                            style={{ width: "100%" }}
+                          />
+                        </Form.Item>
+                      </Col>
+
+                      <Col span={12}>
+                        <Form.Item
                           className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
                           label={
-                            <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
-                              Unit
-                            </span>
+                            <div className="flex gap-1 items-center justify-center">
+                              <span className="text-[12px] text-red-600">
+                                *
+                              </span>
+                              <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
+                                Unit
+                              </span>
+                            </div>
                           }
                           name={"dairyFarmUnit"}
                         >
@@ -908,43 +1081,46 @@ const AddProducts = () => {
                           />
                         </Form.Item>
                       </Col>
-
-                      <Col span={12}>
+                      <Col span={24}>
                         <Form.Item
                           initialValue={null}
                           className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
+                          // className="mb-1.5! sm:mb-2! md:mb-5!"
+                          name={"sku"}
                           label={
                             <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
-                              Expiry Date (optional)
+                              SKU (Optional)
                             </span>
                           }
-                          name="dairyFarmExpiryDate"
-                        >
-                          <DatePicker
-                            className="custom-datepicker"
-                            style={{ width: "100%" }}
-                            placeholder="Select expiry date"
-                            format="DD-MM-YYYY"
-                          />
-                        </Form.Item>
-                      </Col>
-                      <Col span={12}>
-                        <Form.Item
-                          initialValue={null}
-                          className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
-                          label={
-                            <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
-                              Material (optional)
-                            </span>
-                          }
-                          name={"dairyFarmMaterial"}
                         >
                           <Input
                             className="placeholder:text-[8px]!  md:placeholder:text-[14px]!"
-                            placeholder="Enter material"
+                            placeholder="Enter sku number"
                           />
                         </Form.Item>
                       </Col>
+
+                      <div className="mt-4 w-full flex justify-center items-center">
+                        <Button
+                          onClick={addProductVariantFun}
+                          className="w-[250px] font-Poppins text-white! text-[14px] mb-3 bg-darkGreen!"
+                        >
+                          Add Variant
+                        </Button>
+                      </div>
+
+                      {/* table section is start from  */}
+                      <Col span={24}>
+                        <Table
+                          bordered
+                          className="mt-[50px] [&_.ant-table-tbody>tr>td]:text-[13px] [&_.ant-table-tbody>tr>td]:font-Poppins"
+                          columns={columns}
+                          dataSource={productAllVariants}
+                          scroll={{ x: "max-content" }}
+                          pagination={false}
+                        />
+                      </Col>
+                      {/* // table section is end here */}
                     </Row>
                   </Card>
                   {/* for dairyfarm specifications card is end here */}
