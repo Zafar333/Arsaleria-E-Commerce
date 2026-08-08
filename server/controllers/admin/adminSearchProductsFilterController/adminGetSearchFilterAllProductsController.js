@@ -1,13 +1,18 @@
 const { pool } = require("../../../database/db");
 
-const adminGetSearchFilterAllProductsController=async(req,res)=>{
-     try {
-       if(Object.keys(req?.query)?.length==0 || !req?.query || !req?.query?.name){
-        return res?.json({status:500,message:"please send valid data"})
-       }
-    
-        const result = await pool.query(`
-                SELECT products.id,product_name,sellproduct_price,product_category,stock_status,
+const adminGetSearchFilterAllProductsController = async (req, res) => {
+  try {
+    if (
+      Object.keys(req?.query)?.length == 0 ||
+      !req?.query ||
+      !req?.query?.name
+    ) {
+      return res?.json({ status: 500, message: "please send valid data" });
+    }
+
+    const result = await pool.query(
+      `
+                SELECT products.id,product_name,sellproduct_price_1kg,product_category,
                 json_agg(json_build_object(
                 'media.id',products_media.id,
                  'products_id',products_media.products_id,
@@ -21,17 +26,18 @@ const adminGetSearchFilterAllProductsController=async(req,res)=>{
                 WHERE products.product_name ILIKE $1
                   GROUP BY
             products.id,
-            product_name,sellproduct_price,product_category,stock_status
-                `,[`%${req.query?.name}%`]);
-    
-        if (result?.rows?.length < 1) {
-          return res.send({ status: 400, message: "No product found" });
-        }
-        return res.send({ status: 200, data: result?.rows });
-      } catch (error) {
-        console.log("errors", error?.message);
-        res?.send({ status: 500, message: "server error" });
-      }
+            product_name,sellproduct_price_1kg,product_category
+                `,
+      [`${req.query?.name}%`],
+    );
 
-}
-module.exports={adminGetSearchFilterAllProductsController}
+    if (result?.rows?.length < 1) {
+      return res.send({ status: 400, message: "No product found" });
+    }
+    return res.send({ status: 200, data: result?.rows });
+  } catch (error) {
+    console.log("errors", error?.message);
+    res?.send({ status: 500, message: "server error" });
+  }
+};
+module.exports = { adminGetSearchFilterAllProductsController };

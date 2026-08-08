@@ -118,7 +118,7 @@ const AddProducts = () => {
     {
       title: "weight",
       width: 100,
-      dataIndex: "dairyFarmWeight",
+      dataIndex: "productSize",
       fixed: "start",
     },
 
@@ -425,7 +425,11 @@ const AddProducts = () => {
     // setLoader(false)
     // console.log("images and videos", fildata)
     // console.log("formvalues", val)
-    const data = [{ files: fildata }, val, productAllVariants];
+    const data = [
+      { files: fildata },
+      val,
+      { productsVariants: productAllVariants },
+    ];
     // console.log("bodydata", data)
     // toast.success("datuploaded sucessfully")
 
@@ -498,7 +502,7 @@ const AddProducts = () => {
   // addProductVariantFun is start from here
   const addProductVariantFun = () => {
     const values = form.getFieldsValue([
-      "dairyFarmWeight",
+      "productSize",
       "sellProductPrice",
       "stockStatus",
       "productQuantity",
@@ -508,7 +512,7 @@ const AddProducts = () => {
     if (
       !values ||
       Object.keys(values)?.length == 0 ||
-      !values?.dairyFarmWeight ||
+      !values?.productSize ||
       !values?.sellProductPrice ||
       !values?.stockStatus ||
       !values?.productQuantity ||
@@ -521,7 +525,7 @@ const AddProducts = () => {
 
     setProductAllVariants((prev) => [...prev, data]);
     form.resetFields([
-      "dairyFarmWeight",
+      "productSize",
       "sellProductPrice",
       "stockStatus",
       "productQuantity",
@@ -753,13 +757,13 @@ const AddProducts = () => {
                     }
                   >
                     <Row gutter={16}>
-                      <Col span={24}>
+                      <Col span={12}>
                         <Form.Item
                           className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
-                          name={"actualproductPrice"}
+                          name={"actualproductPrice1kg"}
                           label={
                             <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
-                              Product Actual Price
+                              Product Actual Price 1kg
                             </span>
                           }
                           rules={[
@@ -768,6 +772,34 @@ const AddProducts = () => {
                               message: (
                                 <span className="text-[8px] xs:text-[10px] mb-1!">
                                   Please enter product actual price
+                                </span>
+                              ),
+                            },
+                          ]}
+                        >
+                          <InputNumber
+                            className="[&_.ant-input-number-input]:placeholder:text-[8px] md:[&_.ant-input-number-input]:placeholder:text-[14px]"
+                            placeholder="Enter product actual price"
+                            type="number"
+                            style={{ width: "100%" }}
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          className="[&_.ant-form-item-label]:pb-0! md:[&_.ant-form-item-label]:pb-3! mb-1.5! sm:mb-2! md:mb-5!"
+                          name={"productSellPrice1kg"}
+                          label={
+                            <span className="font-Poppins text-[8px] xs:text-[10px] sm:text-[12px] md:text-[14px]">
+                              Product Sell Price 1kg
+                            </span>
+                          }
+                          rules={[
+                            {
+                              required: true,
+                              message: (
+                                <span className="text-[8px] xs:text-[10px] mb-1!">
+                                  Please enter product sell price
                                 </span>
                               ),
                             },
@@ -963,12 +995,12 @@ const AddProducts = () => {
                               </span>
                             </div>
                           }
-                          name={"dairyFarmWeight"}
+                          name={"productSize"}
                         >
                           <Select
                             placeholder={
                               <span className="text-[8px] md:text-[14px]">
-                                Select weight
+                                Select weight size
                               </span>
                             }
                             showSearch={false}

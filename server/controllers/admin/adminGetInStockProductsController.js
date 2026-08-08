@@ -1,15 +1,18 @@
 const { pool } = require("../../database/db");
 
 const adminGetInStockProductsController = async (req, res) => {
-  
-
   try {
- if(Object.keys(req?.query)?.length==0 || !req?.query || !req?.query?.stockStatus ){
-        return res?.json({status:500,message:"please send valid data"})
-       }
+    if (
+      Object.keys(req?.query)?.length == 0 ||
+      !req?.query ||
+      !req?.query?.stockStatus
+    ) {
+      return res?.json({ status: 500, message: "please send valid data" });
+    }
 
-    const result = await await pool.query(`
-            SELECT products.id,product_name,sellproduct_price,product_category,stock_status,
+    const result = await await pool.query(
+      `
+            SELECT products.id,product_name,sellproduct_price_1kg,product_category,
             json_agg(json_build_object(
             'media.id',products_media.id,
              'products_id',products_media.products_id,
@@ -20,11 +23,18 @@ const adminGetInStockProductsController = async (req, res) => {
             'format',products_media.format,
             'original_filename',products_media.original_filename)) AS media FROM products 
             LEFT JOIN products_media ON products.id=products_media.products_id
-            WHERE products.stock_status =$1
+            WHERE EXISTS (
+              SELECT 1
+             FROM products_variants 
+             WHERE products_variants.products_id = products.id
+            AND products_variants.stock_status = $1
+              )
               GROUP BY
-        products.id,
-        product_name,sellproduct_price,product_category,stock_status
-            `,[req?.query?.stockStatus]);
+            products.id,
+             product_name,sellproduct_price_1kg,product_category
+            `,
+      [req?.query?.stockStatus],
+    );
 
     if (result?.rows?.length < 1) {
       return res.send({ status: 400, message: "No product found" });

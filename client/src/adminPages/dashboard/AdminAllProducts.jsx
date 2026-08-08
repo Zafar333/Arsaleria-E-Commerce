@@ -188,7 +188,7 @@ const AdminAllProducts = () => {
     try {
       setPageLoading(true);
       const response = await fetch(
-        `${DevelopmentBaseUrl}${adminEndpoints?.getOutofStockProducts}?stockStatus=UnAvailable`,
+        `${DevelopmentBaseUrl}${adminEndpoints?.getOutofStockProducts}?stockStatus=Available`,
         {
           method: "GET",
           headers: {
@@ -341,7 +341,7 @@ const AdminAllProducts = () => {
                     </p>
                     <div className="mt-[10px] grid grid-cols-3 items-center justify-center">
                       <p className="font-Poppins text-[18px] text-textLightGray text-end">
-                        {prod?.sellproduct_price}
+                        {prod?.sellproduct_price_1kg}
                       </p>
                       <p className="flex justify-center items-center">|</p>
                       <p className="  ">

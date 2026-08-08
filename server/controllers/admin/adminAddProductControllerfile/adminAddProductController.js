@@ -3,7 +3,7 @@ const cloudinary = require("../../../configFiles/cloudinaryCloudConfig");
 
 const adminAddProductController = async (req, res) => {
   const getDdata = req?.body;
-  // console.log("bodydata",)
+  console.log("bodydata", req?.body);
   // console.log("media", getDdata[0]?.files);
   // console.log("bodydata", getDdata[1]);
 
@@ -18,18 +18,16 @@ const adminAddProductController = async (req, res) => {
     }
     if (
       getDdata[0]?.files?.length > 0 &&
+      getDdata[2]?.productsVariants?.length > 0 &&
       getDdata[1]?.productName &&
-      getDdata[1]?.actualproductPrice &&
-      getDdata[1]?.dairyFarmUnit &&
-      getDdata[1]?.dairyFarmWeight &&
+      getDdata[1]?.actualproductPrice1kg &&
+      getDdata[1]?.productSellPrice1kg &&
       getDdata[1]?.deliveryType &&
       getDdata[1]?.productDescription &&
-      getDdata[1]?.sellProductPrice &&
-      getDdata[1]?.productQuantity!=null &&
-      getDdata[1]?.stockStatus &&
       getDdata[1]?.productCategory
     ) {
       // add product data insert query transaction is satart from here
+
       await client.query("BEGIN");
 
       // 1. Insert product in products table
@@ -37,47 +35,40 @@ const adminAddProductController = async (req, res) => {
     INSERT INTO products
     (
       product_name,
-      actualproduct_price,
+      actualproduct_price_1kg,
+      sellproduct_price_1kg,
       dairyfarm_expiryDate,
       dairyfarm_material,
-      dairyfarm_unit,
-      dairyfarm_weight,
       delivery_charges,
       delivery_type,
       productbrand_name,
       product_description,
       product_discount,
-      sellproduct_price,
       productpromo_code,
-      product_quantity,
-      sku,
-      stock_status,
       product_category
     )
-    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+    VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
     RETURNING id;
   `;
       const productValues = [
         getDdata[1]?.productName,
-        getDdata[1]?.actualproductPrice,
+        getDdata[1]?.actualproductPrice1kg,
+        getDdata[1]?.productSellPrice1kg,
         getDdata[1]?.dairyFarmExpiryDate,
         getDdata[1]?.dairyFarmMaterial,
-        getDdata[1]?.dairyFarmUnit,
-        getDdata[1]?.dairyFarmWeight,
         getDdata[1]?.deliveryCharges,
         getDdata[1]?.deliveryType,
         getDdata[1]?.productBrandName,
         getDdata[1]?.productDescription,
         getDdata[1]?.productDiscount,
-        getDdata[1]?.sellProductPrice,
         getDdata[1]?.productPromoCode,
-        getDdata[1]?.productQuantity,
-        getDdata[1]?.sku,
-        getDdata[1]?.stockStatus,
-        getDdata[1]?.productCategory
+        getDdata[1]?.productCategory,
       ];
       // add product data insert query transaction is end here
       const productResult = await client.query(productQuery, productValues);
+
+      //////
+
       if (productResult?.rows?.length > 0) {
         // console.log("productresult", productResult)
 
@@ -106,20 +97,64 @@ const adminAddProductController = async (req, res) => {
         // console.log("placeholder",placeholders)
 
         const mediaQuery = `
-        INSERT INTO products_media
-        (
-      products_id,
-      asset_folder,
-      secure_url,
-      public_id,
-      resource_type,
-      format,
-      original_filename
-    )
-      VALUES ${placeholders.join(",")}
-  `;
+            INSERT INTO products_media
+            (
+          products_id,
+          asset_folder,
+          secure_url,
+          public_id,
+          resource_type,
+          format,
+          original_filename
+        )
+          VALUES ${placeholders.join(",")}
+      `;
 
         const dat = await client.query(mediaQuery, values);
+
+        // add products variant in productsVarient table query is stat from here
+
+        // 2. Insert add productsVarient
+        const valu = [];
+        const placeholder = [];
+
+        getDdata[2]?.productsVariants?.forEach((medias, ind) => {
+          const strt = ind * 7;
+
+          placeholder.push(
+            `($${strt + 1}, $${strt + 2}, $${strt + 3}, $${strt + 4}, $${strt + 5},$${strt + 6},$${strt + 7})`,
+          );
+
+          valu.push(
+            productResult?.rows[0]?.id,
+            medias?.productSize,
+            medias?.dairyFarmUnit,
+            medias?.productQuantity,
+            medias?.sellProductPrice,
+            medias?.stockStatus,
+            medias?.sku,
+          );
+        });
+        // console.log("values",values)
+        // console.log("placeholder",placeholders)
+
+        const productsVariantQuery = `
+            INSERT INTO products_variants
+            (
+          products_id,
+          product_size,
+          dairyfarm_unit,
+          product_quantity,
+          sellproduct_price,
+          stock_status,
+          sku
+        )
+          VALUES ${placeholder.join(",")}
+      `;
+
+        const prodVariant = await client.query(productsVariantQuery, valu);
+
+        // add products variant in products varient table query is stat from here
 
         // 3. Commit transaction
         await client.query("COMMIT");
@@ -129,6 +164,8 @@ const adminAddProductController = async (req, res) => {
           message: "product uploaded sucessfully",
         });
       }
+
+      /////////
     } else {
       return res.json({
         status: 500,

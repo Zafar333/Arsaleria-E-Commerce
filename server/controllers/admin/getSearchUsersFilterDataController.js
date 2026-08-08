@@ -1,7 +1,7 @@
 const { pool } = require("../../database/db");
 
 const getSearchUsersFilterDataController = async (req, res) => {
-//    return console.log("getSearchCustomersFilterDataController here",req?.query?.name)
+  //    return console.log("getSearchCustomersFilterDataController here",req?.query?.name)
   try {
     if (
       Object.keys(req?.query)?.length == 0 ||
@@ -11,15 +11,16 @@ const getSearchUsersFilterDataController = async (req, res) => {
       return res?.json({ status: 500, message: "please send valid data" });
     }
 
-    const result=await pool.query(`SELECT id,key,name,email,TO_CHAR(created_date, 'DD-MM-YYYY') AS created_date
+    const result = await pool.query(
+      `SELECT id,key,name,email,TO_CHAR(created_date, 'DD-MM-YYYY') AS created_date
         FROM users
         WHERE name ILIKE $1          
-        `,[ `${req?.query?.name}%`]);
-
-
+        `,
+      [`${req?.query?.name}%`],
+    );
 
     if (result?.rows?.length < 1) {
-      return res.json({ status: 400, message: "No Customer found" });
+      return res.json({ status: 400, message: "No User found" });
     }
     return res.json({ status: 200, data: result?.rows });
   } catch (error) {

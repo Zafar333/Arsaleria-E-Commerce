@@ -1,9 +1,6 @@
 const { pool } = require("../../database/db");
 
 const adminGetAllProductsController = async (req, res) => {
-  
- 
-
   try {
     // this is the normal quer tro get data from both table but through this approach each product repeated dat for each row
     // const result = await await pool.query(`
@@ -14,9 +11,8 @@ const adminGetAllProductsController = async (req, res) => {
     //     `)
     // this is the normal quer tro get data from both table but through this approach each product repeated dat for each row end here
 
-
     const result = await await pool.query(`
-            SELECT products.id,product_name,sellproduct_price,product_category,stock_status,
+            SELECT products.id,product_name,sellproduct_price_1kg,product_category,
             json_agg(json_build_object(
             'media.id',products_media.id,
              'products_id',products_media.products_id,
@@ -29,7 +25,7 @@ const adminGetAllProductsController = async (req, res) => {
             LEFT JOIN products_media ON products.id=products_media.products_id
               GROUP BY
         products.id,
-        product_name,sellproduct_price,product_category,stock_status
+        product_name,sellproduct_price_1kg,product_category
             `);
 
     if (result?.rows?.length < 1) {
@@ -37,7 +33,7 @@ const adminGetAllProductsController = async (req, res) => {
     }
     return res.send({ status: 200, data: result?.rows });
   } catch (error) {
-    console.log("errors", error?.message);
+    console.log("adminGetAllProductsController errors", error?.message);
     res?.send({ status: 500, message: "server error" });
   }
 };
