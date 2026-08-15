@@ -1,12 +1,13 @@
-import { combineReducers,configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 // import filtersReducer from '../features/filters/filtersSlice'
-import cartDetailSlice from "./cartDetailSlice.js"
-import adminDetailSlice from "./adminDetailSlice.js" 
-
+import adminDetailSlice from "./adminDetailSlice.js";
+import cartDetailSlice from "./cartDetailSlice.js";
+import userLoginDetailSlice from "./userLoginDetailSlice.js";
 
 const rootReducer = combineReducers({
-        cartDetailSlice,
-        adminDetailSlice
-})
+  cartDetailSlice,
+  adminDetailSlice,
+  userLoginDetailSlice,
+});
 
-export const store = configureStore({reducer:rootReducer})
+export const store = configureStore({ reducer: rootReducer });
