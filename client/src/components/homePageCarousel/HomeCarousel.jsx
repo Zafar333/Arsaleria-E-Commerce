@@ -1,22 +1,26 @@
-"use client"
-import React from 'react'
-import { Carousel } from 'antd';
-import "./homeCrousel.css"
+"use client";
+import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
+import { Carousel } from "antd";
+import { useEffect } from "react";
+import "./homeCrousel.css";
 
 const HomeCarousel = () => {
- 
+  useEffect(() => {
+    stopLoadingBar();
+  }, []);
+
   return (
-    <Carousel arrows autoplay className=''>
-        <div>
-            <img  className='w-full homeCrousel ' src="./cover4.webp" alt=""  />
-        </div>
-        <div>
-            <img className='w-full homeCrousel  ' src="./cover5.webp" alt=""  />
-        </div>
-        <div>
-            <img className='w-full homeCrousel ' src="./cover6.webp" alt=""  />
-        </div>
-    {/* <div>
+    <Carousel arrows autoplay className="">
+      <div>
+        <img className="w-full homeCrousel " src="./cover4.webp" alt="" />
+      </div>
+      <div>
+        <img className="w-full homeCrousel  " src="./cover5.webp" alt="" />
+      </div>
+      <div>
+        <img className="w-full homeCrousel " src="./cover6.webp" alt="" />
+      </div>
+      {/* <div>
       <h3 style={contentStyle}>1</h3>
     </div>
     <div>
@@ -28,8 +32,8 @@ const HomeCarousel = () => {
     <div>
       <h3 style={contentStyle}>4</h3>
     </div> */}
-  </Carousel>
-  )
-}
+    </Carousel>
+  );
+};
 
-export default HomeCarousel
+export default HomeCarousel;

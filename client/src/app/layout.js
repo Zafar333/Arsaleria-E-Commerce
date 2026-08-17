@@ -1,9 +1,10 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import AuthProvider from "@/authProvider/AuthProvider";
 import ReduxProvider from "@/components/reduxProvider/ReduxProvider";
+import { Geist, Geist_Mono } from "next/font/google";
+import "nprogress/nprogress.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,12 +28,13 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="">
-         <ReduxProvider>
-        <AuthProvider>
-          {children}
-      <ToastContainer/>
-      </AuthProvider>
-      </ReduxProvider></body>
+        <ReduxProvider>
+          <AuthProvider>
+            {children}
+            <ToastContainer />
+          </AuthProvider>
+        </ReduxProvider>
+      </body>
     </html>
   );
 }

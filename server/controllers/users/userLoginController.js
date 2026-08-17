@@ -13,9 +13,9 @@ require("dotenv").config();
 const userLogin = async (req, res) => {
   let data = req?.body;
   try {
-    if (Object.keys(req?.body)?.length > 0 && data?.email && data?.password) {
+    if (Object?.keys(req?.body)?.length > 0 && data?.email && data?.password) {
       let result = await pool?.query(
-        `SELECT id, email, password FROM users WHERE email=$1`,
+        `SELECT id,name, email, password FROM users WHERE email=$1`,
         [data?.email],
       );
       //  return console.log("result",result)
@@ -68,7 +68,9 @@ const userLogin = async (req, res) => {
             return res.json({
               status: 200,
               message: "you login successfull",
-              data: result?.rows[0]?.id,
+              id: result?.rows[0]?.id,
+              name: result?.rows[0]?.name,
+              useraccesstoken: accesstoken,
             });
           }
         } else {

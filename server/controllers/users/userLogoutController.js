@@ -1,9 +1,10 @@
-const userLogoutController = async (req, res) => {
-  console.log("user logout controller here");
+const { pool } = require("../../database/db");
 
+const userLogoutController = async (req, res) => {
+  // console.log("id", req?.query);
   try {
     if (
-      Object.keys(req?.query)?.length == 0 ||
+      Object?.keys(req?.query)?.length == 0 ||
       !req?.query?.userLogout ||
       !req?.query?.id
     ) {
@@ -21,6 +22,7 @@ const userLogoutController = async (req, res) => {
     if (result?.rowCount.length == 0) {
       return res.json({ status: 500, message: "server error" });
     }
+
     await res.clearCookie("userAccessToken", {
       httpOnly: true,
       secure: false,

@@ -1,11 +1,11 @@
 @config "../../tailwind.config.js";
+@import "nprogress/nprogress.css";
 
 @import "tailwindcss";
 
-
-*,body{
-    box-sizing: border-box;
-    /* margin:0; */
-    /* padding: 0; */
-
+*,
+body {
+  box-sizing: border-box;
+  /* margin:0; */
+  /* padding: 0; */
 }

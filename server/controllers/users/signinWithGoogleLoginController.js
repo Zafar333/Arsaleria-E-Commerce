@@ -44,7 +44,7 @@ const signinWithGoogleLoginController = async (req, res) => {
 
     // 2. Check user in DB
     let user = await client.query(
-      "SELECT id, email FROM users WHERE email=$1",
+      "SELECT id,name,email FROM users WHERE email=$1",
       [email],
     );
 
@@ -72,8 +72,9 @@ const signinWithGoogleLoginController = async (req, res) => {
       if (data?.rowCount == 0) {
         return res.json({ status: 500, message: "server error" });
       }
-
+      await client.query("COMMIT");
       // 4. Set secure cookies
+
       res.cookie("userRefreshtoken", refreshtoken, {
         httpOnly: true, // prevent XSS attacks
         secure: false, // true in production (HTTPS)
@@ -86,9 +87,11 @@ const signinWithGoogleLoginController = async (req, res) => {
         sameSite: "lax", // CSRF protection
         // maxAge: 24 * 60 * 60 * 1000 // 1 day
       });
-      await client.query("COMMIT");
       return res.json({
         status: 200,
+        id: user?.rows[0]?.id,
+        name: user?.rows[0]?.name,
+        useraccesstoken: accesstoken,
         message: "user login succesfully",
       });
     }
@@ -139,6 +142,9 @@ const signinWithGoogleLoginController = async (req, res) => {
     await client.query("COMMIT");
     return res.json({
       status: 200,
+      id: user?.rows[0]?.id,
+      name: user?.rows[0]?.name,
+      useraccesstoken: accesstoken,
       message: "user login succesfully",
     });
   } catch (error) {
