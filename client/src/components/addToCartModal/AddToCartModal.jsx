@@ -8,6 +8,7 @@ import {
   startLoadingBar,
   stopLoadingBar,
 } from "@/topLoadingBarComponent/TopLoadingBarComponent";
+import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Space } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,6 +24,7 @@ const AddToCartModal = () => {
   const navigate = useRouter();
   const cartData = useSelector((state) => state.cartDetailSlice.cartdetail);
   const tot = useSelector((state) => state.cartDetailSlice.grandTotal);
+  const [btnLoader, setBtnLoader] = useState(false);
 
   const [cartItems, setCartItems] = useState([
     {
@@ -65,6 +67,7 @@ const AddToCartModal = () => {
   useEffect(() => {
     dispatch(setCartDetailDispatch(cartItems));
     grandTotalFun();
+    stopLoadingBar();
   }, []);
 
   useEffect(() => {
@@ -142,7 +145,7 @@ const AddToCartModal = () => {
         });
         let grandtotal = totalRupees + Number(cartData[0]?.deliveryCharges);
         dispatch(setDispatchGrandTotal(grandtotal));
-        console.log("fun call");
+        // console.log("fun call");
         settotal(grandtotal);
         return grandtotal;
       }
@@ -154,9 +157,10 @@ const AddToCartModal = () => {
 
   //  gotoCartPageFun is start from here
   const gotoCartPageFun = () => {
+    setBtnLoader(true);
     dispatch(setAddToCartModalDispatch(false));
     startLoadingBar();
-    navigate.push("/cart/2");
+    navigate.push("/checkout/2");
   };
   //  gotoCartPageFun is end here
 
@@ -232,19 +236,28 @@ const AddToCartModal = () => {
 
         <div className="w-full flex flex-col gap-[10px] bg-lightGreen px-[10px] py-[30px] absolute left-0 bottom-0 ">
           <div className="flex justify-between">
-            <p className="font-Poppins text-[20px] text-darkGreen font-bold">
+            <p className="font-Poppins text-[15px] md:text-[20px] text-darkGreen font-bold">
               SUBTOTAL:
             </p>
-            <p className="font-Poppins text-[20px] text-darkGreen font-bold">
+            <p className="font-Poppins text-[18] md:text-[20px] text-darkGreen font-bold">
               {tot}
             </p>
           </div>
-          <Button
-            className="py-[20px] text-[18px] font-Poppins bg-darkGreen w-full text-lightGreen"
-            onClick={gotoCartPageFun}
-          >
-            CHECKOUT
-          </Button>
+          {btnLoader == false ? (
+            <Button
+              className="py-[16px]! md:py-[18px]! text-[14px]! md:text-[16px]! font-Poppins! bg-darkGreen! w-full text-lightGreen!"
+              onClick={gotoCartPageFun}
+            >
+              CHECKOUT
+            </Button>
+          ) : (
+            <Button
+              type="primary"
+              className="w-full bg-darkGreen! py-[16px]! md:py-[18px]! hover:bg-darkGreen! focus:bg-darkGreen! active:bg-darkGreen!"
+            >
+              <LoadingOutlined className="text-lightGreen! text-[24px]!" spin />
+            </Button>
+          )}
         </div>
       </div>
     </Drawer>

@@ -30,6 +30,7 @@ import UserSignup from "../userSignupModal/UserSignup";
 // };
 const Header = ({ token }) => {
   const { data: session, status } = useSession();
+  const adminLoginDetailState = useSelector((state) => state?.adminDetailSlice);
   const userLoginDetailState = useSelector(
     (state) => state?.userLoginDetailSlice,
   );
@@ -62,6 +63,7 @@ const Header = ({ token }) => {
   //     // dispatch(setUserLoginDetailDispatch({}));
   //   }
   // }, [session, status, dispatch]);
+
   // set user signinwithgoogle login detail in reduxtoolkit after login is end here
 
   useEffect(() => {
@@ -97,7 +99,7 @@ const Header = ({ token }) => {
   // gotoLoginPage fun is satrt from here
   const gotoLoginPageFun = () => {
     startLoadingBar();
-    navigate.replace(`${frontendDevelopmentBaseUrl}/userLogin`);
+    navigate.replace(`/userLogin`);
   };
   // gotoLoginPage fun is end here
 
@@ -119,7 +121,9 @@ const Header = ({ token }) => {
   // gotToAdmin fun is start from here
   const gotToAdmin = () => {
     startLoadingBar();
-    navigate.push("/admin");
+    navigate.push(
+      `/admin?id=${adminLoginDetailState?.adminLoginDetail[0]?.id}`,
+    );
     setHeaderHighlighter([path]);
   };
   // gotToAdmin fun is end
@@ -187,14 +191,14 @@ const Header = ({ token }) => {
           {/* for webView Menu Options is start from here */}
           <div className="hidden md:flex gap-[30px] xl:gap-[50px] items-center">
             <Link
-              href={`${frontendDevelopmentBaseUrl}/`}
+              href={`/`}
               className={`${headerHighlighter[0] == "/" ? "border-b-2 border-darkGreen" : ""} font-Poppins text-[16px] lg:text-[22px] text-darkGreen`}
               onClick={navigateFun}
             >
               Home{" "}
             </Link>
             <Link
-              href={`${frontendDevelopmentBaseUrl}/allProducts`}
+              href={`/allProducts`}
               className={`${headerHighlighter[0] == "/allProducts" ? "border-b-2 border-darkGreen" : ""} font-Poppins text-[16px] lg:text-[22px] text-darkGreen`}
               onClick={navigateFun}
             >
@@ -249,16 +253,18 @@ const Header = ({ token }) => {
           </div>
           {/* for webView Menu Options is end here */}
 
+          {/* for mobile view menu options is start from here */}
+
           {/* mobile view menu icon is start from here */}
-          <div
-            className="flex items-center gap-[10px] xs:gap-[20px] md:hidden"
-            onClick={openSideBar}
-          >
+          <div className="flex items-center gap-[10px] xs:gap-[20px] md:hidden">
             <BsCart3
-              className="text-[20px] xs:text-[23px] text-darkGreen cursor-pointer"
+              className="cursor-pointer text-[20px] xs:text-[23px] text-darkGreen cursor-pointer"
               onClick={openAddToCartModal}
             />
-            <CgMenuRightAlt className="text-[24px] xs:text-[30px] text-darkGreen" />
+            <CgMenuRightAlt
+              onClick={openSideBar}
+              className="cursor-pointer text-[24px] xs:text-[30px] text-darkGreen"
+            />
           </div>
 
           {/* mobile view menu icon is end here */}
@@ -270,14 +276,14 @@ const Header = ({ token }) => {
       >
         <div className="flex flex-col md:hidden gap-[20px] items-center  ">
           <Link
-            href={`${frontendDevelopmentBaseUrl}/`}
+            href={`/`}
             className={`${headerHighlighter[0] == "/" ? "border-b-2 border-lightGreen" : ""} font-Poppins text-[16px] lg:text-[22px] text-lightGreen`}
             onClick={navigateFun}
           >
             Home{" "}
           </Link>
           <Link
-            href={`${frontendDevelopmentBaseUrl}/allProducts`}
+            href={`/allProducts`}
             className={`${headerHighlighter[0] == "/allProducts" ? "border-b-2 border-lightGreen" : ""} font-Poppins text-[16px] lg:text-[22px] text-lightGreen`}
             onClick={navigateFun}
           >
@@ -289,6 +295,12 @@ const Header = ({ token }) => {
             onClick={gotToContactUs}
           >
             Contact Us{" "}
+          </label>
+          <label
+            className={`${headerHighlighter[0] == "/admin" ? "border-b-2 border-lightGreen" : ""} font-Poppins text-[16px] lg:text-[22px] text-lightGreen cursor-pointer`}
+            onClick={gotToAdmin}
+          >
+            Admin
           </label>
 
           {userLoginDetailState &&
@@ -310,7 +322,7 @@ const Header = ({ token }) => {
           )}
         </div>
       </div>
-      {/* for mobile view menu options */}
+      {/* for mobile view menu options is end here */}
 
       <UserLogin
         isLoginModalOpen={isLoginModalOpen}

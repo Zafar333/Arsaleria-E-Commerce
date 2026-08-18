@@ -6,13 +6,7 @@ import {
 } from "@/store/cartDetailSlice.js";
 import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import {
-  Button,
-  Form,
-  Input,
-  Radio,
-  Select
-} from "antd";
+import { Button, Form, Input, Radio, Select } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AiTwotoneDelete } from "react-icons/ai";

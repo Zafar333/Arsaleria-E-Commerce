@@ -1,6 +1,13 @@
 "use client";
+import {
+  startLoadingBar,
+  stopLoadingBar,
+} from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { adminLoginEndpoints } from "@/utils/api/admin/adminLogin";
-import { DevelopmentBaseUrl } from "@/utils/api/main";
+import {
+  DevelopmentBaseUrl,
+  frontendDevelopmentBaseUrl,
+} from "@/utils/api/main";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Spin } from "antd";
 import { useRouter } from "next/navigation";
@@ -13,11 +20,14 @@ import "./adminSignup.css";
 
 const AdminSignup = () => {
   const navigate = useRouter();
+  const [form] = Form.useForm();
+
   const [loading, setLoading] = useState(false);
   const [pageLoading, setpageLoading] = useState(false);
 
   // goToAdminSignupModal is start from here
   const goToAdminLoginModal = () => {
+    startLoadingBar();
     setpageLoading(true);
     navigate.push("/adminLogin");
   };
@@ -29,7 +39,7 @@ const AdminSignup = () => {
     setLoading(true);
     if (values) {
       // console.log('adminSignup:', values);
-      adminLoginFun(values);
+      adminSignupFun(values);
     }
   };
   const onFinishFailed = (errorInfo) => {
@@ -39,9 +49,10 @@ const AdminSignup = () => {
   // logiform functions is end here
 
   // login fun is start from here
-  const adminLoginFun = async (val) => {
+  const adminSignupFun = async (val) => {
     // console.log("signupFun", val);
     try {
+      startLoadingBar();
       const response = await fetch(
         `${DevelopmentBaseUrl}${adminLoginEndpoints?.signup}`,
         {
@@ -50,23 +61,29 @@ const AdminSignup = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(val),
+          cache: "no-store",
         },
       );
 
       // Handle successful response
       const result = await response.json();
       if (result?.status >= 200 && result?.status <= 300) {
+        form.resetFields(null);
+
         setLoading(false);
         setpageLoading(true);
         toast.success(result?.message);
-        navigate.replace("/adminLogin");
+        navigate.replace(`${frontendDevelopmentBaseUrl}/adminLogin`);
       }
       if (result?.status >= 400 && result?.status <= 550) {
+        stopLoadingBar();
         setLoading(false);
         toast?.error(result?.message);
       }
     } catch (error) {
       setLoading(false);
+      stopLoadingBar();
+
       // console.error('Error:', error);
       toast.error("server error");
     }
@@ -85,6 +102,7 @@ const AdminSignup = () => {
             </p>
 
             <Form
+              form={form}
               className=""
               layout="vertical"
               name="basic"
@@ -94,9 +112,9 @@ const AdminSignup = () => {
               wrapperCol={{
                 span: 24,
               }}
-              initialValues={{
-                remember: true,
-              }}
+              // initialValues={{
+              //   remember: true,
+              // }}
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
               autoComplete="off"
@@ -162,14 +180,14 @@ const AdminSignup = () => {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    className="w-full bgClr bg-darkGreen! text-white! text-[18px]! py-[20px]! font-Poppins! hover:bg-darkGreen! focus:bg-darkGreen! active:bg-darkGreen!"
+                    className="w-full bgClr bg-darkGreen! text-white! text-[16px]! md:text-[18px]! py-[16px]! md:py-[20px]! font-Poppins! hover:bg-darkGreen! focus:bg-darkGreen! active:bg-darkGreen!"
                   >
                     SignUp
                   </Button>
                 ) : (
                   <Button
                     type="primary"
-                    className="w-full bg-darkGreen! text-white! text-[18px]! py-[20px]! font-Poppins! hover:bg-darkGreen! focus:bg-darkGreen! active:bg-darkGreen!"
+                    className="w-full bg-darkGreen! text-white! py-[16px]! md:py-[20px]! font-Poppins! hover:bg-darkGreen! focus:bg-darkGreen! active:bg-darkGreen!"
                   >
                     <LoadingOutlined
                       className="text-lightGreen text-[24px]"

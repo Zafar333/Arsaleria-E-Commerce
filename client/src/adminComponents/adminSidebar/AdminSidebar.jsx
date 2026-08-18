@@ -72,7 +72,7 @@ const AdminSidebar = ({ openSidebar, setOpensSidebar }) => {
   //  adminlogout fun is end here
 
   const gotoNavigatePageFun = (val) => {
-    console.log("color", val);
+    // console.log("color", val);
     setsidebarstate(val);
     if (val == "admin") {
       router?.replace(

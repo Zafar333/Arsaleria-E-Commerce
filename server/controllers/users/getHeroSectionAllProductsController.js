@@ -1,16 +1,8 @@
 const { pool } = require("../../database/db");
 
-const adminGetAllProductsController = async (req, res) => {
+const getHeroSectionAllProductsController = async (req, res) => {
+  //   console.log("getHeroSectionAllProductsController here");
   try {
-    // this is the normal quer tro get data from both table but through this approach each product repeated dat for each row
-    // const result = await await pool.query(`
-    //     SELECT products.id,product_name,sellproduct_price,product_category,stock_status,products_media.id,
-    //     products_media.products_id,products_media.asset_folder,products_media.public_id,products_media.secure_url,
-    //     products_media.resource_type,products_media.format,products_media.original_filename FROM products
-    //     LEFT JOIN products_media ON products.id=products_media.products_id
-    //     `)
-    // this is the normal quer tro get data from both table but through this approach each product repeated dat for each row end here
-
     const result = await pool.query(`
             SELECT products.id,product_name,sellproduct_price_1kg,product_category,
             json_agg(json_build_object(
@@ -31,10 +23,12 @@ const adminGetAllProductsController = async (req, res) => {
     if (result?.rows?.length < 1) {
       return res.send({ status: 400, message: "no product found" });
     }
+    // console.log("data", result?.rows);
     return res.send({ status: 200, data: result?.rows });
   } catch (error) {
-    console.log("adminGetAllProductsController errors", error?.message);
+    console.log("getHeroSectionAllProductsController errors", error?.message);
     res?.send({ status: 500, message: "server error" });
   }
 };
-module.exports = { adminGetAllProductsController };
+
+module.exports = { getHeroSectionAllProductsController };

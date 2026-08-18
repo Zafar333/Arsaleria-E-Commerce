@@ -7,9 +7,14 @@ import HomeCarousel from "@/components/homePageCarousel/HomeCarousel";
 import OurProducts from "@/components/ourProducts/OurProducts";
 
 import Link from "next/link";
+// import { useState } from "react";
 
-const Home = () => {
+const Home = ({ heroSectionAllProducts }) => {
+  // const [allProductsData, setAllProducts] = useState([]);
   // const router = useRouter();
+  // useEffect(()=>{
+  //   setAllProducts(heroSectionAllProducts)
+  // },[heroSectionAllProducts])
 
   return (
     <div className="max-w-[1400px] mx-auto">
@@ -21,7 +26,7 @@ const Home = () => {
 
       {/* Best SellerSection is Start from here */}
       <div className="mt-[100px]">
-        <p className="font-Roboto text-[40px] md:text-[64px] text-darkGreen text-center">
+        <p className="font-Roboto text-[40px] md:text-[50px] text-darkGreen text-center">
           Best Selling
         </p>
         {/* card Container*/}
@@ -117,7 +122,7 @@ const Home = () => {
         <div className="flex justify-center mt-[80px]">
           <Link
             href={"#"}
-            className="py-[10px] px-[60px] rounded-sm border border-darkGreen text-[22px] font-Poppins"
+            className="py-[10px] px-[60px] rounded-sm bg-lightGreen text-[22px] font-Poppins"
           >
             See All
           </Link>
@@ -127,7 +132,7 @@ const Home = () => {
 
       {/* our all Products Section is start from here */}
       <div className="mt-[100px]">
-        <OurProducts />
+        <OurProducts heroSectionAllProducts={heroSectionAllProducts} />
       </div>
       {/* our Products Section is end here */}
 

@@ -124,8 +124,8 @@ const UserSignupPageComponent = () => {
 
       <div className="px-2 sm:px-5 md:px-10 lg:px-20 py-14 [@media(min-height:700px)]:py-24 bg-gray-50 shadow-md">
         <div className="text-center mt-2 mb-8">
-          <p className="text-[25px] sm:text-[30px] md:text-[40px] font-Poppins text-darkGreen ">
-            SIGNUP
+          <p className="text-[18px] sm:text-[25px] md:text-[30px] font-Poppins text-darkGreen ">
+            USER SIGNUP
           </p>
         </div>
         <Form

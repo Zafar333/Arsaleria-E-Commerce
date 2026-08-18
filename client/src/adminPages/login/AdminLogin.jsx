@@ -76,6 +76,7 @@ const AdminLogin = () => {
           },
           credentials: "include",
           body: JSON.stringify(val),
+          cache: "no-store",
         },
       );
 
