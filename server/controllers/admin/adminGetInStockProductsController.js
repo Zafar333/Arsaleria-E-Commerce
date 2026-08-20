@@ -10,7 +10,7 @@ const adminGetInStockProductsController = async (req, res) => {
       return res?.json({ status: 500, message: "please send valid data" });
     }
 
-    const result = await await pool.query(
+    const result = await pool.query(
       `
             SELECT products.id,product_name,sellproduct_price_1kg,product_category,
             json_agg(json_build_object(

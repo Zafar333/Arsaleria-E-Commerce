@@ -3,7 +3,7 @@ const cloudinary = require("../../../configFiles/cloudinaryCloudConfig");
 
 const adminAddProductController = async (req, res) => {
   const getDdata = req?.body;
-  console.log("bodydata", req?.body);
+  // console.log("bodydata", req?.body);
   // console.log("media", getDdata[0]?.files);
   // console.log("bodydata", getDdata[1]);
 

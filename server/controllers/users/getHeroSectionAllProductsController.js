@@ -2,8 +2,10 @@ const { pool } = require("../../database/db");
 
 const getHeroSectionAllProductsController = async (req, res) => {
   //   console.log("getHeroSectionAllProductsController here");
+  const limit = 10;
   try {
-    const result = await pool.query(`
+    const result = await pool.query(
+      `
             SELECT products.id,product_name,sellproduct_price_1kg,product_category,
             json_agg(json_build_object(
             'media.id',products_media.id,
@@ -15,10 +17,20 @@ const getHeroSectionAllProductsController = async (req, res) => {
             'format',products_media.format,
             'original_filename',products_media.original_filename)) AS media FROM products 
             LEFT JOIN products_media ON products.id=products_media.products_id
+            WHERE EXISTS (
+              SELECT 1
+             FROM products_variants 
+             WHERE products_variants.products_id = products.id
+            AND products_variants.stock_status = $1
+              )
               GROUP BY
         products.id,
         product_name,sellproduct_price_1kg,product_category
-            `);
+        ORDER BY created_dat DESC
+        LIMIT $2
+            `,
+      ["Available", limit],
+    );
 
     if (result?.rows?.length < 1) {
       return res.send({ status: 400, message: "no product found" });
