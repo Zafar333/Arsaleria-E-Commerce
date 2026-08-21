@@ -329,7 +329,7 @@ const AddProducts = () => {
       // });
 
       // Append all images/videos
-      console.log("total selectedfiles", totalSelectedFiles);
+      // console.log("total selectedfiles", totalSelectedFiles);
 
       // Send request to backend create a digital signature of cloudinary start here
       const res = await fetch(
@@ -386,7 +386,7 @@ const AddProducts = () => {
           }
 
           const content = await response?.json();
-          console.log("content", content);
+          // console.log("content", content);
           if (response?.ok) {
             temporaryUploadeFiles?.push({
               original_filename: content?.original_filename,
@@ -1369,7 +1369,7 @@ const AddProducts = () => {
                         </Button>
                       ) : (
                         <Button
-                          className="bg-darkGreen! text-white! font-Poppins"
+                          className="bg-darkGreen! text-lightGreen! font-Poppins"
                           type="primary"
                           loading
                           block

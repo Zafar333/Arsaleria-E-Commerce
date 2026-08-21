@@ -1,12 +1,12 @@
-const cloudinary = require("../../../configFiles/cloudinaryCloudConfig");
+const cloudinary = require("../../configFiles/cloudinaryCloudConfig");
 const { randomUUID } = require("crypto");
 require("dotenv").config();
 
-const adminGeneratePreSignedUrlAddProductController = async (req, res) => {
+const adminGeneratePreSignedUrlHomeCarouselImgController = async (req, res) => {
   try {
     const productId = randomUUID();
     const timestamp = Math.round(new Date().getTime() / 1000);
-    let folder = `DairyFarmMedia/products/file${productId}`;
+    let folder = `DairyFarmMedia/homeCrouselImgs/file${productId}`;
 
     const signature = cloudinary.utils.api_sign_request(
       {
@@ -15,7 +15,7 @@ const adminGeneratePreSignedUrlAddProductController = async (req, res) => {
       },
       process.env.CLOUDINARY_API_SECRET,
     );
-    // return console.log("signature",signature)
+    // console.log("signature", signature);
     if (signature) {
       return res.json({
         status: 200,
@@ -37,4 +37,4 @@ const adminGeneratePreSignedUrlAddProductController = async (req, res) => {
     return res.json({ status: 500, message: "server error" });
   }
 };
-module.exports = { adminGeneratePreSignedUrlAddProductController };
+module.exports = { adminGeneratePreSignedUrlHomeCarouselImgController };

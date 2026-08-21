@@ -1,4 +1,5 @@
 "use client";
+import { startLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { adminEndpoints } from "@/utils/api/admin/adminEndpoints";
 import {
   DevelopmentBaseUrl,
@@ -73,37 +74,31 @@ const AdminSidebar = ({ openSidebar, setOpensSidebar }) => {
 
   const gotoNavigatePageFun = (val) => {
     // console.log("color", val);
+    startLoadingBar();
     setsidebarstate(val);
     if (val == "admin") {
-      router?.replace(
-        `${frontendDevelopmentBaseUrl}/admin?id=${queryparams?.id}`,
-      );
+      router?.replace(`/admin?id=${queryparams?.id}`);
     }
     if (val == "addProducts") {
-      router?.replace(
-        `${frontendDevelopmentBaseUrl}/admin/addProducts?id=${queryparams?.id}`,
-      );
+      router?.replace(`/admin/addProducts?id=${queryparams?.id}`);
     }
     if (val == "allProducts") {
-      router?.replace(
-        `${frontendDevelopmentBaseUrl}/admin/allProducts?id=${queryparams?.id}`,
-      );
+      router?.replace(`/admin/allProducts?id=${queryparams?.id}`);
     }
     if (val == "home") {
-      router?.replace(`${frontendDevelopmentBaseUrl}`);
+      router?.replace(`/`);
     }
     if (val == "logout") {
       return adminlogoutfunapi();
     }
     if (val == "orders") {
-      router?.replace(
-        `${frontendDevelopmentBaseUrl}/admin/orders?id=${queryparams?.id}`,
-      );
+      router?.replace(`/admin/orders?id=${queryparams?.id}`);
     }
     if (val == "allUsers") {
-      router?.replace(
-        `${frontendDevelopmentBaseUrl}/admin/allUsers?id=${queryparams?.id}`,
-      );
+      router?.replace(`/admin/allUsers?id=${queryparams?.id}`);
+    }
+    if (val == "adminHomeCarousel") {
+      router?.replace(`/admin/adminHomeCarousel?id=${queryparams?.id}`);
     }
   };
 
@@ -142,6 +137,12 @@ const AdminSidebar = ({ openSidebar, setOpensSidebar }) => {
             onClick={() => gotoNavigatePageFun("addProducts")}
           >
             Add Product{" "}
+          </span>
+          <span
+            className={`${sidebarstate == "adminHomeCarousel" ? "bg-lightGreen text-darkGreen " : "text-lightGreen"} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer`}
+            onClick={() => gotoNavigatePageFun("adminHomeCarousel")}
+          >
+            Home Carousel{" "}
           </span>
           <span
             className={`${sidebarstate == "allProducts" ? "bg-lightGreen text-darkGreen " : "text-lightGreen"} px-5 py-1 text-[14px] md:text-[17px]  font-Poppins hover:text-darkGreen hover:bg-lightGreen cursor-pointer `}
