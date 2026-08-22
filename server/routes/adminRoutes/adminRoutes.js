@@ -62,12 +62,20 @@ const {
 const {
   adminGetAllProductsController,
 } = require("../../controllers/admin/adminGetAllProductsController");
-const {
-  adminGeneratePreSignedUrlHomeCarouselImgController,
-} = require("../../controllers/admin/adminGeneratePreSignedUrlHomeCarouselImgController");
+
 const {
   adminDeleteHalfUploadedHomeCarouselImgCloudinaryController,
 } = require("../../controllers/admin/adminDeleteHalfUploadedHomeCarouselImgCloudinaryController");
+const {
+  adminGeneratePreSignedUrlHomeCarouselImgController,
+} = require("../../controllers/admin/adminUploadHomeCarouselImgController/adminGeneratePreSignedUrlHomeCarouselImgController");
+const {
+  adminUploadHomeCarouselImgController,
+} = require("../../controllers/admin/adminUploadHomeCarouselImgController/adminUploadHomeCarouselImgController");
+const {
+  admiGetAllHomeCarouselImgsController,
+} = require("../../controllers/admin/admiGetAllHomeCarouselImgsController");
+
 const router = express.Router();
 
 // admin login routes start here
@@ -171,19 +179,31 @@ router.delete(
 );
 // /adminDeleteProduct route is end here
 
-// backendGeneratePresignedSignatureCloudinary homeCarousel route is start from here
+//adminHomeCarousel  route is start from here
+
+// presigned route
 router.get(
   "/GenetatePreSignedSignatureHomeCarouselImg",
   checkAdminJwtToken,
   adminGeneratePreSignedUrlHomeCarouselImgController,
 );
-// backendGeneratePresignedSignatureCloudinary homeCarousel route is start from here
+// saveimgs url in db route
+router.post(
+  "/uploadHomeCarouselImg",
+  checkAdminJwtToken,
+  adminUploadHomeCarouselImgController,
+);
 
-// backendGeneratePresignedSignatureCloudinary homeCarousel route is start from here
 router.post(
   "/adminDeleteHalfFailFileHomeCarouselImgFromCloudinary",
   adminDeleteHalfUploadedHomeCarouselImgCloudinaryController,
 );
-// backendGeneratePresignedSignatureCloudinary homeCarousel route is end here
+router.get(
+  "/getAllHomeCarouselImgs",
+  checkAdminJwtToken,
+  admiGetAllHomeCarouselImgsController,
+);
+
+//adminHomeCarousel  route is end here
 
 module.exports = router;

@@ -9,6 +9,7 @@ import { InboxOutlined } from "@ant-design/icons";
 import { Button, Upload, message } from "antd";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { toast } from "react-toastify";
@@ -16,11 +17,16 @@ import { toast } from "react-toastify";
 const { Dragger } = Upload;
 
 const AdminHomeCarousel = () => {
+  const router = useRouter();
   const [pageLoading, setPageLoading] = useState(false);
   const [temporaryUploadeFiles, setTemporaryUploadeFiles] = useState([]);
 
   const [btnLoader, setBtnLoader] = useState(false);
   const [totalSelectedFiles, setTotalSelectedFiles] = useState([]);
+
+  useEffect(() => {
+    stopLoadingBar();
+  }, []);
 
   // deleteProductFunApi is start from here
   const deleteProductFunApi = async (prodId, mediaAsset_folder) => {
@@ -93,9 +99,50 @@ const AdminHomeCarousel = () => {
   };
 
   // handleChangeFiles fun onchange is start from here
-  useEffect(() => {
-    console.log("total selected files", totalSelectedFiles);
-  }, [totalSelectedFiles]);
+
+  // getAllHomeCarouselImgsFunApi is start from here
+  const getAllHomeCarouselImgsFunApi = async () => {
+    try {
+      setPageLoading(true);
+      startLoadingBar();
+      const res = await fetch(
+        `${DevelopmentBaseUrl}${adminEndpoints?.adminGetAllHomeCarouselImgs}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "no-store",
+        },
+      );
+
+      const result = await res.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        stopLoadingBar();
+        setPageLoading(false);
+        toast.success(result?.message);
+      }
+
+      if (result?.status == 401) {
+        router.replace("/adminLogin");
+        toast.error(result?.message);
+      }
+      if (
+        (result?.status >= 402 && result?.status <= 550) ||
+        result?.status == 400
+      ) {
+        stopLoadingBar();
+        setPageLoading(false);
+        toast.error(result?.message);
+      }
+    } catch (error) {
+      setPageLoading(false);
+      stopLoadingBar();
+      toast.error("server error");
+    }
+  };
+  // getAllHomeCarouselImgsFunApi is end here
 
   // Send backendGeneratePresignedSignatureCloudinaryFun request to backend create a digital signature of cloudinary start here
   const backendGeneratePresignedSignatureCloudinaryFun = async () => {
@@ -105,6 +152,7 @@ const AdminHomeCarousel = () => {
         {
           method: "GET",
           credentials: "include", // Send cookies with the request
+          cache: "no-store",
         },
       );
       const data = await res.json();
@@ -112,8 +160,6 @@ const AdminHomeCarousel = () => {
       // console.log("data", data);
     } catch (error) {
       setBtnLoader(false);
-      setPageLoading(false);
-
       stopLoadingBar();
       toast.error("server error");
     }
@@ -158,12 +204,66 @@ const AdminHomeCarousel = () => {
 
   // delete fun for half uploaded files from frontend oncloud server so that
   // function delete files from cloud end here
-  // uploadImageFunApi is start from here
-  const uploadImageFunApi = async () => {
+
+  // saveHomeCarouselImgDatabackendFunApi fun is start from here
+  const saveHomeCarouselImgDatabackendFunApi = async (data) => {
+    try {
+      const res = await fetch(
+        `${DevelopmentBaseUrl}${adminEndpoints?.adminUploadHomeCarouselImg}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+          cache: "no-store",
+        },
+      );
+
+      const result = await res.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        getAllHomeCarouselImgsFunApi();
+        setBtnLoader(false);
+        setTotalSelectedFiles([]);
+        setTemporaryUploadeFiles([]);
+        return toast.success(result?.message);
+      }
+
+      if (result?.status == 401) {
+        setBtnLoader(false);
+
+        setPageLoading(true);
+        setTotalSelectedFiles([]);
+        setTemporaryUploadeFiles([]);
+        router.replace("/adminLogin");
+        toast.error(result?.message);
+      }
+      if (
+        (result?.status >= 402 && result?.status <= 550) ||
+        result?.status == 400
+      ) {
+        setBtnLoader(false);
+
+        stopLoadingBar();
+        setTemporaryUploadeFiles([]);
+        toast.error(result?.message);
+      }
+    } catch (error) {
+      setBtnLoader(false);
+
+      setTemporaryUploadeFiles([]);
+      stopLoadingBar();
+      toast.error("server error");
+    }
+  };
+  // saveHomeCarouselImgDatabackendFunApi fun is end here
+
+  // uploadImageCloudinaryFunApi is start from here
+  const uploadImageCloudinaryFunApi = async () => {
     try {
       if (totalSelectedFiles?.length > 0) {
         setBtnLoader(true);
-        setPageLoading(true);
         startLoadingBar();
         // Send request to backend create a digital signature of cloudinary start here
         const checkData =
@@ -172,11 +272,9 @@ const AdminHomeCarousel = () => {
         // Send request to backend create a digital signature of cloudinary end here
 
         if (checkData?.status >= 200 && checkData?.status < 400) {
-          console.log("checkData", checkData);
-          setBtnLoader(false);
-
+          // console.log("checkData", checkData);
+          const formData = new FormData();
           // upload images on cloudinary section start from here
-
           formData.append("file", totalSelectedFiles[0]?.originFileObj);
           formData.append("api_key", checkData?.apiKey);
           formData.append("timestamp", checkData?.timestamp);
@@ -186,39 +284,15 @@ const AdminHomeCarousel = () => {
           // Send request to cloud cloudinary storage save images and video on cloud api start here
 
           const response = await fetch(
-            `${process.env.CLOUDINARY_SERVER_DOMAIN_URL}/${checkData?.cloudName}/image/upload`,
+            `${process.env.NEXT_PUBLIC_CLOUDINARY_SERVER_DOMAIN_URL}/${checkData?.cloudName}/image/upload`,
             {
               method: "POST",
               body: formData,
+              cache: "no-store",
             },
           );
           // Send request to cloud cloudinary storage save images and video on cloud api end here
-          console.log("cloud response", response);
-          if (!response?.ok) {
-            if (temporaryUploadeFiles?.length > 0) {
-              const check = await deleteHalfUploadedProductFileClodinaryFun(
-                temporaryUploadeFiles,
-              );
-              // return console.log("check",check)
-              if (check == "true") {
-                setTemporaryUploadeFiles([]);
-                stopLoadingBar();
-                setBtnLoader(false);
-                return toast.error("server error please upload images again");
-              }
-              if (check == "false") {
-                setTemporaryUploadeFiles([]);
-                stopLoadingBar();
-                setBtnLoader(false);
-                return toast.error("server error please upload images again");
-              }
-            }
-            setTemporaryUploadeFiles([]);
-            stopLoadingBar();
-            setBtnLoader(false);
-            return toast.error("server error please upload product again");
-          }
-
+          // console.log("cloud response", response);
           const content = await response?.json();
           // console.log("content", content);
           if (response?.ok) {
@@ -230,6 +304,14 @@ const AdminHomeCarousel = () => {
               asset_folder: content?.asset_folder,
               format: content?.format,
             });
+            return saveHomeCarouselImgDatabackendFunApi(temporaryUploadeFiles);
+          }
+
+          if (!response?.ok) {
+            setTemporaryUploadeFiles([]);
+            stopLoadingBar();
+            setBtnLoader(false);
+            return toast.error("server error please upload product again");
           }
 
           // upload images on cloudinary section is end here
@@ -238,7 +320,8 @@ const AdminHomeCarousel = () => {
         }
         if (checkData?.status == 401) {
           setBtnLoader(false);
-
+          setTotalSelectedFiles([]);
+          setTemporaryUploadeFiles([]);
           setPageLoading(true);
           router.replace("/adminLogin");
           return toast.error(result?.message);
@@ -248,10 +331,9 @@ const AdminHomeCarousel = () => {
           checkData?.status == 400
         ) {
           setBtnLoader(false);
-
+          setTemporaryUploadeFiles([]);
           stopLoadingBar();
 
-          setPageLoading(false);
           return toast.error(result?.message);
         }
       } else {
@@ -260,13 +342,12 @@ const AdminHomeCarousel = () => {
     } catch (error) {
       stopLoadingBar();
       setBtnLoader(false);
-
-      setPageLoading(false);
+      setTemporaryUploadeFiles([]);
       // console.log(error?.message)
-      return toast.error("hello server error");
+      return toast.error("server error");
     }
   };
-  // uploadImageFunApi is end here
+  // uploadImageCloudinaryFunApi is end here
 
   return (
     <div className="mx-[15px] xs:mx-[80px]  sm:mx-[20px]">
@@ -298,7 +379,7 @@ const AdminHomeCarousel = () => {
           {btnLoader == false ? (
             <Button
               className="w-full bg-darkGreen! text-lightGreen! text-[16px]! mt-[10px]"
-              onClick={uploadImageFunApi}
+              onClick={uploadImageCloudinaryFunApi}
             >
               Save
             </Button>

@@ -34,12 +34,14 @@ const adminEndpoints = {
   adminDeleteProduct: "/admin/adminDeleteProduct",
   // adminDeleteProduct route is end here
 
-  // adminDeleteHomeCarouselImg route is start from here
+  // adminHomeCarouselImg  media route is start from here
   adminGenetatePreSignedSignatureHomeCarouselImg:
     "/admin/GenetatePreSignedSignatureHomeCarouselImg",
   adminDeleteHomeCarouselImg: "/admin/adminDeleteHomeCarouselImg",
   adminDeleteHalfFailFileHomeCarouselFromCloudinary:
     "/admin/adminDeleteHalfFailFileHomeCarouselImgFromCloudinary",
-  // adminDeleteHomeCarouselImgs route is end here
+  adminUploadHomeCarouselImg: "/admin/uploadHomeCarouselImg",
+  adminGetAllHomeCarouselImgs: "/admin/getAllHomeCarouselImgs",
+  //  adminHomeCarouselImg  media  route is end here
 };
 module.exports = { adminEndpoints };

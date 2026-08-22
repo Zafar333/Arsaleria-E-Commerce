@@ -1,4 +1,4 @@
-const cloudinary = require("../../configFiles/cloudinaryCloudConfig");
+const cloudinary = require("../../../configFiles/cloudinaryCloudConfig");
 const { randomUUID } = require("crypto");
 require("dotenv").config();
 

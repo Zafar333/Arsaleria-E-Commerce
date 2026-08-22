@@ -300,6 +300,73 @@ const AddProducts = () => {
   // delete fun for half uploaded files from frontend oncloud server so that
   // function delete files from cloud end here
 
+  // uploadProductBackendFunApi fun is start from here
+  const uploadProductBackendFunApi = async (val, fildata) => {
+    // setLoader(false)
+    // console.log("images and videos", fildata)
+    // console.log("formvalues", val)
+    const data = [
+      { files: fildata },
+      val,
+      { productsVariants: productAllVariants },
+    ];
+    // console.log("bodydata", data)
+    // toast.success("datuploaded sucessfully")
+
+    try {
+      if (
+        fildata?.length > 0 &&
+        Object.keys(val)?.length > 0 &&
+        productAllVariants?.length > 0
+      ) {
+        const res = await fetch(
+          `${DevelopmentBaseUrl}${adminEndpoints?.adminaddProduct}`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          },
+        );
+
+        const result = await res.json();
+        if (result?.status >= 200 && result?.status < 400) {
+          form.resetFields();
+          setTotalSelectedFiles([]);
+          setTemporaryUploadeFiles([]);
+          setProductAllVariants([]);
+          toast.success(result?.message);
+          setLoader(false);
+        }
+
+        if (result?.status == 401) {
+          router.replace("/adminLogin");
+          toast.error(result?.message);
+        }
+        if (
+          (result?.status >= 402 && result?.status <= 550) ||
+          result?.status == 400
+        ) {
+          setTemporaryUploadeFiles([]);
+          setLoader(false);
+          toast.error(result?.message);
+        }
+      } else {
+        setTemporaryUploadeFiles([]);
+        setLoader(false);
+        toast.error("server error");
+      }
+    } catch (error) {
+      setTemporaryUploadeFiles([]);
+      console.error(error?.message);
+      setLoader(false);
+      toast.error("server error");
+    }
+  };
+  // uploadProductBackendFunApi fun is end here
+
   // onFinish success fun is start from here
   const onFinish = async (values) => {
     // console.log("formvalues", values);
@@ -419,73 +486,6 @@ const AddProducts = () => {
     }
   };
   // onFinish success fun is end here
-
-  // uploadProductBackendFunApi fun is start from here
-  const uploadProductBackendFunApi = async (val, fildata) => {
-    // setLoader(false)
-    // console.log("images and videos", fildata)
-    // console.log("formvalues", val)
-    const data = [
-      { files: fildata },
-      val,
-      { productsVariants: productAllVariants },
-    ];
-    // console.log("bodydata", data)
-    // toast.success("datuploaded sucessfully")
-
-    try {
-      if (
-        fildata?.length > 0 &&
-        Object.keys(val)?.length > 0 &&
-        productAllVariants?.length > 0
-      ) {
-        const res = await fetch(
-          `${DevelopmentBaseUrl}${adminEndpoints?.adminaddProduct}`,
-          {
-            method: "POST",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          },
-        );
-
-        const result = await res.json();
-        if (result?.status >= 200 && result?.status < 400) {
-          form.resetFields();
-          setTotalSelectedFiles([]);
-          setTemporaryUploadeFiles([]);
-          setProductAllVariants([]);
-          toast.success(result?.message);
-          setLoader(false);
-        }
-
-        if (result?.status == 401) {
-          router.replace("/adminLogin");
-          toast.error(result?.message);
-        }
-        if (
-          (result?.status >= 402 && result?.status <= 550) ||
-          result?.status == 400
-        ) {
-          setTemporaryUploadeFiles([]);
-          setLoader(false);
-          toast.error(result?.message);
-        }
-      } else {
-        setTemporaryUploadeFiles([]);
-        setLoader(false);
-        toast.error("server error");
-      }
-    } catch (error) {
-      setTemporaryUploadeFiles([]);
-      console.error(error?.message);
-      setLoader(false);
-      toast.error("server error");
-    }
-  };
-  // uploadProductBackendFunApi fun is end here
 
   // onFinishFailed form fun is start from here
   const onFinishFailed = (errorInfo) => {

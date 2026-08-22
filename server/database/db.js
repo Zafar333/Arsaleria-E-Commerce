@@ -14,6 +14,9 @@ const { orderDetailModel } = require("../models/adminModels/orderDetailModel");
 const {
   productsVariantModel,
 } = require("../models/adminModels/productmodels/productsVariantModel");
+const {
+  HomeCarouselMediaModel,
+} = require("../models/adminModels/HomeCarouselMediaModel");
 
 const pool = new Pool({
   host: "localhost",
@@ -34,6 +37,7 @@ async function initDB() {
     await pool.query(productsMediaModel);
     await pool.query(orderDetailModel);
     await pool.query(productsVariantModel);
+    await pool.query(HomeCarouselMediaModel);
 
     console.log("✅ Tables created.");
   } catch (err) {
