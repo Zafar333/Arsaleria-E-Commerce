@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  startLoadingBar,
+  stopLoadingBar,
+} from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { adminEndpoints } from "@/utils/api/admin/adminEndpoints";
 import {
   DevelopmentBaseUrl,
@@ -31,6 +35,7 @@ const AllUsers = () => {
   //   getAllUsersFunApi fun is start from here
   const getAllUsersFunApi = async () => {
     try {
+      startLoadingBar();
       setPageLoading(true);
       const response = await fetch(
         `${DevelopmentBaseUrl}${adminEndpoints?.getAllUsersData}`,
@@ -44,6 +49,7 @@ const AllUsers = () => {
       );
       const result = await response.json();
       if (result?.status >= 200 && result?.status < 400) {
+        stopLoadingBar();
         setPageLoading(false);
         setAllUsersData(result?.data);
         return toast.success(result?.message);
@@ -57,10 +63,12 @@ const AllUsers = () => {
         (result?.status >= 402 && result?.status <= 550) ||
         result?.status == 400
       ) {
+        stopLoadingBar();
         setPageLoading(false);
         return toast.error(result?.message);
       }
     } catch (error) {
+      stopLoadingBar();
       setPageLoading(false);
       // console.log(error?.message)
       return toast.error("server error");

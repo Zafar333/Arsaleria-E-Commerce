@@ -1,16 +1,34 @@
 "use client";
 import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { Carousel } from "antd";
-import { useEffect } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import "./homeCrousel.css";
 
-const HomeCarousel = () => {
+const HomeCarousel = ({ heroCarouselAllImgs }) => {
+  const [pageLoading, setPageLoading] = useState(false);
+  const [productLoading, setProductLoading] = useState(false);
   useEffect(() => {
     stopLoadingBar();
   }, []);
 
   return (
     <Carousel arrows autoplay className="">
+      {heroCarouselAllImgs?.length > 0
+        ? heroCarouselAllImgs.map((media, ind) => (
+            <div className="bg-gray-200">
+              <Image
+                alt="image"
+                width={"200"}
+                height={"400"}
+                src={media?.secure_url}
+                key={ind}
+                className="w-full homeCrousel object-contain"
+              />
+            </div>
+          ))
+        : "jh"}
+      {/* 
       <div>
         <img className="w-full homeCrousel " src="./cover4.webp" alt="" />
       </div>
@@ -19,19 +37,7 @@ const HomeCarousel = () => {
       </div>
       <div>
         <img className="w-full homeCrousel " src="./cover6.webp" alt="" />
-      </div>
-      {/* <div>
-      <h3 style={contentStyle}>1</h3>
-    </div>
-    <div>
-      <h3 style={contentStyle}>2</h3>
-    </div>
-    <div>
-      <h3 style={contentStyle}>3</h3>
-    </div>
-    <div>
-      <h3 style={contentStyle}>4</h3>
-    </div> */}
+      </div> */}
     </Carousel>
   );
 };

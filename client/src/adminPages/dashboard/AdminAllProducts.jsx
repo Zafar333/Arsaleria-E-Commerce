@@ -1,10 +1,14 @@
 "use client";
+import {
+  startLoadingBar,
+  stopLoadingBar,
+} from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { adminEndpoints } from "@/utils/api/admin/adminEndpoints";
 import {
   DevelopmentBaseUrl,
   frontendDevelopmentBaseUrl,
 } from "@/utils/api/main";
-import { Input, Spin } from "antd";
+import { Checkbox, Input, Spin } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -24,10 +28,6 @@ const AdminAllProducts = () => {
   ]);
   let datavalue =
     "plane yougurt natural kjhjlm kjhklm hiojopdjops khdiocn ijd coijdpocdsih";
-
-  useEffect(() => {
-    console.log("adminallproducts", adminAllProducts);
-  }, [adminAllProducts]);
 
   useEffect(() => {
     adminGetAllProductsFunApi();
@@ -62,6 +62,7 @@ const AdminAllProducts = () => {
     // adminGetAllProducts
 
     try {
+      startLoadingBar();
       setPageLoading(true);
       const response = await fetch(
         `${DevelopmentBaseUrl}${adminEndpoints?.adminGetAllProducts}`,
@@ -75,6 +76,7 @@ const AdminAllProducts = () => {
       );
       const result = await response.json();
       if (result?.status >= 200 && result?.status < 400) {
+        stopLoadingBar();
         setPageLoading(false);
         setAdminAllProducts(result?.data);
         return toast.success(result?.message);
@@ -88,10 +90,12 @@ const AdminAllProducts = () => {
         (result?.status >= 402 && result?.status <= 550) ||
         result?.status == 400
       ) {
+        stopLoadingBar();
         setPageLoading(false);
         return toast.error(result?.message);
       }
     } catch (error) {
+      stopLoadingBar();
       setPageLoading(false);
       // console.log(error?.message)
       return toast.error("server error");
@@ -281,6 +285,52 @@ const AdminAllProducts = () => {
   };
   // onSearch bar fun api is end here
 
+  // adminEditFeaturedProductsFun is start from here
+  const adminEditFeaturedProductsFun = async (val, prodId) => {
+    console.log("featuredProducts", val);
+    try {
+      setPageLoading(true);
+      startLoadingBar();
+      const response = await fetch(
+        `${DevelopmentBaseUrl}${adminEndpoints?.adminEditFeaturedProducts}?editFeatureProduct=${val}&productId=${prodId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        adminGetAllProductsFunApi();
+        stopLoadingBar();
+        setPageLoading(false);
+        return toast.success(result?.message);
+      }
+      if (result?.status == 401) {
+        setPageLoading(true);
+        router.replace("/adminLogin");
+        return toast.error(result?.message);
+      }
+      if (
+        (result?.status >= 402 && result?.status <= 550) ||
+        result?.status == 400
+      ) {
+        setPageLoading(false);
+        stopLoadingBar();
+        return toast.error(result?.message);
+      }
+    } catch (error) {
+      setPageLoading(false);
+      stopLoadingBar();
+
+      // console.log(error?.message)
+      return toast.error("server error");
+    }
+  };
+  // adminEditFeaturedProductsFun is end here
+
   //
   return (
     <div className="mx-[15px] xs:mx-[80px]  sm:mx-[20px]">
@@ -324,6 +374,19 @@ const AdminAllProducts = () => {
                   href={""}
                   className="cursor-pointer border border-gray-200 rounded-sm"
                 >
+                  <Checkbox
+                    checked={prod?.is_featured}
+                    onChange={(e) =>
+                      adminEditFeaturedProductsFun(e.target.checked, prod?.id)
+                    }
+                    // onClick={() => adminEditFeaturedProductsFun(prod?.id)}
+                  >
+                    <p className="text-darkGreen! font-Poppins text-[16px]! m-2">
+                      {" "}
+                      Add To Feature
+                    </p>
+                  </Checkbox>
+
                   <div className=" bg-whiteGray h-[300px] rounded-sm">
                     <Image
                       alt="Image"

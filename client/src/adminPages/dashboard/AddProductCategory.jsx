@@ -1,8 +1,8 @@
 "use client";
 import { adminEndpoints } from "@/utils/api/admin/adminEndpoints";
 import {
-    DevelopmentBaseUrl,
-    frontendDevelopmentBaseUrl,
+  DevelopmentBaseUrl,
+  frontendDevelopmentBaseUrl,
 } from "@/utils/api/main";
 import { Button, Form, Input, Modal, Spin, Switch } from "antd";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -13,7 +13,10 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 
 // imports start here
-import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
+import {
+  startLoadingBar,
+  stopLoadingBar,
+} from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { Menu } from "antd";
 import { useRouter } from "next/navigation";
 // imports end here
@@ -84,7 +87,6 @@ const AddProductCategory = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    stopLoadingBar();
     getAllCtategoriesFun();
   }, []);
 
@@ -124,6 +126,7 @@ const AddProductCategory = () => {
 
   // getAllCtategoriesFun IS START FROM HERE
   const getAllCtategoriesFun = async () => {
+    startLoadingBar();
     setPageLoading(true);
 
     try {
@@ -140,11 +143,15 @@ const AddProductCategory = () => {
       );
       const result = await res.json();
       if (result?.status == 200) {
+        stopLoadingBar();
+
         setPageLoading(false);
         setAllCategories(result?.data);
         toast?.success(result?.message);
       }
       if (result?.status >= 201 && result?.status < 400) {
+        stopLoadingBar();
+
         setPageLoading(false);
         setAllCategories(result?.data);
       }
@@ -157,10 +164,14 @@ const AddProductCategory = () => {
         (result?.status >= 402 && result?.status <= 550) ||
         result?.status == 400
       ) {
+        stopLoadingBar();
+
         setPageLoading(false);
         toast.error(result?.message);
       }
     } catch (error) {
+      stopLoadingBar();
+
       setPageLoading(false);
 
       // console.log("error", error?.message)

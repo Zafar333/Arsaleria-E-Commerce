@@ -38,10 +38,9 @@ const adminEndpoints = {
   adminGenetatePreSignedSignatureHomeCarouselImg:
     "/admin/GenetatePreSignedSignatureHomeCarouselImg",
   adminDeleteHomeCarouselImg: "/admin/adminDeleteHomeCarouselImg",
-  adminDeleteHalfFailFileHomeCarouselFromCloudinary:
-    "/admin/adminDeleteHalfFailFileHomeCarouselImgFromCloudinary",
   adminUploadHomeCarouselImg: "/admin/uploadHomeCarouselImg",
   adminGetAllHomeCarouselImgs: "/admin/getAllHomeCarouselImgs",
+  adminEditFeaturedProducts: "/admin/editFeaturedProducts",
   //  adminHomeCarouselImg  media  route is end here
 };
 module.exports = { adminEndpoints };

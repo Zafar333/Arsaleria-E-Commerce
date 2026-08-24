@@ -17,6 +17,10 @@ import {
 import { useEffect, useState } from "react";
 import "./addProducts.css";
 
+import {
+  startLoadingBar,
+  stopLoadingBar,
+} from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { adminEndpoints } from "@/utils/api/admin/adminEndpoints";
 import {
   DevelopmentBaseUrl,
@@ -41,12 +45,17 @@ const AddProducts = () => {
   const [deliveryType, setDeliveryType] = useState([]);
   const [productAllVariants, setProductAllVariants] = useState([]);
   const [form] = Form.useForm();
-
   const [loader, setLoader] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
 
   const pathname = usePathname();
   const searchparams = useSearchParams();
+  useEffect(() => {
+    getAllBottomCategoriesFunApi();
+  }, []);
+  useEffect(() => {
+    browserUrlChangePageloadingfun();
+  }, [pathname]);
 
   const stockStatusOption = [
     { label: "Available", value: "Available" },
@@ -173,17 +182,6 @@ const AddProducts = () => {
   // handleDeleteUser fun api is end here
   // table data section is end here
 
-  useEffect(() => {
-    getAllBottomCategoriesFunApi();
-  }, []);
-  useEffect(() => {
-    browserUrlChangePageloadingfun();
-  }, [pathname]);
-
-  useEffect(() => {
-    console.log("allbotomcat", allBottomCategories);
-  }, [allBottomCategories]);
-
   // browserUrlChangePageloadingfun is start from here
   const browserUrlChangePageloadingfun = () => {
     // console.log("pageloadinfun call",pathname)
@@ -230,6 +228,7 @@ const AddProducts = () => {
   // getAllBottomCategoriesFunApi fun is start from here
   const getAllBottomCategoriesFunApi = async () => {
     try {
+      startLoadingBar();
       const res = await fetch(
         `${DevelopmentBaseUrl}${adminEndpoints?.adminGetAllBottomCategories}`,
         {
@@ -242,6 +241,7 @@ const AddProducts = () => {
       );
       const result = await res.json();
       if (result?.status >= 200 && result?.status < 400) {
+        stopLoadingBar();
         setAllBottomCategories(result?.data);
       }
 
@@ -253,9 +253,13 @@ const AddProducts = () => {
         (result?.status >= 402 && result?.status <= 550) ||
         result?.status == 400
       ) {
+        stopLoadingBar();
+
         toast.error(result?.message);
       }
     } catch (error) {
+      stopLoadingBar();
+
       // console.log("error", error?.message)
       toast.error("server error");
     }

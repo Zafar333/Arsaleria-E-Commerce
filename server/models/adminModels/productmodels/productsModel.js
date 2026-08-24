@@ -10,6 +10,7 @@ const productsModel = `
       product_description TEXT NOT NULL,
       product_discount INT,
       productbrand_name VARCHAR(255),
+      is_featured BOOLEAN NOT NULL DEFAULT FALSE,
       dairyfarm_expiryDate DATE,
       dairyfarm_material VARCHAR(255),
       productpromo_code VARCHAR(255),

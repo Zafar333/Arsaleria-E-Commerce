@@ -11,7 +11,7 @@ const adminGetOutofStockProductsController = async (req, res) => {
     }
     const result = await await pool.query(
       `
-            SELECT products.id,product_name,sellproduct_price_1kg,product_category,
+            SELECT products.id,product_name,sellproduct_price_1kg,product_category,is_featured,
             json_agg(json_build_object(
             'media.id',products_media.id,
              'products_id',products_media.products_id,
@@ -30,7 +30,7 @@ const adminGetOutofStockProductsController = async (req, res) => {
               )
               GROUP BY
              products.id,
-              product_name,sellproduct_price_1kg,product_category
+              product_name,sellproduct_price_1kg,product_category,is_featured
             `,
       [req?.query?.stockStatus],
     );

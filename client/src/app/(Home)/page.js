@@ -5,6 +5,36 @@ import Home from "@/websitePages/Home/Home";
 
 const page = async () => {
   let heroSectionAllProducts = [];
+  let heroCarouselAllImgs = [];
+
+  // getAllHeroCarouselImgs Fun is start from here
+  const getAllHeroCarouselImgs = async () => {
+    try {
+      const res = await fetch(
+        `${DevelopmentBaseUrl}${userEndPoints?.getAllHeroCarouselImgs}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "force-cache",
+        },
+      );
+
+      const result = await res.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        return result?.data;
+      }
+      if (result?.status >= 400 && result?.status <= 550) {
+        return [];
+      }
+    } catch (error) {
+      return [];
+    }
+  };
+  // getAllHeroCarouselImgs Fun is end here
+  heroCarouselAllImgs = await getAllHeroCarouselImgs();
 
   // getAllProductsFunApi is start from here
 
@@ -44,7 +74,10 @@ const page = async () => {
 
   return (
     <div className="mx-[10px] sm:mx-[20px] ">
-      <Home heroSectionAllProducts={heroSectionAllProducts} />
+      <Home
+        heroSectionAllProducts={heroSectionAllProducts}
+        heroCarouselAllImgs={heroCarouselAllImgs}
+      />
     </div>
   );
 };

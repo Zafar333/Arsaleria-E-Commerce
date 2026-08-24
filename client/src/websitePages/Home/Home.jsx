@@ -9,7 +9,7 @@ import OurProducts from "@/components/ourProducts/OurProducts";
 import Link from "next/link";
 // import { useState } from "react";
 
-const Home = ({ heroSectionAllProducts }) => {
+const Home = ({ heroSectionAllProducts, heroCarouselAllImgs }) => {
   // const [allProductsData, setAllProducts] = useState([]);
   // const router = useRouter();
   // useEffect(()=>{
@@ -20,14 +20,14 @@ const Home = ({ heroSectionAllProducts }) => {
     <div className="max-w-[1400px] mx-auto">
       {/* homeCrousel section is start from here */}
       <div className="mt-[100px]">
-        <HomeCarousel />
+        <HomeCarousel heroCarouselAllImgs={heroCarouselAllImgs} />
       </div>
       {/* homeCrousel section is end here */}
 
       {/* Best SellerSection is Start from here */}
       <div className="mt-[100px]">
         <p className="font-Roboto text-[40px] md:text-[50px] text-darkGreen text-center">
-          Best Selling
+          Best Featured
         </p>
         {/* card Container*/}
         <div className="mt-[20px] md:mt-[50px] grid grid-cols-1 md:grid-cols-3 gap-[60px] md:gap-[20px] lg:gap-[40px]">

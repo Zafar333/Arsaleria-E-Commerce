@@ -13,8 +13,9 @@ const userEndPoints = {
   // signin with google route is end here
   // user auth routes is start rom here
 
-  // getproducts route is start from here
+  // heroPage route is start from here
   getHeroSectionAllProducts: "/user/products/getHeroSectionAllProducts",
-  // getproducts route is end here
+  getAllHeroCarouselImgs: "/user/carouselImgs/getAllHeroCarouselImgs",
+  // heroPage route is end here
 };
 export { userEndPoints };

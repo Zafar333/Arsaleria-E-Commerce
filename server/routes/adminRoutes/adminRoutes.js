@@ -64,9 +64,6 @@ const {
 } = require("../../controllers/admin/adminGetAllProductsController");
 
 const {
-  adminDeleteHalfUploadedHomeCarouselImgCloudinaryController,
-} = require("../../controllers/admin/adminDeleteHalfUploadedHomeCarouselImgCloudinaryController");
-const {
   adminGeneratePreSignedUrlHomeCarouselImgController,
 } = require("../../controllers/admin/adminUploadHomeCarouselImgController/adminGeneratePreSignedUrlHomeCarouselImgController");
 const {
@@ -75,6 +72,12 @@ const {
 const {
   admiGetAllHomeCarouselImgsController,
 } = require("../../controllers/admin/admiGetAllHomeCarouselImgsController");
+const {
+  adminDeleteHomeCarouselImgController,
+} = require("../../controllers/admin/adminDeleteHomeCarouselImgController");
+const {
+  adminEditFeaturedProductsController,
+} = require("../../controllers/admin/adminAddProductControllerfile/adminEditFeaturedProductsController");
 
 const router = express.Router();
 
@@ -125,7 +128,7 @@ router.delete(
 );
 // admin categories route is end here
 
-// admingetAllProducts route is start from here
+// admin add products all routes is tart from here
 router.get(
   "/getAllProducts",
   checkAdminJwtToken,
@@ -146,38 +149,34 @@ router.get(
   checkAdminJwtToken,
   adminGetSearchFilterAllProductsController,
 );
-// admingetAllProducts route is end here
 
-////////////
-// admin addproduct  route url is start from here all routes is the part addproduct
-// direct upload from browser first make presigned url from clodinary route is start from here
 router.get(
   "/addProductGeneratePreSignedUrl",
   checkAdminJwtToken,
   adminGeneratePreSignedUrlAddProductController,
 );
+
+router.patch(
+  "/editFeaturedProducts",
+  checkAdminJwtToken,
+  adminEditFeaturedProductsController,
+);
 // direct upload from browser first make presigned url from clodinary route is end here
 
-//  half upload data on cloudinary delete request route is start here
 router.post(
   "/api/cloudinary/delete-halfUploadedFile",
   adminDeleteHalfUploadedFileCloudinaryController,
 );
-//  half upload data on cloudinary delete request route is end here
 
-// addproduct in to backe route is start from here
 router.post("/addProduct", checkAdminJwtToken, adminAddProductController);
-// addproduct in to backe route is end here
-// admin addproduct all routes is the part addproduct is end here
-//////////
 
-// /adminDeleteProduct route is start from here
 router.delete(
   "/adminDeleteProduct",
   checkAdminJwtToken,
   adminDeleteSingleProductController,
 );
-// /adminDeleteProduct route is end here
+
+// admin addproduct all route is end here
 
 //adminHomeCarousel  route is start from here
 
@@ -194,9 +193,9 @@ router.post(
   adminUploadHomeCarouselImgController,
 );
 
-router.post(
-  "/adminDeleteHalfFailFileHomeCarouselImgFromCloudinary",
-  adminDeleteHalfUploadedHomeCarouselImgCloudinaryController,
+router.delete(
+  "/adminDeleteHomeCarouselImg",
+  adminDeleteHomeCarouselImgController,
 );
 router.get(
   "/getAllHomeCarouselImgs",

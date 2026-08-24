@@ -6,7 +6,7 @@ import {
 import { adminEndpoints } from "@/utils/api/admin/adminEndpoints";
 import { DevelopmentBaseUrl } from "@/utils/api/main";
 import { InboxOutlined } from "@ant-design/icons";
-import { Button, Upload, message } from "antd";
+import { Button, Spin, Upload, message } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -19,22 +19,69 @@ const { Dragger } = Upload;
 const AdminHomeCarousel = () => {
   const router = useRouter();
   const [pageLoading, setPageLoading] = useState(false);
+  const [productLoading, setProductLoading] = useState(false);
   const [temporaryUploadeFiles, setTemporaryUploadeFiles] = useState([]);
 
   const [btnLoader, setBtnLoader] = useState(false);
   const [totalSelectedFiles, setTotalSelectedFiles] = useState([]);
+  const [allHomeCarouseImgs, setAllHomeCarouseImgs] = useState([]);
 
   useEffect(() => {
-    stopLoadingBar();
+    setPageLoading(true);
+    getAllHomeCarouselImgsFunApi();
   }, []);
+
+  // getAllHomeCarouselImgsFunApi is start from here
+  const getAllHomeCarouselImgsFunApi = async () => {
+    try {
+      startLoadingBar();
+      const res = await fetch(
+        `${DevelopmentBaseUrl}${adminEndpoints?.adminGetAllHomeCarouselImgs}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "no-store",
+        },
+      );
+
+      const result = await res.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        setAllHomeCarouseImgs(result?.data);
+        stopLoadingBar();
+        setProductLoading(false);
+        setPageLoading(false);
+      }
+
+      if (result?.status == 401) {
+        router.replace("/adminLogin");
+        toast.error(result?.message);
+      }
+      if (
+        (result?.status >= 402 && result?.status <= 550) ||
+        result?.status == 400
+      ) {
+        stopLoadingBar();
+        setPageLoading(false);
+        toast.error(result?.message);
+      }
+    } catch (error) {
+      setPageLoading(false);
+      stopLoadingBar();
+      toast.error("server error");
+    }
+  };
+  // getAllHomeCarouselImgsFunApi is end here
 
   // deleteProductFunApi is start from here
   const deleteProductFunApi = async (prodId, mediaAsset_folder) => {
     // console.log("prdouctid",prodId)
     // console.log("assetfolder",mediaAsset_folder)
     try {
-      setPageLoading(true);
       startLoadingBar();
+      setProductLoading(true);
       const response = await fetch(
         `${DevelopmentBaseUrl}${adminEndpoints?.adminDeleteHomeCarouselImg}?productid=${prodId}&mediaid=${mediaAsset_folder}`,
         {
@@ -47,8 +94,9 @@ const AdminHomeCarousel = () => {
       );
       const result = await response.json();
       if (result?.status >= 200 && result?.status < 400) {
-        stopLoadingBar();
-        toast.success(result?.message);
+        getAllHomeCarouselImgsFunApi();
+
+        return toast.success(result?.message);
         // return await adminGetAllProductsFunApi();
         // setPageLoading(false);
         // setAdminAllProducts(result?.data)
@@ -64,13 +112,15 @@ const AdminHomeCarousel = () => {
       ) {
         stopLoadingBar();
 
-        setPageLoading(false);
+        setProductLoading(false);
+
         return toast.error(result?.message);
       }
     } catch (error) {
       stopLoadingBar();
 
-      setPageLoading(false);
+      setProductLoading(false);
+
       // console.log(error?.message)
       return toast.error("server error");
     }
@@ -100,50 +150,6 @@ const AdminHomeCarousel = () => {
 
   // handleChangeFiles fun onchange is start from here
 
-  // getAllHomeCarouselImgsFunApi is start from here
-  const getAllHomeCarouselImgsFunApi = async () => {
-    try {
-      setPageLoading(true);
-      startLoadingBar();
-      const res = await fetch(
-        `${DevelopmentBaseUrl}${adminEndpoints?.adminGetAllHomeCarouselImgs}`,
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          cache: "no-store",
-        },
-      );
-
-      const result = await res.json();
-      if (result?.status >= 200 && result?.status < 400) {
-        stopLoadingBar();
-        setPageLoading(false);
-        toast.success(result?.message);
-      }
-
-      if (result?.status == 401) {
-        router.replace("/adminLogin");
-        toast.error(result?.message);
-      }
-      if (
-        (result?.status >= 402 && result?.status <= 550) ||
-        result?.status == 400
-      ) {
-        stopLoadingBar();
-        setPageLoading(false);
-        toast.error(result?.message);
-      }
-    } catch (error) {
-      setPageLoading(false);
-      stopLoadingBar();
-      toast.error("server error");
-    }
-  };
-  // getAllHomeCarouselImgsFunApi is end here
-
   // Send backendGeneratePresignedSignatureCloudinaryFun request to backend create a digital signature of cloudinary start here
   const backendGeneratePresignedSignatureCloudinaryFun = async () => {
     try {
@@ -165,45 +171,6 @@ const AdminHomeCarousel = () => {
     }
   };
   // Send backendGeneratePresignedSignatureCloudinaryFun request to backend create a digital signature of cloudinary end here
-
-  // delete fun for half uploaded files from frontend oncloud server so that
-  // function delete files from cloud start here
-  const deleteHalfUploadedProductFileClodinaryFun = async (data) => {
-    try {
-      const res = await fetch(
-        `${DevelopmentBaseUrl}${adminEndpoints?.adminDeleteHalfFailFileHomeCarouselFromCloudinary}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            assets: data,
-          }),
-        },
-      );
-
-      const result = await res.json();
-      if (result?.status >= 200 && result?.status < 400) {
-        return result?.success;
-      }
-
-      if (result?.status >= 400 && result?.status <= 550) {
-        // toast.error(result?.message)
-
-        return result?.success;
-      }
-    } catch (error) {
-      setBtnLoader(false);
-      stopLoadingBar();
-      // console.log("error",error?.message)
-      toast.error("server error");
-    }
-  };
-
-  // delete fun for half uploaded files from frontend oncloud server so that
-  // function delete files from cloud end here
 
   // saveHomeCarouselImgDatabackendFunApi fun is start from here
   const saveHomeCarouselImgDatabackendFunApi = async (data) => {
@@ -352,95 +319,109 @@ const AdminHomeCarousel = () => {
   return (
     <div className="mx-[15px] xs:mx-[80px]  sm:mx-[20px]">
       <div className="max-w-[1400px] mx-auto">
-        <div className="mt-[30px]">
-          <Dragger
-            fileList={totalSelectedFiles}
-            multiple
-            maxCount={1}
-            listType="picture"
-            accept="image/*"
-            beforeUpload={handleBeforeUpload}
-            onChange={handleChangeFiles}
-          >
-            <p>
-              <InboxOutlined style={{ fontSize: 40 }} />
-            </p>
+        {pageLoading == false ? (
+          <div>
+            <div className="mt-[30px]">
+              <Dragger
+                fileList={totalSelectedFiles}
+                multiple
+                maxCount={1}
+                listType="picture"
+                accept="image/*"
+                beforeUpload={handleBeforeUpload}
+                onChange={handleChangeFiles}
+              >
+                <p>
+                  <InboxOutlined style={{ fontSize: 40 }} />
+                </p>
 
-            <p className="font-Poppins text-red-600">
-              Click here Upload Images
-            </p>
+                <p className="font-Poppins text-red-600">
+                  Click here Upload Images
+                </p>
 
-            <p className="font-Poppins">Maximum 1 image</p>
+                <p className="font-Poppins">Maximum 1 image</p>
 
-            <p className="font-Poppins text-blue-600 font-bold">
-              Selected: {totalSelectedFiles?.length}/1
-            </p>
-          </Dragger>{" "}
-          {btnLoader == false ? (
-            <Button
-              className="w-full bg-darkGreen! text-lightGreen! text-[16px]! mt-[10px]"
-              onClick={uploadImageCloudinaryFunApi}
-            >
-              Save
-            </Button>
-          ) : (
-            <Button
-              loading
-              size="large"
-              className="w-full! bg-darkGreen! text-lightGreen! text-[16px]! mt-[10px]"
-            ></Button>
-          )}
-        </div>
-        <div className="mt-[50px] md:mt-[60px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[60px] md:gap-[20px] lg:gap-[40px]">
-          {/* card */}
-          {/* loop is apply this div */}
-          {/* {adminAllProducts?.length > 0 ? (
-              adminAllProducts?.map((prod, ind) => ( */}
-          <Link
-            // key={ind}
-            href={""}
-            className="cursor-pointer border border-gray-200 rounded-sm"
-          >
-            <div className=" bg-whiteGray h-[300px] rounded-sm">
-              <Image
-                alt="Image"
-                width={310}
-                height={200}
-                src={"/2.webp"}
-                // src={prod?.media[0]?.secure_url}
-                className="w-full h-full object-contain "
-              />
+                <p className="font-Poppins text-blue-600 font-bold">
+                  Selected: {totalSelectedFiles?.length}/1
+                </p>
+              </Dragger>{" "}
+              {btnLoader == false ? (
+                <Button
+                  className="w-full bg-darkGreen! text-lightGreen! text-[16px]! mt-[10px]"
+                  onClick={uploadImageCloudinaryFunApi}
+                >
+                  Save
+                </Button>
+              ) : (
+                <Button
+                  loading
+                  size="large"
+                  className="w-full! bg-darkGreen! text-lightGreen! text-[16px]! mt-[10px]"
+                ></Button>
+              )}
             </div>
-            {/* card text Content */}
-            <div className="mt-[10px]">
-              <p className="flex justify-center items-center">
-                {/* {datavalue} */}
-                {/* <label className="font-Poppins text-[18px] text-center text-darkGray bolder font-bold">
+            {productLoading == false ? (
+              <div className="mt-[50px] md:mt-[60px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[60px] md:gap-[20px] lg:gap-[40px]">
+                {/* card */}
+                {/* loop is apply this div */}
+
+                {allHomeCarouseImgs?.length > 0 ? (
+                  allHomeCarouseImgs?.map((prod, ind) => (
+                    <Link
+                      key={ind}
+                      href={""}
+                      className="cursor-pointer border border-gray-200 rounded-sm"
+                    >
+                      <div className=" bg-whiteGray h-[300px] rounded-sm">
+                        <Image
+                          alt="Image"
+                          width={310}
+                          height={200}
+                          src={prod?.secure_url}
+                          className="w-full h-full object-contain "
+                        />
+                      </div>
+                      {/* card text Content */}
+                      <div className="mt-[10px]">
+                        <p className="flex justify-center items-center">
+                          {/* {datavalue} */}
+                          {/* <label className="font-Poppins text-[18px] text-center text-darkGray bolder font-bold">
                   Delete
                 </label> */}
-                <MdDeleteOutline
-                  className="text-red-600! text-[20px]! cursor-pointer mb-2 "
-                  // onClick={() =>
-                  //   deleteProductFunApi(prod?.id, prod?.media[0]?.asset_folder)
-                  // }
-                />
-                {/* {prod?.product_name} */}
-              </p>
-            </div>
-          </Link>
-          {/* )) */}
-          {/* ) : ( */}
-          <div className="flex justify-center items-center max-w-[1400px]  ">
-            <p className="text-[18px] font-Poppins text-darkGreen">
-              No product found
-            </p>
-          </div>
-          {/* )} */}
+                          <MdDeleteOutline
+                            className="text-red-600! text-[20px]! cursor-pointer mb-2 "
+                            onClick={() =>
+                              deleteProductFunApi(prod?.id, prod?.asset_folder)
+                            }
+                          />
+                          {/* {prod?.product_name} */}
+                        </p>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="flex justify-center items-center max-w-[1400px]  ">
+                    <p className="text-[18px] font-Poppins text-darkGreen">
+                      No media found
+                    </p>
+                  </div>
+                )}
 
-          {/* card text Content */}
-          {/* loop is apply this div */}
-          {/* {card} */}
-        </div>
+                {/* card text Content */}
+                {/* loop is apply this div */}
+                {/* {card} */}
+              </div>
+            ) : (
+              <div className="flex justify-center items-center h-screen">
+                <Spin size="large" />
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex justify-center items-center h-screen">
+            <Spin size="large" />
+          </div>
+        )}
       </div>
     </div>
   );

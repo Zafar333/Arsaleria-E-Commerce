@@ -1,11 +1,9 @@
 "use client";
-import { Image, Radio, Spin } from "antd";
-import React, { useEffect, useState } from "react";
-import { Input } from "antd";
-import { toast } from "react-toastify";
-import { Table } from "antd";
+import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { frontendDevelopmentBaseUrl } from "@/utils/api/main";
+import { Image, Input, Radio, Spin, Table } from "antd";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 const { Search } = Input;
 
 const Orders = () => {
@@ -15,11 +13,15 @@ const Orders = () => {
   const [manageOrdersFilter, setManageOrdersFilter] = useState(["allorders"]);
   const [orderAction, setorderAction] = useState(["pending"]);
 
-    // for route changes useffect calling the fun mange page loading start here
-    useEffect(() => {
-      browserUrlChangePageloadingfun();
-    }, [pathname]);
-    // for route changes useffect calling the fun mange page end here
+  useEffect(() => {
+    stopLoadingBar();
+  }, []);
+
+  // for route changes useffect calling the fun mange page loading start here
+  useEffect(() => {
+    browserUrlChangePageloadingfun();
+  }, [pathname]);
+  // for route changes useffect calling the fun mange page end here
 
   // onSearch bar fun api is start from here
   const onSearch = async (value, _e, info) => {
@@ -84,47 +86,63 @@ const Orders = () => {
 
   // table data is start from here
   const handleStatusChange = (id, status) => {
-  console.log("Order ID:", id);
-  console.log("New Status:", status);
-  setorderAction([status])
-
-  
-};
+    console.log("Order ID:", id);
+    console.log("New Status:", status);
+    setorderAction([status]);
+  };
 
   const dataSource = [
     {
       key: "1",
-      id:"1",
+      id: "1",
       name: "arslan",
       orderid: 32,
-      product:<div className="flex items-center gap-3"><Image alt="images" src="https://res.cloudinary.com/tbf1ausw/image/upload/v1785165430/DairyFarmMedia/products/filefeed3fd7-81a2-4542-94ed-c88dc751cb5a/ssthhsmr5twmguo2ence.jpg" width={50} height={50}/> <span className="tex-[13px] font-Poppins">ghee</span></div>,
+      product: (
+        <div className="flex items-center gap-3">
+          <Image
+            alt="images"
+            src="https://res.cloudinary.com/tbf1ausw/image/upload/v1785165430/DairyFarmMedia/products/filefeed3fd7-81a2-4542-94ed-c88dc751cb5a/ssthhsmr5twmguo2ence.jpg"
+            width={50}
+            height={50}
+          />{" "}
+          <span className="tex-[13px] font-Poppins">ghee</span>
+        </div>
+      ),
       price: "5456",
       payment: "cod",
       contact: "0302-6878646",
       status: orderAction,
-      action:orderAction[0]
+      action: orderAction[0],
     },
     {
       key: "2",
-      id:"2",
+      id: "2",
       name: "ali",
       orderid: 32,
-      product:<div className="flex items-center gap-3"><Image alt="images" src="https://res.cloudinary.com/tbf1ausw/image/upload/v1785062665/DairyFarmMedia/products/filebda6a5cc-a5e9-4cb2-a5cb-ea2013303070/pnkt09nxvdd2uffrzbsn.jpg" width={50} height={50}/> <span className="tex-[13px] font-Poppins">yogurt</span></div>,
+      product: (
+        <div className="flex items-center gap-3">
+          <Image
+            alt="images"
+            src="https://res.cloudinary.com/tbf1ausw/image/upload/v1785062665/DairyFarmMedia/products/filebda6a5cc-a5e9-4cb2-a5cb-ea2013303070/pnkt09nxvdd2uffrzbsn.jpg"
+            width={50}
+            height={50}
+          />{" "}
+          <span className="tex-[13px] font-Poppins">yogurt</span>
+        </div>
+      ),
       price: "5456",
       payment: "cod",
       contact: "0302-6878646",
       status: "pending",
-      action:orderAction[0]
-
+      action: orderAction[0],
     },
   ];
   const columns = [
-     {
+    {
       title: "Order Id",
       width: 100,
       dataIndex: "orderid",
       fixed: "start",
-
     },
     {
       title: "Customer Name",
@@ -132,7 +150,7 @@ const Orders = () => {
       dataIndex: "name",
       fixed: "start",
     },
-   
+
     {
       title: "Product Name",
       width: 100,
@@ -157,24 +175,32 @@ const Orders = () => {
       title: "Status",
       width: 100,
       dataIndex: "status",
-     
     },
-     {
+    {
       title: "Action",
       width: 100,
       dataIndex: "action",
-      fixed:"end",
-         render: (action, record) => (
-      <Radio.Group className="flex! flex-col! gap-2! text-nowrap"
-        value={action}
-        onChange={(e) => handleStatusChange(record.id, e.target.value)}
-      >
-        <Radio className="text-[11px]! font-Poppins" value="pending">Pending</Radio>
-        <Radio className="text-[11px]! font-Poppins" value="inProgress">In Progress</Radio>
-        <Radio className="text-[11px]! font-Poppins" value="delivered">Delivered</Radio>
-        <Radio className="text-[11px]! font-Poppins" value="cancelled">Cancelled</Radio>
-      </Radio.Group>
-    ),
+      fixed: "end",
+      render: (action, record) => (
+        <Radio.Group
+          className="flex! flex-col! gap-2! text-nowrap"
+          value={action}
+          onChange={(e) => handleStatusChange(record.id, e.target.value)}
+        >
+          <Radio className="text-[11px]! font-Poppins" value="pending">
+            Pending
+          </Radio>
+          <Radio className="text-[11px]! font-Poppins" value="inProgress">
+            In Progress
+          </Radio>
+          <Radio className="text-[11px]! font-Poppins" value="delivered">
+            Delivered
+          </Radio>
+          <Radio className="text-[11px]! font-Poppins" value="cancelled">
+            Cancelled
+          </Radio>
+        </Radio.Group>
+      ),
     },
   ];
 
@@ -203,9 +229,7 @@ const Orders = () => {
     <div className="mx-[15px] xs:mx-[80px]  sm:mx-[20px]">
       {pageLoading == false ? (
         <div className="max-w-[1400px] mx-auto">
-        
-         
-         {/* search filter is start from here */}
+          {/* search filter is start from here */}
           <div className="mt-[20px] flex justify-end">
             <Search
               placeholder="search product with name"
@@ -213,7 +237,7 @@ const Orders = () => {
               className="max-w-[300px]"
             />
           </div>
-         {/* search filter is end here */}
+          {/* search filter is end here */}
 
           {/* filter section is start from here */}
           <div className="overflow-x-auto rounded-sm mt-[50px] flex items-center gap-4 py-[9px] sm:py-[5px] bg-lightGreen w-full sm:max-w-fit px-[50px]">
@@ -244,7 +268,6 @@ const Orders = () => {
           </div>
           {/* filter section is end here */}
 
-
           {/* table section is start from  */}
           <Table
             bordered
@@ -255,8 +278,8 @@ const Orders = () => {
             pagination={false}
           />
         </div>
-        // table section is end here
       ) : (
+        // table section is end here
         <div className="flex justify-center items-center h-screen">
           <Spin size="large" />
         </div>
