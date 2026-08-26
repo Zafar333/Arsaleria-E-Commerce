@@ -32,7 +32,7 @@ const HomeCarousel = ({ heroCarouselAllImgs }) => {
               />
             </div>
           ))
-        : "jh"}
+        : "No media found"}
       {/* 
       <div>
         <img className="w-full homeCrousel " src="./cover4.webp" alt="" />

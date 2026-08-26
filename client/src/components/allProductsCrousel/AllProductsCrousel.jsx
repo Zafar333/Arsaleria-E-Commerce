@@ -1,22 +1,39 @@
-import React from 'react'
-import { Carousel } from 'antd';
-import "./allProductsCrousel.css"
+"use client";
+import { Carousel } from "antd";
+import Image from "next/image";
+import "./allProductsCrousel.css";
 
-
-const AllProductsCrousel = () => {
+const AllProductsCrousel = ({ allProductsPageAllCarouselImgs }) => {
   return (
-    <Carousel arrows autoplay className='allProductsCrousel'>
-    <div>
-        <img  className='w-full  object-cover allProductsCrousel ' src="./cover4.webp" alt=""  />
-    </div>
-    <div>
-        <img className='w-full object-cover allProductsCrousel ' src="./cover5.webp" alt=""  />
-    </div>
-    <div>
-        <img className='w-full  object-cover allProductsCrousel' src="./cover6.webp" alt=""  />
-    </div>
+    <Carousel
+      arrows
+      autoplay
+      className="[&_.slick-prev]:text-black! [&_.slick-next]:text-black!"
+    >
+      {allProductsPageAllCarouselImgs?.length > 0 ? (
+        allProductsPageAllCarouselImgs?.map((media, ind) => (
+          <div className="bg-gray-200">
+            <Image
+              preload
+              alt="image"
+              width={"400"}
+              height={"400"}
+              src={media?.secure_url}
+              key={ind}
+              className="w-full allProductsCrousel object-contain"
+            />
+          </div>
+        ))
+      ) : (
+        <div className="flex! justify-center! items-center! allProductsCrousel bg-gray-200">
+          <label className="text-darkGreen font-Poppins text-[16px] ">
+            {" "}
+            No media found
+          </label>
+        </div>
+      )}
     </Carousel>
-  )
-}
+  );
+};
 
-export default AllProductsCrousel
+export default AllProductsCrousel;

@@ -14,7 +14,7 @@ const WhatsappButtonComponent = () => {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition-transform duration-200 hover:scale-110"
+        className="fixed bottom-5 right-5 z-50 flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition-transform duration-200 hover:scale-110"
         aria-label="Contact us on WhatsApp"
       >
         <FaWhatsapp className="text-4xl" />

@@ -1,10 +1,11 @@
-import AllProducts from '@/websitePages/allProduct/AllProducts'
-import React from 'react'
+import AllProducts from "@/websitePages/allProduct/AllProducts";
 
 const AllProduct = () => {
   return (
-    <div className='mx-[10px] sm:mx-[20px]'><AllProducts/></div>
-  )
-}
+    <div className="mx-[10px] sm:mx-[20px]">
+      <AllProducts />
+    </div>
+  );
+};
 
-export default AllProduct
+export default AllProduct;
