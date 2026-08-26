@@ -16,6 +16,7 @@ const userEndPoints = {
   // heroPage route is start from here
   getHeroSectionAllProducts: "/user/products/getHeroSectionAllProducts",
   getAllHeroCarouselImgs: "/user/carouselImgs/getAllHeroCarouselImgs",
+  getAllFeaturedProducts: "/user/products/getAllFeaturedProducts",
   // heroPage route is end here
 };
 export { userEndPoints };

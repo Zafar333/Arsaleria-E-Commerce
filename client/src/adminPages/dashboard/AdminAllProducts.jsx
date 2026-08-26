@@ -287,7 +287,6 @@ const AdminAllProducts = () => {
 
   // adminEditFeaturedProductsFun is start from here
   const adminEditFeaturedProductsFun = async (val, prodId) => {
-    console.log("featuredProducts", val);
     try {
       setPageLoading(true);
       startLoadingBar();

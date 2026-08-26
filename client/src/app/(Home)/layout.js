@@ -1,5 +1,6 @@
 import Fotter from "@/components/fotter/Fotter";
 import Header from "@/components/header/Header";
+import WhatsappButtonComponent from "@/components/whatsappButton/WhatsappButtonComponent";
 import { cookies } from "next/headers";
 
 const layout = async ({ children }) => {
@@ -9,6 +10,7 @@ const layout = async ({ children }) => {
     <div className="">
       <Header token={token} />
       <main className="">{children}</main>
+      <WhatsappButtonComponent />
       <Fotter />
     </div>
   );

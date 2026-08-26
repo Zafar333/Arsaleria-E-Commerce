@@ -1,4 +1,4 @@
-const { pool } = require("../../database/db");
+const { pool } = require("../../../database/db");
 
 const getHeroSectionAllProductsController = async (req, res) => {
   //   console.log("getHeroSectionAllProductsController here");
@@ -26,7 +26,7 @@ const getHeroSectionAllProductsController = async (req, res) => {
               GROUP BY
         products.id,
         product_name,sellproduct_price_1kg,product_category
-        ORDER BY created_dat DESC
+        ORDER BY products.id DESC
         LIMIT $2
             `,
       ["Available", limit],

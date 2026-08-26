@@ -6,14 +6,14 @@ const OurProducts = ({ heroSectionAllProducts }) => {
   // console.log("heroSectionAllProducts", heroSectionAllProducts);
   return (
     <div>
-      <p className="font-Roboto text-[40px] md:text-[50px] text-darkGreen text-center">
-        Our products
+      <p className="font-Roboto text-[30px] md:text-[50px] text-darkGreen text-center">
+        Our Products
       </p>
       {/* Trendig Products Button section is start from here */}
       {/* <TrendingProductsButtons /> */}
       {/* Trendig Products Button section is end here */}
 
-      <div className="border border-black mt-[20px] md:mt-[50px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[60px] md:gap-[20px] lg:gap-[40px]">
+      <div className="mt-[20px] md:mt-[50px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[60px] md:gap-[20px] lg:gap-[40px]">
         {/* card is start from  here  */}
         {heroSectionAllProducts?.length > 0 ? (
           heroSectionAllProducts?.map((prod, ind) => (

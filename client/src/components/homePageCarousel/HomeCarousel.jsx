@@ -13,11 +13,16 @@ const HomeCarousel = ({ heroCarouselAllImgs }) => {
   }, []);
 
   return (
-    <Carousel arrows autoplay className="">
+    <Carousel
+      arrows
+      autoplay
+      className="[&_.slick-prev]:text-black! [&_.slick-next]:text-black!"
+    >
       {heroCarouselAllImgs?.length > 0
         ? heroCarouselAllImgs.map((media, ind) => (
             <div className="bg-gray-200">
               <Image
+                preload
                 alt="image"
                 width={"200"}
                 height={"400"}
