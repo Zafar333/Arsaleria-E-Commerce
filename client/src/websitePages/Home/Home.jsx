@@ -66,7 +66,7 @@ const Home = ({
                       {prod?.sellproduct_price_1kg}
                     </p>
                     <p className="flex justify-center items-center">|</p>
-                    <p className="font-Poppins text-[18px] text-textLightGray ">
+                    <p className="font-Poppins  text-[18px] text-textLightGray ">
                       Rs
                     </p>
                   </div>

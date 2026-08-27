@@ -8,9 +8,12 @@ import { DevelopmentBaseUrl } from "@/utils/api/main";
 import { userEndPoints } from "@/utils/api/user";
 import LoadMoreButton from "./LoadMoreButton";
 
-const AllProducts = async () => {
+// await getAllProductsFun();
+
+const AllProducts = async ({ queryParams }) => {
   let allProductsPageAllCarouselImgs = [];
-  let allProductsData = [];
+  let allProductsData = {};
+  let paginationCursorData = [];
 
   // getAllHeroCarouselImgs Fun is start from here
   const getAllHeroCarouselImgs = async () => {
@@ -38,6 +41,7 @@ const AllProducts = async () => {
       return [];
     }
   };
+
   allProductsPageAllCarouselImgs = await getAllHeroCarouselImgs();
   // getAllHeroCarouselImgs Fun is end here
 
@@ -45,33 +49,72 @@ const AllProducts = async () => {
   const getAllProductsFun = async () => {
     try {
       // setPageLoading(true);
-      const response = await fetch(
-        `${DevelopmentBaseUrl}${userEndPoints?.getAllProducts}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
+      if (
+        Object.keys(queryParams)?.length > 0 &&
+        queryParams?.limit &&
+        !queryParams?.cursor
+      ) {
+        const response = await fetch(
+          `${DevelopmentBaseUrl}${userEndPoints?.getAllProducts}?limit=${queryParams?.limit}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            cache: "default",
           },
-          credentials: "include",
-          cache: "default",
-        },
-      );
-      const result = await response.json();
-      if (result?.status >= 200 && result?.status < 400) {
-        return result?.data;
-        // console.log("request succes", heroSectionAllProducts);
-      }
+        );
+        const result = await response.json();
+        if (result?.status >= 200 && result?.status < 400) {
+          return result?.data;
+          // console.log("request succes", heroSectionAllProducts);
+        }
 
-      if (result?.status >= 400 && result?.status <= 550) {
-        return [];
+        if (result?.status >= 400 && result?.status <= 550) {
+          return [];
+        }
+      }
+      if (
+        Object.keys(queryParams)?.length > 0 &&
+        queryParams?.limit &&
+        queryParams?.cursor
+      ) {
+        const response = await fetch(
+          `${DevelopmentBaseUrl}${userEndPoints?.getAllProducts}?limit=${queryParams?.limit}&cursor=${queryParams?.cursor}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            cache: "default",
+          },
+        );
+        const result = await response.json();
+        if (result?.status >= 200 && result?.status < 400) {
+          return result?.data;
+          // console.log("request succes", heroSectionAllProducts);
+        }
+
+        if (result?.status >= 400 && result?.status <= 550) {
+          return [];
+        }
       }
     } catch (error) {
       // console.log(error?.message);
       return [];
     }
   };
+
   allProductsData = await getAllProductsFun();
-  // console.log("allProductsData", allProductsData);
+  // let managedata = await getAllHeroCarouselImgs();
+  // allProductsData = managedata?.result?.data;
+  // paginationCursorData = {
+  //   nextCursor: managedata?.result?.nextCursor,
+  //   hasMore: managedata?.result?.hasMore,
+  // };
+  console.log("allProductsData", allProductsData);
   // getAllProductsFun is end here
 
   return (
@@ -92,7 +135,7 @@ const AllProducts = async () => {
           </div>
           {/* all products section is end from here */}
         </div>
-        <LoadMoreButton />
+        <LoadMoreButton allProductsData={allProductsData} />
       </div>
     </div>
   );

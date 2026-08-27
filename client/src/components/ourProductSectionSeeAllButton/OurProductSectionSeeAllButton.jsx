@@ -6,7 +6,7 @@ const OurProductSectionSeeAllButton = () => {
   const navigate = useRouter();
   const seeAllFun = () => {
     startLoadingBar();
-    navigate.push("/allProducts");
+    navigate.push("/allProducts?limit=10");
   };
   return (
     <div className="flex justify-center mt-[80px]">
