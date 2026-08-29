@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import AllProductsCardImg from "@/components/allProductsCardImg/AllProductsCardImg";
 import AllProductsCrousel from "@/components/allProductsCrousel/AllProductsCrousel";
-import AllProductsFilter from "@/components/allProductsFilter/AllProductsFilter";
+import AllProductsApllyFilterBtn from "@/components/allProductsFilter/AllProductsApllyFilterBtn";
 import AllProductsSearchBar from "@/components/allProductsSearchBar/AllProductsSearchBar";
 import { DevelopmentBaseUrl } from "@/utils/api/main";
 import { userEndPoints } from "@/utils/api/user";
@@ -12,7 +12,8 @@ import LoadMoreButton from "./LoadMoreButton";
 
 const AllProducts = async ({ queryParams }) => {
   let allProductsPageAllCarouselImgs = [];
-  let allProductsData = {};
+  let allProductsData = [];
+  let managedata = {};
   let paginationCursorData = [];
 
   // getAllHeroCarouselImgs Fun is start from here
@@ -67,7 +68,7 @@ const AllProducts = async ({ queryParams }) => {
         );
         const result = await response.json();
         if (result?.status >= 200 && result?.status < 400) {
-          return result?.data;
+          return result;
           // console.log("request succes", heroSectionAllProducts);
         }
 
@@ -93,7 +94,7 @@ const AllProducts = async ({ queryParams }) => {
         );
         const result = await response.json();
         if (result?.status >= 200 && result?.status < 400) {
-          return result?.data;
+          return result;
           // console.log("request succes", heroSectionAllProducts);
         }
 
@@ -107,14 +108,17 @@ const AllProducts = async ({ queryParams }) => {
     }
   };
 
-  allProductsData = await getAllProductsFun();
-  // let managedata = await getAllHeroCarouselImgs();
-  // allProductsData = managedata?.result?.data;
-  // paginationCursorData = {
-  //   nextCursor: managedata?.result?.nextCursor,
-  //   hasMore: managedata?.result?.hasMore,
-  // };
-  console.log("allProductsData", allProductsData);
+  // allProductsData = await getAllProductsFun();
+  managedata = await getAllProductsFun();
+  allProductsData = managedata?.data;
+  paginationCursorData = [
+    {
+      nextCursor: managedata?.nextCursor,
+      hasMore: managedata?.hasMore,
+    },
+  ];
+  console.log("paginationCursorData", paginationCursorData);
+
   // getAllProductsFun is end here
 
   return (
@@ -123,7 +127,7 @@ const AllProducts = async ({ queryParams }) => {
         allProductsPageAllCarouselImgs={allProductsPageAllCarouselImgs}
       />
       <div className="flex flex-col-reverse lg:flex-row lg:items-center justify-between px-[20px] border border-lightGreen ">
-        <AllProductsFilter />
+        <AllProductsApllyFilterBtn />
         <AllProductsSearchBar />
       </div>
       <div className="mt-[100px]">
@@ -135,7 +139,10 @@ const AllProducts = async ({ queryParams }) => {
           </div>
           {/* all products section is end from here */}
         </div>
-        <LoadMoreButton allProductsData={allProductsData} />
+        <LoadMoreButton
+          allProductsData={allProductsData}
+          paginationCursorData={paginationCursorData}
+        />
       </div>
     </div>
   );

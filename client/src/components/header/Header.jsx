@@ -198,7 +198,7 @@ const Header = ({ token }) => {
               Home{" "}
             </Link>
             <Link
-              href={`/allProducts`}
+              href={`/allProducts?limit=1`}
               className={`${headerHighlighter[0] == "/allProducts" ? "border-b-2 border-darkGreen" : ""} font-Poppins text-[16px] lg:text-[22px] text-darkGreen`}
               onClick={navigateFun}
             >
@@ -283,7 +283,7 @@ const Header = ({ token }) => {
             Home{" "}
           </Link>
           <Link
-            href={`/allProducts`}
+            href={`/allProducts?limit=1`}
             className={`${headerHighlighter[0] == "/allProducts" ? "border-b-2 border-lightGreen" : ""} font-Poppins text-[16px] lg:text-[22px] text-lightGreen`}
             onClick={navigateFun}
           >

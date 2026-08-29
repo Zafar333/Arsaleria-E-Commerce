@@ -41,9 +41,30 @@ SELECT 1
         ["Available", limit],
       );
       if (result?.rows?.length < 1) {
-        return res.send({ status: 400, message: "no product found" });
+        const products = result?.rows;
+
+        const hasMore = products.length == limit;
+
+        const nextCursor =
+          products.length > 0 ? products[products.length - 1].id : null;
+        return res.send({
+          status: 200,
+          message: "no product found",
+          data: result?.rows,
+          nextCursor,
+          hasMore,
+        });
+        // return res.send({ status: 200, message: "no product found" });
       }
-      return res.send({ status: 200, data: result?.rows });
+      const products = result?.rows;
+
+      const hasMore = products.length == limit;
+
+      const nextCursor =
+        products.length > 0 ? products[products.length - 1].id : null;
+      return res.send({ status: 200, data: result?.rows, nextCursor, hasMore });
+
+      // return res.send({ status: 200, data: result?.rows });
     }
     if (cursor) {
       const result = await pool.query(
@@ -104,7 +125,13 @@ SELECT 1
     }
   } catch (error) {
     console.log("getAllProductsController errors", error?.message);
-    res?.send({ status: 500, message: "server error", data: [] });
+    res?.send({
+      status: 500,
+      message: "server error",
+      data: [],
+      nextCursor: null,
+      hasMore: false,
+    });
   }
 };
 
