@@ -1,10 +1,70 @@
 "use client";
-import { Drawer } from "antd";
+import { DownOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { Drawer, Tree } from "antd";
+import { useEffect, useState } from "react";
 
-const FilterModal = ({ openFilterModal, setOpenFilterModal }) => {
+const FilterModal = ({
+  openFilterModal,
+  setOpenFilterModal,
+  allCategoriesData,
+}) => {
+  const [treeData, setTreeData] = useState([]);
   const onClose = () => {
     setOpenFilterModal(false);
   };
+
+  useEffect(() => {
+    setTreeData(arrangeCategorisFun());
+  }, []);
+  useEffect(() => {
+    console.log("data", treeData);
+  }, [treeData]);
+
+  const arrangeCategorisFun = () => {
+    const categories = allCategoriesData || [];
+
+    const createTree = (parentId = null) => {
+      return categories
+        .filter((category) => category.parent_id === parentId)
+        .map((category) => {
+          const children = createTree(category.id);
+
+          return {
+            title: category?.category_name,
+            parentid: category?.parent_id,
+            isparent: category?.is_parent,
+            key: category.id,
+
+            ...(children.length > 0 && {
+              children: children,
+            }),
+          };
+        });
+    };
+
+    return createTree();
+  };
+
+  const tree = [
+    {
+      title: "parent 1",
+      key: "0-0",
+      children: [
+        {
+          title: "leaf",
+          key: "0-0-0",
+          icon: ({ selected }) =>
+            selected ? <MinusOutlined /> : <PlusOutlined />,
+        },
+        {
+          title: "leaf",
+          key: "0-0-1",
+          icon: ({ selected }) =>
+            selected ? <MinusOutlined /> : <PlusOutlined />,
+        },
+      ],
+    },
+  ];
 
   return (
     <div>
@@ -25,7 +85,15 @@ const FilterModal = ({ openFilterModal, setOpenFilterModal }) => {
           },
         }}
         className={`bg-gray-200! p-0 m-0 `}
-      ></Drawer>
+      >
+        <Tree
+          showIcon
+          // defaultExpandAll
+          // defaultSelectedKeys={["0-0-0"]}
+          switcherIcon={<DownOutlined />}
+          treeData={treeData}
+        />
+      </Drawer>
     </div>
   );
 };

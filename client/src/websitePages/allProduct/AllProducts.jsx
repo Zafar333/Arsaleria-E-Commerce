@@ -15,6 +15,7 @@ const AllProducts = async ({ queryParams }) => {
   let allProductsData = [];
   let managedata = {};
   let paginationCursorData = [];
+  let allCategoriesData = [];
 
   // getAllHeroCarouselImgs Fun is start from here
   const getAllHeroCarouselImgs = async () => {
@@ -117,9 +118,38 @@ const AllProducts = async ({ queryParams }) => {
       hasMore: managedata?.hasMore,
     },
   ];
-  console.log("paginationCursorData", paginationCursorData);
 
   // getAllProductsFun is end here
+
+  // getAllHeroCarouselImgs Fun is start from here
+  const getAllCategoriesFun = async () => {
+    try {
+      const res = await fetch(
+        `${DevelopmentBaseUrl}${userEndPoints?.getAllCategories}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "default",
+        },
+      );
+
+      const result = await res.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        return result?.data;
+      }
+      if (result?.status >= 400 && result?.status <= 550) {
+        return [];
+      }
+    } catch (error) {
+      return [];
+    }
+  };
+
+  allCategoriesData = await getAllCategoriesFun();
+  // getAllHeroCarouselImgs Fun is end here
 
   return (
     <div className="max-w-[1400px] m-auto ">
@@ -127,7 +157,7 @@ const AllProducts = async ({ queryParams }) => {
         allProductsPageAllCarouselImgs={allProductsPageAllCarouselImgs}
       />
       <div className="flex flex-col-reverse lg:flex-row lg:items-center justify-between px-[20px] border border-lightGreen ">
-        <AllProductsApllyFilterBtn />
+        <AllProductsApllyFilterBtn allCategoriesData={allCategoriesData} />
         <AllProductsSearchBar />
       </div>
       <div className="mt-[100px]">

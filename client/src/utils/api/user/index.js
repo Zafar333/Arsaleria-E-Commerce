@@ -23,5 +23,10 @@ const userEndPoints = {
   getAllProducts: "/user/products/getAllProducts",
 
   // AllProducts page route is end here
+
+  // categories route is start from here
+  getAllCategories: "/user/categories/getAllCategories",
+
+  // categories route is end here
 };
 export { userEndPoints };
