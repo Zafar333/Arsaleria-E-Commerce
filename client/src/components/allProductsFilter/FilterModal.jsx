@@ -1,25 +1,30 @@
 "use client";
-import { DownOutlined, MinusOutlined, PlusOutlined } from "@ant-design/icons";
-import { Drawer, Tree } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import { Checkbox, Drawer, Tree } from "antd";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import "./filterModal.css";
 
 const FilterModal = ({
   openFilterModal,
   setOpenFilterModal,
   allCategoriesData,
+  queryParams,
 }) => {
+  const router = useRouter();
   const [treeData, setTreeData] = useState([]);
   const onClose = () => {
     setOpenFilterModal(false);
   };
 
   useEffect(() => {
-    setTreeData(arrangeCategorisFun());
+    const data = arrangeCategorisFun();
+    if (data) {
+      setTreeData(addCheckboxToBottomCategories(data));
+    }
   }, []);
-  useEffect(() => {
-    console.log("data", treeData);
-  }, [treeData]);
 
+  // arrangeCategorisFun is start from here
   const arrangeCategorisFun = () => {
     const categories = allCategoriesData || [];
 
@@ -27,15 +32,14 @@ const FilterModal = ({
       return categories
         .filter((category) => category.parent_id === parentId)
         .map((category) => {
-          const children = createTree(category.id);
+          const children = createTree(category?.id);
 
           return {
             title: category?.category_name,
             parentid: category?.parent_id,
             isparent: category?.is_parent,
-            key: category.id,
-
-            ...(children.length > 0 && {
+            key: category?.id,
+            ...(children?.length > 0 && {
               children: children,
             }),
           };
@@ -44,27 +48,56 @@ const FilterModal = ({
 
     return createTree();
   };
+  // arrangeCategorisFun is end here
 
-  const tree = [
-    {
-      title: "parent 1",
-      key: "0-0",
-      children: [
-        {
-          title: "leaf",
-          key: "0-0-0",
-          icon: ({ selected }) =>
-            selected ? <MinusOutlined /> : <PlusOutlined />,
-        },
-        {
-          title: "leaf",
-          key: "0-0-1",
-          icon: ({ selected }) =>
-            selected ? <MinusOutlined /> : <PlusOutlined />,
-        },
-      ],
-    },
-  ];
+  // addCheckboxToBottomCategories fun is start from here
+  const addCheckboxToBottomCategories = (categories) => {
+    return categories.map((category) => {
+      // If category has children
+      if (category.children?.length > 0) {
+        return {
+          ...category,
+          children: addCheckboxToBottomCategories(category.children),
+        };
+      }
+
+      // Bottom category / leaf category
+      return {
+        ...category,
+        title: (
+          <Checkbox
+            // checked={}
+            className=" [&_.ant-checkbox-checked_.ant-checkbox-inner]:!bg-white
+    [&_.ant-checkbox-checked_.ant-checkbox-inner]:!border-green-500
+    [&_.ant-checkbox-checked_.ant-checkbox-inner::after]:!border-green-500"
+            onChange={(e) => {
+              setDynamicUrlFun(
+                category?.title,
+                category?.key,
+                e.target.checked,
+              );
+            }}
+          >
+            {category.title}
+          </Checkbox>
+        ),
+      };
+    });
+  };
+  // addCheckboxToBottomCategories fun is end here
+
+  // setDynamicUrlFun is start from here
+  const setDynamicUrlFun = (title, catgId, checked) => {
+    const query = new URLSearchParams(window.location.search);
+    if (checked == true) {
+      router.replace(`?${query.toString()}&${title}=${catgId}`);
+    }
+    if (checked == false) {
+      query.delete(title, catgId);
+      router.replace(`?${query.toString()}`);
+    }
+  };
+  // setDynamicUrlFun is end here
 
   return (
     <div>
@@ -88,7 +121,7 @@ const FilterModal = ({
       >
         <Tree
           showIcon
-          // defaultExpandAll
+          defaultExpandAll
           // defaultSelectedKeys={["0-0-0"]}
           switcherIcon={<DownOutlined />}
           treeData={treeData}

@@ -157,7 +157,10 @@ const AllProducts = async ({ queryParams }) => {
         allProductsPageAllCarouselImgs={allProductsPageAllCarouselImgs}
       />
       <div className="flex flex-col-reverse lg:flex-row lg:items-center justify-between px-[20px] border border-lightGreen ">
-        <AllProductsApllyFilterBtn allCategoriesData={allCategoriesData} />
+        <AllProductsApllyFilterBtn
+          allCategoriesData={allCategoriesData}
+          queryParams={queryParams}
+        />
         <AllProductsSearchBar />
       </div>
       <div className="mt-[100px]">

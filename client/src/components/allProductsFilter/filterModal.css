@@ -1,0 +1,10 @@
+.my-checkbox.ant-checkbox-wrapper .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: white !important;
+  border-color: green !important;
+}
+
+.my-checkbox.ant-checkbox-wrapper
+  .ant-checkbox-checked
+  .ant-checkbox-inner::after {
+  border-color: green !important;
+}
