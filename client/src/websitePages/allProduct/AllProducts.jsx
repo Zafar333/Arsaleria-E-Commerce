@@ -1,18 +1,19 @@
 export const dynamic = "force-dynamic";
 
 import AllProductsCardImg from "@/components/allProductsCardImg/AllProductsCardImg";
+import AllProductsCardImgClientComponent from "@/components/allProductsCardImg/AllProductsCardImgClientComponent";
 import AllProductsCrousel from "@/components/allProductsCrousel/AllProductsCrousel";
 import AllProductsApllyFilterBtn from "@/components/allProductsFilter/AllProductsApllyFilterBtn";
 import AllProductsSearchBar from "@/components/allProductsSearchBar/AllProductsSearchBar";
 import { DevelopmentBaseUrl } from "@/utils/api/main";
 import { userEndPoints } from "@/utils/api/user";
-import LoadMoreButton from "./LoadMoreButton";
 
 // await getAllProductsFun();
 
 const AllProducts = async ({ queryParams }) => {
   let allProductsPageAllCarouselImgs = [];
   let allProductsData = [];
+  let allProductsInfiniteScrollingClientComponentData = [];
   let managedata = {};
   let paginationCursorData = [];
   let allCategoriesData = [];
@@ -47,43 +48,13 @@ const AllProducts = async ({ queryParams }) => {
   allProductsPageAllCarouselImgs = await getAllHeroCarouselImgs();
   // getAllHeroCarouselImgs Fun is end here
 
-  // getAllProductsFun is start from here
+  // getAllProductsFun  get only first 10 or 20 product for server productsCardimgs component is start from here
   const getAllProductsFun = async () => {
     try {
       // setPageLoading(true);
-      if (
-        Object.keys(queryParams)?.length > 0 &&
-        queryParams?.limit &&
-        !queryParams?.cursor
-      ) {
+      if (Object.keys(queryParams)?.length > 0 && queryParams?.limit) {
         const response = await fetch(
           `${DevelopmentBaseUrl}${userEndPoints?.getAllProducts}?limit=${queryParams?.limit}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-            cache: "default",
-          },
-        );
-        const result = await response.json();
-        if (result?.status >= 200 && result?.status < 400) {
-          return result;
-          // console.log("request succes", heroSectionAllProducts);
-        }
-
-        if (result?.status >= 400 && result?.status <= 550) {
-          return [];
-        }
-      }
-      if (
-        Object.keys(queryParams)?.length > 0 &&
-        queryParams?.limit &&
-        queryParams?.cursor
-      ) {
-        const response = await fetch(
-          `${DevelopmentBaseUrl}${userEndPoints?.getAllProducts}?limit=${queryParams?.limit}&cursor=${queryParams?.cursor}`,
           {
             method: "GET",
             headers: {
@@ -112,14 +83,61 @@ const AllProducts = async ({ queryParams }) => {
   // allProductsData = await getAllProductsFun();
   managedata = await getAllProductsFun();
   allProductsData = managedata?.data;
+  // paginationCursorData = [
+  //   {
+  //     nextCursor: managedata?.nextCursor,
+  //     hasMore: managedata?.hasMore,
+  //   },
+  // ];
+
+  // getAllProductsFun  get only first 10 or 20 product for server productsCardimgs component is end here
+
+  // getAllProductsInifiniteScrollingFun  get cursor paginition fro infinite scrolling products for client productsCardimgs component is start from here
+  const getAllProductsInifiniteScrollingFun = async () => {
+    try {
+      if (
+        Object.keys(queryParams)?.length > 0 &&
+        queryParams?.limit
+        // queryParams?.cursor
+      ) {
+        const response = await fetch(
+          `${DevelopmentBaseUrl}${userEndPoints?.getInfiniteScrollingProducts}?limit=${queryParams?.limit}&cursor=${queryParams?.cursor}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            cache: "default",
+          },
+        );
+        const result = await response.json();
+        if (result?.status >= 200 && result?.status < 400) {
+          return result;
+          // console.log("request succes", heroSectionAllProducts);
+        }
+
+        if (result?.status >= 400 && result?.status <= 550) {
+          return [];
+        }
+      }
+    } catch (error) {
+      // console.log(error?.message);
+      return [];
+    }
+  };
+
+  // allProductsData = await getAllProductsFun();
+  let prodData = await getAllProductsInifiniteScrollingFun();
+  allProductsInfiniteScrollingClientComponentData = prodData?.data;
   paginationCursorData = [
     {
-      nextCursor: managedata?.nextCursor,
-      hasMore: managedata?.hasMore,
+      nextCursor: prodData?.nextCursor,
+      hasMore: prodData?.hasMore,
     },
   ];
 
-  // getAllProductsFun is end here
+  // getAllProductsInifiniteScrollingFun  get cursor paginition fro infinite scrolling products for client productsCardimgs component is start from here
 
   // getAllHeroCarouselImgs Fun is start from here
   const getAllCategoriesFun = async () => {
@@ -167,15 +185,27 @@ const AllProducts = async ({ queryParams }) => {
         <div className="">
           {/* all products section is start from here */}
           <div className="w-full grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[30px]">
+            {/*this AllProductsCardImg is server component for first 10 or 20 products server side rendering fro seo  */}
             <AllProductsCardImg allProductsData={allProductsData} />
+            {/*this AllProductsCardImg is server component for first 10 or 20 products server side rendering fro seo  */}
+
+            {/* this is AllProductsCardImgClientComponent for get next remaining products get from server side fetch and load in clien componnet through cursor paginantion  */}
+            <AllProductsCardImgClientComponent
+              allProductsInfiniteScrollingClientComponentData={
+                allProductsInfiniteScrollingClientComponentData
+              }
+              paginationCursorData={paginationCursorData}
+            />
+            {/* this is AllProductsCardImgClientComponent for get next remaining products get from server side fetch and load in clien componnet through cursor paginantion  */}
+
             {/* Load More Button  */}
           </div>
           {/* all products section is end from here */}
         </div>
-        <LoadMoreButton
+        {/* <LoadMoreButton
           allProductsData={allProductsData}
           paginationCursorData={paginationCursorData}
-        />
+        /> */}
       </div>
     </div>
   );

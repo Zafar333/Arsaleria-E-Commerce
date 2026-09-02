@@ -67,9 +67,7 @@ const FilterModal = ({
         title: (
           <Checkbox
             // checked={}
-            className=" [&_.ant-checkbox-checked_.ant-checkbox-inner]:!bg-white
-    [&_.ant-checkbox-checked_.ant-checkbox-inner]:!border-green-500
-    [&_.ant-checkbox-checked_.ant-checkbox-inner::after]:!border-green-500"
+
             onChange={(e) => {
               setDynamicUrlFun(
                 category?.title,
