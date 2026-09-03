@@ -2,7 +2,7 @@
 import { startLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SeeProductDetail from "./SeeProductDetail";
 
 const AllProductsCardImgClientComponent = ({
@@ -11,6 +11,10 @@ const AllProductsCardImgClientComponent = ({
   allProductsInfiniteScrollingClientComponentData,
 }) => {
   const router = useRouter();
+  const [allPaginationProductsData, setAllPaginationProductsData] = useState(
+    [],
+  );
+
   useEffect(() => {
     const handleScroll = () => {
       // if (allProductsData?.length > 0) {
@@ -24,7 +28,7 @@ const AllProductsCardImgClientComponent = ({
         // Call when 300px away from bottom
         if (pageHeight - scrollPosition < 200) {
           startLoadingBar();
-          console.log("set route");
+          // console.log("set route");
           router.replace(
             `/allProducts?limit=1&cursor=${paginationCursorData[0]?.nextCursor}`,
           );
@@ -41,13 +45,25 @@ const AllProductsCardImgClientComponent = ({
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [paginationCursorData[0]?.nextCursor]);
+
+  //  this useeffect use fro preseve previous data when use infinite scrolling
+  useEffect(() => {
+    console.log("i am call");
+    setAllPaginationProductsData([
+      ...allPaginationProductsData,
+      ...allProductsInfiniteScrollingClientComponentData,
+    ]);
+  }, [paginationCursorData[0]?.nextCursor]);
+  //  this useeffect use fro preseve previous data when use infinite scrolling end here
+
   return (
     /* card */
     /* loop is apply this div */
-    allProductsInfiniteScrollingClientComponentData?.length > 0 ? (
-      allProductsInfiniteScrollingClientComponentData?.map((prod, ind) => (
+    allPaginationProductsData?.length > 0 ? (
+      allPaginationProductsData?.map((prod, ind) => (
         <div className="border border-gray-200 h-fit" key={ind}>
+          {console.log("inside")}
           <div className=" bg-whiteGray h-[240px] sm:h-[300px] flex rounded-sm">
             <Image
               alt="Image"
@@ -56,7 +72,6 @@ const AllProductsCardImgClientComponent = ({
               src={prod?.secure_url}
               className="w-full h-full object-contain "
             />
-            {/* <img src={img} className="w-full h-full  object-center" /> */}
           </div>
           {/* card text Content */}
           <div className="mt-[10px]">

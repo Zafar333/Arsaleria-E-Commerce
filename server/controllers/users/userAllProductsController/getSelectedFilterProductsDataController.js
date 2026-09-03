@@ -1,17 +1,24 @@
 const { pool } = require("../../../database/db");
 
-const getAllProductsController = async (req, res) => {
-  const { limit } = req?.query;
-  const cursor = Number(req?.query?.cursor);
+const getSelectedFilterProductsDataController = async (req, res) => {
+  const data = req?.query;
+  const { limit, cursor, ...newqueryParams } = data;
+  //   console.log("newqueryParams", Number(Object?.values(newqueryParams)));
+  //   const { limit } = req?.query;
+  //   const cursor = Number(req?.query?.cursor);
   // console.log("cursor", typeof cursor);
   try {
     if (Object.keys(req?.query).length == 0) {
-      return res.send({ status: 500, data: [] });
+      return res.send({ status: 500, message: "bad request" });
     }
     if (Object.keys(req?.query).length > 0 && !limit) {
-      return res.send({ status: 500, data: [] });
+      return res.send({ status: 500, message: "bad request" });
     }
-    if (limit) {
+    if (req?.query?.limit) {
+      const data = req?.query;
+      const { limit, cursor, ...newqueryParams } = data;
+      const querParamsarray = Object?.values(newqueryParams);
+      console.log("querParamsarray", querParamsarray);
       const result = await pool.query(
         `
         SELECT
@@ -31,17 +38,20 @@ LEFT JOIN LATERAL (
     LIMIT 1
 ) AS products_media ON true
 
-WHERE EXISTS (
+WHERE 
+    products.product_category = ANY($1::bigint[])
+AND EXISTS (
 SELECT 1
     FROM products_variants 
         WHERE products_variants.products_id = products.id
-       AND products_variants.stock_status = $1
+       AND products_variants.stock_status = $2
 )
         ORDER BY products.id DESC
-        LIMIT $2
+        LIMIT $3
         `,
-        ["Available", limit],
+        [querParamsarray, "Available", req?.query?.limit],
       );
+      //   console.log("result", result?.rows);
       if (result?.rows?.length < 1) {
         return res.send({
           status: 200,
@@ -53,13 +63,16 @@ SELECT 1
       return res.send({ status: 200, data: result?.rows });
     }
   } catch (error) {
-    console.log("getAllProductsController errors", error?.message);
+    console.log(
+      "getSelectedFilterProductsDataController errors",
+      error?.message,
+    );
     res?.send({
       status: 500,
-      message: "server error",
+      message: "backend server error",
       data: [],
     });
   }
 };
 
-module.exports = { getAllProductsController };
+module.exports = { getSelectedFilterProductsDataController };

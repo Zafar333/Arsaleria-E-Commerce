@@ -12,6 +12,9 @@ const {
 const {
   getAllProductsCursorPaginationController,
 } = require("../../controllers/users/userAllProductsController/getAllProductsCursorPaginationController");
+const {
+  getSelectedFilterProductsDataController,
+} = require("../../controllers/users/userAllProductsController/getSelectedFilterProductsDataController");
 
 const router = express.Router();
 
@@ -27,6 +30,10 @@ router.get(
   "/getInfiniteScrollingProducts",
   getAllProductsCursorPaginationController,
 ); //get remainning products in chunks through cursor pagination route
+router.get(
+  "/getSelectedFilterProductsData",
+  getSelectedFilterProductsDataController,
+);
 
 // AllproductsPage routes is end here
 

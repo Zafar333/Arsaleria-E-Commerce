@@ -1,8 +1,11 @@
 "use client";
+import { DevelopmentBaseUrl } from "@/utils/api/main";
+import { userEndPoints } from "@/utils/api/user";
 import { DownOutlined } from "@ant-design/icons";
 import { Checkbox, Drawer, Tree } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import "./filterModal.css";
 
 const FilterModal = ({
@@ -84,11 +87,39 @@ const FilterModal = ({
   };
   // addCheckboxToBottomCategories fun is end here
 
+  const getSelectedFilterProductsDataFun = async (title, catgId) => {
+    const data = new URLSearchParams(window?.location?.search);
+    try {
+      const res = await fetch(
+        `${DevelopmentBaseUrl}${userEndPoints?.getSelectedFilterProductsData}?${data?.toString()}&${title}=${catgId}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          cache: "default",
+        },
+      );
+
+      const result = await res.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        return result?.data;
+      }
+      if (result?.status >= 400 && result?.status <= 550) {
+        toast.error(result?.message);
+      }
+    } catch (error) {
+      toast.error("front server error");
+    }
+  };
+
   // setDynamicUrlFun is start from here
   const setDynamicUrlFun = (title, catgId, checked) => {
     const query = new URLSearchParams(window.location.search);
     if (checked == true) {
       router.replace(`?${query.toString()}&${title}=${catgId}`);
+      getSelectedFilterProductsDataFun(title, catgId);
     }
     if (checked == false) {
       query.delete(title, catgId);

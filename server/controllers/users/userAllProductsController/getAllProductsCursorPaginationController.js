@@ -6,14 +6,62 @@ const getAllProductsCursorPaginationController = async (req, res) => {
     const { limit } = req?.query;
     const cursor = Number(req?.query?.cursor);
     if (Object.keys(req?.query).length == 0) {
-      return;
-    }
-    if (!cursor) {
-      return res.send({
+      return res?.send({
         status: 500,
-        message: "no product found",
+        message: "server error",
         data: [],
+        nextCursor: null,
+        hasMore: false,
       });
+    }
+    if (Object.keys(req?.query).length > 0 && !limit && !cursor) {
+      return res?.send({
+        status: 500,
+        message: "server error",
+        data: [],
+        nextCursor: null,
+        hasMore: false,
+      });
+    }
+    if (limit && !cursor) {
+      const result = await pool.query(
+        ` SELECT products.id
+FROM products
+WHERE EXISTS (
+    SELECT 1
+    FROM products_variants
+    WHERE products_variants.products_id = products.id
+      AND products_variants.stock_status =$1
+)
+              ORDER BY products.id DESC
+              LIMIT $2
+             
+             `,
+        ["Available", limit],
+      );
+      if (result?.rows?.length < 1) {
+        const products = result?.rows;
+
+        const hasMore = products.length == limit;
+
+        const nextCursor =
+          products?.length > 0 ? products[products.length - 1].id : null;
+        return res.send({
+          status: 200,
+          message: "no product found",
+          data: [],
+          nextCursor,
+          hasMore,
+        });
+      }
+
+      const products = result?.rows;
+
+      const hasMore = products.length == limit;
+
+      const nextCursor =
+        products.length > 0 ? products[products.length - 1].id : null;
+      return res.send({ status: 200, data: [], nextCursor, hasMore });
     }
     if (limit && cursor) {
       const result = await pool.query(

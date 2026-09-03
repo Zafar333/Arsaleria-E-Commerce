@@ -22,6 +22,7 @@ const userEndPoints = {
   // AllProducts page route is start from here
   getAllProducts: "/user/products/getAllProducts",
   getInfiniteScrollingProducts: "/user/products/getInfiniteScrollingProducts",
+  getSelectedFilterProductsData: "/user/products/getSelectedFilterProductsData",
 
   // AllProducts page route is end here
 

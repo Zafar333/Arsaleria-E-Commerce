@@ -66,7 +66,7 @@ const AllProducts = async ({ queryParams }) => {
         );
         const result = await response.json();
         if (result?.status >= 200 && result?.status < 400) {
-          return result;
+          return result?.data;
           // console.log("request succes", heroSectionAllProducts);
         }
 
@@ -81,14 +81,7 @@ const AllProducts = async ({ queryParams }) => {
   };
 
   // allProductsData = await getAllProductsFun();
-  managedata = await getAllProductsFun();
-  allProductsData = managedata?.data;
-  // paginationCursorData = [
-  //   {
-  //     nextCursor: managedata?.nextCursor,
-  //     hasMore: managedata?.hasMore,
-  //   },
-  // ];
+  allProductsData = await getAllProductsFun();
 
   // getAllProductsFun  get only first 10 or 20 product for server productsCardimgs component is end here
 
@@ -128,12 +121,12 @@ const AllProducts = async ({ queryParams }) => {
   };
 
   // allProductsData = await getAllProductsFun();
-  let prodData = await getAllProductsInifiniteScrollingFun();
-  allProductsInfiniteScrollingClientComponentData = prodData?.data;
+  managedata = await getAllProductsInifiniteScrollingFun();
+  allProductsInfiniteScrollingClientComponentData = managedata?.data;
   paginationCursorData = [
     {
-      nextCursor: prodData?.nextCursor,
-      hasMore: prodData?.hasMore,
+      nextCursor: managedata?.nextCursor,
+      hasMore: managedata?.hasMore,
     },
   ];
 
