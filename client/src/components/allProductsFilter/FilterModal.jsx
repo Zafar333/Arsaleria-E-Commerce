@@ -1,21 +1,24 @@
 "use client";
-import { DevelopmentBaseUrl } from "@/utils/api/main";
-import { userEndPoints } from "@/utils/api/user";
+import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
 import { DownOutlined } from "@ant-design/icons";
-import { Checkbox, Drawer, Tree } from "antd";
+import { Button, Checkbox, Drawer, Tree } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 import "./filterModal.css";
 
 const FilterModal = ({
   openFilterModal,
   setOpenFilterModal,
   allCategoriesData,
+  allSelectedFiltersProductsData,
   queryParams,
 }) => {
   const router = useRouter();
+  const dispatch = useDispatch();
+
   const [treeData, setTreeData] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const onClose = () => {
     setOpenFilterModal(false);
   };
@@ -52,6 +55,23 @@ const FilterModal = ({
     return createTree();
   };
   // arrangeCategorisFun is end here
+  // setDynamicUrlFun is start from here
+  const setDynamicUrlFun = (title, catgId, checked) => {
+    // console.log("catgid", typeof catgId);
+    const query = new URLSearchParams(window.location.search);
+    if (checked == true) {
+      setSelectedCategories((prev) => [...prev, catgId]);
+      router.replace(`?${query.toString()}&${title}=${catgId}`);
+    }
+    if (checked == false) {
+      setSelectedCategories(
+        selectedCategories.filter((data) => data != catgId),
+      );
+      query.delete(title, catgId);
+      router.replace(`?${query.toString()}`);
+    }
+  };
+  // setDynamicUrlFun is end here
 
   // addCheckboxToBottomCategories fun is start from here
   const addCheckboxToBottomCategories = (categories) => {
@@ -65,12 +85,12 @@ const FilterModal = ({
       }
 
       // Bottom category / leaf category
+      {
+      }
       return {
         ...category,
         title: (
           <Checkbox
-            // checked={}
-
             onChange={(e) => {
               setDynamicUrlFun(
                 category?.title,
@@ -87,46 +107,20 @@ const FilterModal = ({
   };
   // addCheckboxToBottomCategories fun is end here
 
-  const getSelectedFilterProductsDataFun = async (title, catgId) => {
-    const data = new URLSearchParams(window?.location?.search);
-    try {
-      const res = await fetch(
-        `${DevelopmentBaseUrl}${userEndPoints?.getSelectedFilterProductsData}?${data?.toString()}&${title}=${catgId}`,
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          cache: "default",
-        },
+  // clearAllfilterFun is start from here
+  const clearAllfilterFun = () => {
+    router.replace(`?limit=1&cursor=null`);
+    setSelectedCategories([]);
+    if (allSelectedFiltersProductsData?.length > 0) {
+      dispatch(
+        setAllProductsDispatch({
+          allSelectedFiltersProductsData: [],
+          data: "selectedFilterData",
+        }),
       );
-
-      const result = await res.json();
-      if (result?.status >= 200 && result?.status < 400) {
-        return result?.data;
-      }
-      if (result?.status >= 400 && result?.status <= 550) {
-        toast.error(result?.message);
-      }
-    } catch (error) {
-      toast.error("front server error");
     }
   };
-
-  // setDynamicUrlFun is start from here
-  const setDynamicUrlFun = (title, catgId, checked) => {
-    const query = new URLSearchParams(window.location.search);
-    if (checked == true) {
-      router.replace(`?${query.toString()}&${title}=${catgId}`);
-      getSelectedFilterProductsDataFun(title, catgId);
-    }
-    if (checked == false) {
-      query.delete(title, catgId);
-      router.replace(`?${query.toString()}`);
-    }
-  };
-  // setDynamicUrlFun is end here
+  // clearAllfilterFun is end here
 
   return (
     <div>
@@ -155,6 +149,7 @@ const FilterModal = ({
           switcherIcon={<DownOutlined />}
           treeData={treeData}
         />
+        <Button onClick={clearAllfilterFun}>Reset all</Button>
       </Drawer>
     </div>
   );

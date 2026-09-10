@@ -1,21 +1,38 @@
 "use client";
+import {
+  setAllProductsDispatch,
+  setInfiniteScrollingCursorDataDispatch,
+} from "@/store/allProductsPageSlice";
 import { startLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import SeeProductDetail from "./SeeProductDetail";
 
 const AllProductsCardImgClientComponent = ({
   allProductsData,
   paginationCursorData,
   allProductsInfiniteScrollingClientComponentData,
+  allSelectedFiltersProductsData,
 }) => {
+  const dispatch = useDispatch();
+  const reduxAllProductsData = useSelector((state) => state?.allProductsSlice);
+  const reduxCursorData = useSelector(
+    (state) => state?.allProductsSlice,
+  )?.infiniteScrollingCursorData;
   const router = useRouter();
-  const [allPaginationProductsData, setAllPaginationProductsData] = useState(
-    [],
-  );
+
+  // useEffect(() => {
+  //   console.log("redux data", reduxAllProductsData);
+  // }, [reduxAllProductsData]);
+  // useEffect(() => {
+  //   console.log("reduxCursorData ", reduxCursorData);
+  // }, [reduxCursorData]);
 
   useEffect(() => {
+    // console.log("infinite cursor useffect call");
+
     const handleScroll = () => {
       // if (allProductsData?.length > 0) {
       if (
@@ -27,6 +44,7 @@ const AllProductsCardImgClientComponent = ({
 
         // Call when 300px away from bottom
         if (pageHeight - scrollPosition < 200) {
+          // console.log("cursor is call");
           startLoadingBar();
           // console.log("set route");
           router.replace(
@@ -47,23 +65,36 @@ const AllProductsCardImgClientComponent = ({
     };
   }, [paginationCursorData[0]?.nextCursor]);
 
-  //  this useeffect use fro preseve previous data when use infinite scrolling
   useEffect(() => {
-    console.log("i am call");
-    setAllPaginationProductsData([
-      ...allPaginationProductsData,
-      ...allProductsInfiniteScrollingClientComponentData,
-    ]);
-  }, [paginationCursorData[0]?.nextCursor]);
-  //  this useeffect use fro preseve previous data when use infinite scrolling end here
+    if (allProductsData?.length > 0) {
+      dispatch(
+        setAllProductsDispatch({
+          allProductsData,
+          data: "generalAllProductData",
+        }),
+      );
+      dispatch(setInfiniteScrollingCursorDataDispatch(paginationCursorData));
+      // console.log("useEffect allproducts dispatch", allProductsData);
+    }
+  }, [allProductsData]);
+
+  useEffect(() => {
+    if (allSelectedFiltersProductsData?.length > 0) {
+      dispatch(
+        setAllProductsDispatch({
+          allSelectedFiltersProductsData,
+          data: "selectedFilterData",
+        }),
+      );
+    }
+  }, [allSelectedFiltersProductsData]);
 
   return (
     /* card */
     /* loop is apply this div */
-    allPaginationProductsData?.length > 0 ? (
-      allPaginationProductsData?.map((prod, ind) => (
+    reduxAllProductsData?.allProducts?.length > 0 ? (
+      reduxAllProductsData?.allProducts?.map((prod, ind) => (
         <div className="border border-gray-200 h-fit" key={ind}>
-          {console.log("inside")}
           <div className=" bg-whiteGray h-[240px] sm:h-[300px] flex rounded-sm">
             <Image
               alt="Image"

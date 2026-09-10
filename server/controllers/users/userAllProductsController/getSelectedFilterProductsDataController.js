@@ -1,6 +1,8 @@
 const { pool } = require("../../../database/db");
 
 const getSelectedFilterProductsDataController = async (req, res) => {
+  console.log("getSelectedFilterProductsDataController here");
+
   const data = req?.query;
   const { limit, cursor, ...newqueryParams } = data;
   //   console.log("newqueryParams", Number(Object?.values(newqueryParams)));
@@ -18,7 +20,7 @@ const getSelectedFilterProductsDataController = async (req, res) => {
       const data = req?.query;
       const { limit, cursor, ...newqueryParams } = data;
       const querParamsarray = Object?.values(newqueryParams);
-      console.log("querParamsarray", querParamsarray);
+      // console.log("querParamsarray", querParamsarray);
       const result = await pool.query(
         `
         SELECT
@@ -47,20 +49,27 @@ SELECT 1
        AND products_variants.stock_status = $2
 )
         ORDER BY products.id DESC
-        LIMIT $3
+        
         `,
-        [querParamsarray, "Available", req?.query?.limit],
+        [querParamsarray, "Available"],
       );
-      //   console.log("result", result?.rows);
+      // console.log("result", result?.rows);
       if (result?.rows?.length < 1) {
         return res.send({
           status: 200,
           message: "no product found",
           data: result?.rows,
+          nextCursor: null,
+          hasMore: false,
         });
       }
 
-      return res.send({ status: 200, data: result?.rows });
+      return res.send({
+        status: 200,
+        data: result?.rows,
+        nextCursor: null,
+        hasMore: false,
+      });
     }
   } catch (error) {
     console.log(
@@ -69,8 +78,10 @@ SELECT 1
     );
     res?.send({
       status: 500,
-      message: "backend server error",
+      message: "server error",
       data: [],
+      nextCursor: null,
+      hasMore: false,
     });
   }
 };

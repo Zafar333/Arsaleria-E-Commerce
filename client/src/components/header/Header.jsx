@@ -1,5 +1,6 @@
 "use client";
 import UserLogin from "@/components/userLoginModal/UserLogin";
+import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
 import { setAddToCartModalDispatch } from "@/store/cartDetailSlice";
 import { setUserLoginDetailDispatch } from "@/store/userLoginDetailSlice";
 import {
@@ -98,6 +99,18 @@ const Header = ({ token }) => {
 
   // gotoLoginPage fun is satrt from here
   const gotoLoginPageFun = () => {
+    dispatch(
+      setAllProductsDispatch({
+        allSelectedFiltersProductsData: [],
+        data: "selectedFilterData",
+      }),
+    );
+    dispatch(
+      setAllProductsDispatch({
+        allProductsData: [],
+        data: "generalAllProductData",
+      }),
+    );
     startLoadingBar();
     navigate.replace(`/userLogin`);
   };
@@ -105,6 +118,18 @@ const Header = ({ token }) => {
 
   // navigateFun is start from here
   const navigateFun = () => {
+    dispatch(
+      setAllProductsDispatch({
+        allSelectedFiltersProductsData: [],
+        data: "selectedFilterData",
+      }),
+    );
+    dispatch(
+      setAllProductsDispatch({
+        allProductsData: [],
+        data: "generalAllProductData",
+      }),
+    );
     startLoadingBar();
     setHeaderHighlighter([path]);
   };
@@ -112,6 +137,18 @@ const Header = ({ token }) => {
 
   // gotToContactUs fun is start from here
   const gotToContactUs = (data) => {
+    dispatch(
+      setAllProductsDispatch({
+        allSelectedFiltersProductsData: [],
+        data: "selectedFilterData",
+      }),
+    );
+    dispatch(
+      setAllProductsDispatch({
+        allProductsData: [],
+        data: "generalAllProductData",
+      }),
+    );
     startLoadingBar();
     navigate.push("/contactus");
     setHeaderHighlighter([path]);
@@ -120,6 +157,18 @@ const Header = ({ token }) => {
 
   // gotToAdmin fun is start from here
   const gotToAdmin = () => {
+    dispatch(
+      setAllProductsDispatch({
+        allSelectedFiltersProductsData: [],
+        data: "selectedFilterData",
+      }),
+    );
+    dispatch(
+      setAllProductsDispatch({
+        allProductsData: [],
+        data: "generalAllProductData",
+      }),
+    );
     startLoadingBar();
     navigate.push(
       `/admin?id=${adminLoginDetailState?.adminLoginDetail[0]?.id}`,
@@ -139,6 +188,18 @@ const Header = ({ token }) => {
   // handleProfileClick fun is start from here
   const handleProfileClick = ({ key }) => {
     if (key == "logout") {
+      dispatch(
+        setAllProductsDispatch({
+          allSelectedFiltersProductsData: [],
+          data: "selectedFilterData",
+        }),
+      );
+      dispatch(
+        setAllProductsDispatch({
+          allProductsData: [],
+          data: "generalAllProductData",
+        }),
+      );
       userLogoutFun();
       // Call your logout API here
     }

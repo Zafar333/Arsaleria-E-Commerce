@@ -4,7 +4,11 @@ import { Button } from "antd";
 import { useEffect, useState } from "react";
 import FilterModal from "./FilterModal";
 
-const AllProductsApllyFilterBtn = ({ allCategoriesData, queryParams }) => {
+const AllProductsApllyFilterBtn = ({
+  allCategoriesData,
+  queryParams,
+  allSelectedFiltersProductsData,
+}) => {
   const [openFilterModal, setOpenFilterModal] = useState(false);
 
   useEffect(() => {
@@ -18,6 +22,7 @@ const AllProductsApllyFilterBtn = ({ allCategoriesData, queryParams }) => {
   return (
     <div>
       <FilterModal
+        allSelectedFiltersProductsData={allSelectedFiltersProductsData}
         queryParams={queryParams}
         allCategoriesData={allCategoriesData}
         openFilterModal={openFilterModal}

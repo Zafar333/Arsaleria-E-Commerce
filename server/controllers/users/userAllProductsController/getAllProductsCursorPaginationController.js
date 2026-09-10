@@ -1,7 +1,7 @@
 const { pool } = require("../../../database/db");
 
 const getAllProductsCursorPaginationController = async (req, res) => {
-  console.log("getAllProductsCursorPaginationController here");
+  console.log("getAllProductsCursorPaginationController here", req?.query);
   try {
     const { limit } = req?.query;
     const cursor = Number(req?.query?.cursor);

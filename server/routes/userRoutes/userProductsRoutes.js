@@ -9,9 +9,7 @@ const {
 const {
   getAllProductsController,
 } = require("../../controllers/users/userAllProductsController/getAllProductsController");
-const {
-  getAllProductsCursorPaginationController,
-} = require("../../controllers/users/userAllProductsController/getAllProductsCursorPaginationController");
+
 const {
   getSelectedFilterProductsDataController,
 } = require("../../controllers/users/userAllProductsController/getSelectedFilterProductsDataController");
@@ -26,10 +24,7 @@ router.get("/getAllFeaturedProducts", getAllFeaturedProductsController);
 // AllproductsPage routes is start from here
 
 router.get("/getAllProducts", getAllProductsController); // get initial only 10 to 20 products route
-router.get(
-  "/getInfiniteScrollingProducts",
-  getAllProductsCursorPaginationController,
-); //get remainning products in chunks through cursor pagination route
+
 router.get(
   "/getSelectedFilterProductsData",
   getSelectedFilterProductsDataController,
