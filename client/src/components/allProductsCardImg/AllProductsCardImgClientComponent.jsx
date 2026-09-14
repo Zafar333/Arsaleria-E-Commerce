@@ -1,20 +1,19 @@
 "use client";
 import {
+  setAddProductsDispatch,
   setAllProductsDispatch,
   setInfiniteScrollingCursorDataDispatch,
 } from "@/store/allProductsPageSlice";
 import { startLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SeeProductDetail from "./SeeProductDetail";
 
 const AllProductsCardImgClientComponent = ({
   allProductsData,
   paginationCursorData,
-  allProductsInfiniteScrollingClientComponentData,
-  allSelectedFiltersProductsData,
 }) => {
   const dispatch = useDispatch();
   const reduxAllProductsData = useSelector((state) => state?.allProductsSlice);
@@ -22,33 +21,57 @@ const AllProductsCardImgClientComponent = ({
     (state) => state?.allProductsSlice,
   )?.infiniteScrollingCursorData;
   const router = useRouter();
+  const [productsData, setProductsData] = useState([]);
 
+  useEffect(() => {
+    const navigation = performance.getEntriesByType("navigation")[0];
+
+    const query = new URLSearchParams(window.location.search);
+    if (navigation?.type === "reload") {
+      // dispatch(setAllProductsDispatch([]));
+
+      if (query?.has("cursor") && query?.get("cursor") != "null") {
+        query?.delete("cursor");
+        router.replace(`?${query?.toString()}&cursor=null`);
+        dispatch(setAllProductsDispatch([]));
+      }
+    }
+  }, []);
   // useEffect(() => {
   //   console.log("redux data", reduxAllProductsData);
   // }, [reduxAllProductsData]);
-  // useEffect(() => {
-  //   console.log("reduxCursorData ", reduxCursorData);
-  // }, [reduxCursorData]);
+  useEffect(() => {
+    console.log("reduxCursorData ", reduxCursorData);
+  }, [reduxCursorData]);
 
   useEffect(() => {
-    // console.log("infinite cursor useffect call");
+    if (allProductsData?.length > 0) {
+      if (reduxAllProductsData?.allProducts?.length == 0) {
+        // console.log("data", allProductsData);
+        dispatch(setAllProductsDispatch(allProductsData));
+        dispatch(setInfiniteScrollingCursorDataDispatch(paginationCursorData));
+      }
+      if (reduxAllProductsData?.allProducts?.length >= 1)
+        dispatch(setAddProductsDispatch(allProductsData));
+      dispatch(setInfiniteScrollingCursorDataDispatch(paginationCursorData));
+    } else {
+      dispatch(setInfiniteScrollingCursorDataDispatch(paginationCursorData));
+    }
+  }, [allProductsData]);
 
+  useEffect(() => {
     const handleScroll = () => {
-      // if (allProductsData?.length > 0) {
-      if (
-        paginationCursorData[0]?.hasMore &&
-        paginationCursorData[0]?.nextCursor
-      ) {
+      if (reduxCursorData[0]?.hasMore && reduxCursorData[0]?.nextCursor) {
         const scrollPosition = window.innerHeight + window.scrollY;
         const pageHeight = document.documentElement.scrollHeight;
 
         // Call when 300px away from bottom
         if (pageHeight - scrollPosition < 200) {
-          // console.log("cursor is call");
+          const query = new URLSearchParams(window.location.search);
+          query?.delete("cursor");
           startLoadingBar();
-          // console.log("set route");
           router.replace(
-            `/allProducts?limit=1&cursor=${paginationCursorData[0]?.nextCursor}`,
+            `/allProducts?${query?.toString()}&cursor=${reduxCursorData[0]?.nextCursor}`,
           );
         }
       } else {
@@ -63,31 +86,7 @@ const AllProductsCardImgClientComponent = ({
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [paginationCursorData[0]?.nextCursor]);
-
-  useEffect(() => {
-    if (allProductsData?.length > 0) {
-      dispatch(
-        setAllProductsDispatch({
-          allProductsData,
-          data: "generalAllProductData",
-        }),
-      );
-      dispatch(setInfiniteScrollingCursorDataDispatch(paginationCursorData));
-      // console.log("useEffect allproducts dispatch", allProductsData);
-    }
-  }, [allProductsData]);
-
-  useEffect(() => {
-    if (allSelectedFiltersProductsData?.length > 0) {
-      dispatch(
-        setAllProductsDispatch({
-          allSelectedFiltersProductsData,
-          data: "selectedFilterData",
-        }),
-      );
-    }
-  }, [allSelectedFiltersProductsData]);
+  }, [reduxCursorData[0]?.nextCursor]);
 
   return (
     /* card */
@@ -123,6 +122,7 @@ const AllProductsCardImgClientComponent = ({
         </div>
       ))
     ) : (
+      // reduxCursorData?[0].hasMore
       <div className="text-[17px] font-Roboto  text-darkGreen">
         No Product Found
       </div>

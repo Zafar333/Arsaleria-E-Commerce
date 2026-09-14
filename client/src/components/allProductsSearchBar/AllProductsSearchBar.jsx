@@ -1,18 +1,52 @@
-"use client"
-import React from 'react'
-import { Input} from 'antd';
+"use client";
+import {
+  setAddProductsDispatch,
+  setAllProductsDispatch,
+} from "@/store/allProductsPageSlice";
+import { startLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
+import { Input } from "antd";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import "./allProductsSearchBar.css";
 const { Search } = Input;
-import "./allProductsSearchBar.css"
 
 const AllProductsSearchBar = () => {
-    // searchBar function is startfrom here
-  const onSearch = (value, _e, info) => console.log(info?.source, value);
-  // searchBar function is end here
-    return (
-        <div className='mt-[50px] mb-[50px] text-right'>
-            <Search  size='large' className='w-full sm:w-[400px] lg:w-[600px] rounded-sm custom-border text-[30px] font-Poppins custom-placeholder ' placeholder="Search product" onSearch={onSearch} enterButton />
-        </div>
-    )
-}
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const reduxCursorData = useSelector(
+    (state) => state?.allProductsSlice?.infiniteScrollingCursorData,
+  );
 
-export default AllProductsSearchBar
+  // searchBar function is startfrom here
+  const onSearch = async (value) => {
+    if (!value) {
+      return toast.error("search bar is empty");
+    }
+    const query = new URLSearchParams(window.location.search);
+    dispatch(setAllProductsDispatch([]));
+    dispatch(setAddProductsDispatch([]));
+    if (query?.has("cursor")) {
+      query?.delete("cursor");
+    }
+    if (query?.has("search")) {
+      query?.delete("search");
+    }
+    startLoadingBar();
+    router.replace(`?${query?.toString()}&cursor=null&search=${value}`);
+  };
+  // searchBar function is end here
+  return (
+    <div className="mt-[50px] mb-[50px] text-right">
+      <Search
+        size="large"
+        className="w-full sm:w-[400px] lg:w-[600px] rounded-sm custom-border text-[30px] font-Poppins custom-placeholder "
+        placeholder="Search product"
+        onSearch={onSearch}
+        enterButton
+      />
+    </div>
+  );
+};
+
+export default AllProductsSearchBar;

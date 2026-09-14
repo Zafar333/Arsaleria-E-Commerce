@@ -1,21 +1,29 @@
 "use client";
-import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
+import {
+  setAddProductsDispatch,
+  setAllProductsDispatch,
+  setInfiniteScrollingCursorDataDispatch,
+} from "@/store/allProductsPageSlice";
+import { startLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { DownOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Drawer, Tree } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./filterModal.css";
 
 const FilterModal = ({
   openFilterModal,
   setOpenFilterModal,
   allCategoriesData,
-  allSelectedFiltersProductsData,
   queryParams,
 }) => {
+  const reduxCursorData = useSelector(
+    (state) => state?.allProductsSlice,
+  )?.infiniteScrollingCursorData;
   const router = useRouter();
   const dispatch = useDispatch();
+  const [count, setCount] = useState(0);
 
   const [treeData, setTreeData] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -36,8 +44,8 @@ const FilterModal = ({
 
     const createTree = (parentId = null) => {
       return categories
-        .filter((category) => category.parent_id === parentId)
-        .map((category) => {
+        ?.filter((category) => category?.parent_id === parentId)
+        ?.map((category) => {
           const children = createTree(category?.id);
 
           return {
@@ -60,27 +68,37 @@ const FilterModal = ({
     // console.log("catgid", typeof catgId);
     const query = new URLSearchParams(window.location.search);
     if (checked == true) {
+      dispatch(setAllProductsDispatch([]));
+      dispatch(setAddProductsDispatch([]));
+      query?.delete("cursor");
+
       setSelectedCategories((prev) => [...prev, catgId]);
-      router.replace(`?${query.toString()}&${title}=${catgId}`);
+      router.replace(`?${query?.toString()}&cursor=null&${title}=${catgId}`);
+      startLoadingBar();
     }
+
     if (checked == false) {
+      dispatch(setAllProductsDispatch([]));
+      dispatch(setAddProductsDispatch([]));
       setSelectedCategories(
         selectedCategories.filter((data) => data != catgId),
       );
-      query.delete(title, catgId);
-      router.replace(`?${query.toString()}`);
+      query?.delete("cursor");
+      query?.delete(title, catgId);
+      router.replace(`?${query.toString()}&cursor=null`);
+      startLoadingBar();
     }
   };
   // setDynamicUrlFun is end here
 
   // addCheckboxToBottomCategories fun is start from here
   const addCheckboxToBottomCategories = (categories) => {
-    return categories.map((category) => {
+    return categories?.map((category) => {
       // If category has children
-      if (category.children?.length > 0) {
+      if (category?.children?.length > 0) {
         return {
           ...category,
-          children: addCheckboxToBottomCategories(category.children),
+          children: addCheckboxToBottomCategories(category?.children),
         };
       }
 
@@ -91,15 +109,16 @@ const FilterModal = ({
         ...category,
         title: (
           <Checkbox
+            className="text-darkGreen! text-[12px]! font-Poppins"
             onChange={(e) => {
               setDynamicUrlFun(
                 category?.title,
                 category?.key,
-                e.target.checked,
+                e.target?.checked,
               );
             }}
           >
-            {category.title}
+            {category?.title}
           </Checkbox>
         ),
       };
@@ -109,16 +128,13 @@ const FilterModal = ({
 
   // clearAllfilterFun is start from here
   const clearAllfilterFun = () => {
+    startLoadingBar();
     router.replace(`?limit=1&cursor=null`);
+    let paginationCursorData = [{ nextCursor: null, hasMore: "false" }];
     setSelectedCategories([]);
-    if (allSelectedFiltersProductsData?.length > 0) {
-      dispatch(
-        setAllProductsDispatch({
-          allSelectedFiltersProductsData: [],
-          data: "selectedFilterData",
-        }),
-      );
-    }
+    dispatch(setAllProductsDispatch([]));
+    dispatch(setAddProductsDispatch([]));
+    dispatch(setInfiniteScrollingCursorDataDispatch(paginationCursorData));
   };
   // clearAllfilterFun is end here
 
@@ -142,14 +158,29 @@ const FilterModal = ({
         }}
         className={`bg-gray-200! p-0 m-0 `}
       >
-        <Tree
-          showIcon
-          defaultExpandAll
-          // defaultSelectedKeys={["0-0-0"]}
-          switcherIcon={<DownOutlined />}
-          treeData={treeData}
-        />
-        <Button onClick={clearAllfilterFun}>Reset all</Button>
+        <div className="py-5  bg-white  h-full">
+          <Tree
+            showIcon
+            defaultExpandAll
+            titleRender={(node) => (
+              <span className="text-darkGreen! text-[14px]! font-Poppins">
+                {node.title}
+              </span>
+            )}
+            defaultSelectedKeys={["0-0-0"]}
+            switcherIcon={<DownOutlined />}
+            treeData={treeData}
+            className="bg-transparent! "
+          />
+          <div className=" mt-10">
+            <Button
+              onClick={clearAllfilterFun}
+              className="bg-lightGreen! text-darkGreen text-[14px]! font-Poppins! ml-5  "
+            >
+              Clear all Filters
+            </Button>
+          </div>
+        </div>
       </Drawer>
     </div>
   );

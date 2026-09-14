@@ -53,16 +53,19 @@ const AllProducts = async ({ queryParams }) => {
   const getAllProductsFun = async () => {
     try {
       // setPageLoading(true);
+      const query = new URLSearchParams(queryParams);
       if (
         Object.keys(queryParams)?.length > 0 &&
-        keys.length == 2 &&
+        // keys.length == 2 &&
+        keys.length > 0 &&
         keys.includes("limit") &&
-        keys.includes("cursor")
+        keys.includes("cursor") &&
+        queryParams?.limit == "1"
       ) {
         // console.log("getAllProductsFun request is going");
 
         const response = await fetch(
-          `${DevelopmentBaseUrl}${userEndPoints?.getAllProducts}?limit=${queryParams?.limit}&cursor=${queryParams?.cursor}`,
+          `${DevelopmentBaseUrl}${userEndPoints?.getAllProducts}?${query.toString()}`,
           {
             method: "GET",
             headers: {
@@ -100,56 +103,6 @@ const AllProducts = async ({ queryParams }) => {
       hasMore: managedata?.hasMore,
     },
   ];
-
-  // getAllProductsFun  get only first 10 or 20 product for server productsCardimgs component is end here
-
-  // getSelectedFilterProductsDataFun is start from here
-  const getSelectedFilterProductsDataFun = async () => {
-    // console.log("queryparams", queryParams);
-    const queryString = new URLSearchParams(queryParams).toString();
-    try {
-      if (
-        Object?.keys(queryParams).length > 2 &&
-        keys.length > 2 &&
-        queryParams?.limit &&
-        keys.includes("limit") &&
-        keys.includes("cursor")
-      ) {
-        const res = await fetch(
-          `${DevelopmentBaseUrl}${userEndPoints?.getSelectedFilterProductsData}?${queryString}`,
-          {
-            method: "GET",
-            credentials: "include",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            cache: "default",
-          },
-        );
-
-        const result = await res.json();
-        if (result?.status >= 200 && result?.status < 400) {
-          return result?.data;
-        }
-        if (result?.status >= 400 && result?.status <= 550) {
-          return [];
-        }
-      }
-    } catch (error) {
-      return [];
-    }
-  };
-  allSelectedFiltersProductsData = await getSelectedFilterProductsDataFun();
-  // console.log("selected filterProduct data", allSelectedFiltersProductsData);
-
-  // allProductsInfiniteScrollingClientComponentData = managedata?.data;
-  // paginationCursorData = [
-  //   {
-  //     nextCursor: managedata?.nextCursor,
-  //     hasMore: managedata?.hasMore,
-  //   },
-  // ];
-  // getSelectedFilterProductsDataFun is end here
 
   // getAllHeroCarouselImgs Fun is start from here
   const getAllCategoriesFun = async () => {

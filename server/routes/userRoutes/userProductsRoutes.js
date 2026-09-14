@@ -11,8 +11,8 @@ const {
 } = require("../../controllers/users/userAllProductsController/getAllProductsController");
 
 const {
-  getSelectedFilterProductsDataController,
-} = require("../../controllers/users/userAllProductsController/getSelectedFilterProductsDataController");
+  getSearchProductsController,
+} = require("../../controllers/users/getSearchProductsController");
 
 const router = express.Router();
 
@@ -25,10 +25,7 @@ router.get("/getAllFeaturedProducts", getAllFeaturedProductsController);
 
 router.get("/getAllProducts", getAllProductsController); // get initial only 10 to 20 products route
 
-router.get(
-  "/getSelectedFilterProductsData",
-  getSelectedFilterProductsDataController,
-);
+router.get("/searchProducts", getSearchProductsController); // search and get products route
 
 // AllproductsPage routes is end here
 
