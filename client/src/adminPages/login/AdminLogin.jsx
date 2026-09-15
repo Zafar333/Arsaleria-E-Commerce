@@ -4,6 +4,11 @@ import ForgotPasswordModal from "@/components/forgotPasswordModals/forgotPasswor
 import ForgotEmailModal from "@/components/forgotPasswordModals/fotgotEmail/ForgotEmailModal";
 import SuccessModal from "@/components/forgotPasswordModals/successModal/SuccessModal";
 import { setAdminLoginDetailDispatch } from "@/store/adminDetailSlice";
+import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
+import {
+  setAllProductsBtnStateDispatch,
+  setFilterBtnStateDispatch,
+} from "@/store/allproductsFilterSlice";
 import {
   startLoadingBar,
   stopLoadingBar,
@@ -38,6 +43,9 @@ const AdminLogin = () => {
 
   useEffect(() => {
     stopLoadingBar();
+    dispatch(setAllProductsDispatch([]));
+    dispatch(setAllProductsBtnStateDispatch(false));
+    dispatch(setFilterBtnStateDispatch(false));
   }, []);
 
   // gotoForgotPasswordModal is start from here

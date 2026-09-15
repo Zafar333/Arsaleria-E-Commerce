@@ -1,12 +1,22 @@
 "use client";
+import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
+import {
+  setAllProductsBtnStateDispatch,
+  setFilterBtnStateDispatch,
+} from "@/store/allproductsFilterSlice";
 import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { Button, Form, Input } from "antd";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import "./contactUs.css";
 
 const ContactUsPage = () => {
+  const dispatch = useDispatch();
   useEffect(() => {
     stopLoadingBar();
+    dispatch(setAllProductsDispatch([]));
+    dispatch(setAllProductsBtnStateDispatch(false));
+    dispatch(setFilterBtnStateDispatch(false));
   }, []);
   const { TextArea } = Input;
 

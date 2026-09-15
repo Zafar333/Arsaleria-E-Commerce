@@ -40,7 +40,7 @@ const allProductsSlice = createSlice({
       // state.allProducts = [...state.allProducts, ...action.payload];
     },
     setInfiniteScrollingCursorDataDispatch(state, action) {
-      console.log("infiniteScrollingCursorData payload", action.payload);
+      // console.log("infiniteScrollingCursorData payload", action.payload);
       state.infiniteScrollingCursorData = action.payload;
     },
   },

@@ -1,5 +1,9 @@
 "use client";
 import {
+  setAllProductsBtnStateDispatch,
+  setFilterBtnStateDispatch,
+} from "@/store/allproductsFilterSlice";
+import {
   setAddProductsDispatch,
   setAllProductsDispatch,
   setInfiniteScrollingCursorDataDispatch,
@@ -67,26 +71,49 @@ const FilterModal = ({
   const setDynamicUrlFun = (title, catgId, checked) => {
     // console.log("catgid", typeof catgId);
     const query = new URLSearchParams(window.location.search);
+
+    // console.log("urlquery", query?.size);
     if (checked == true) {
       dispatch(setAllProductsDispatch([]));
-      dispatch(setAddProductsDispatch([]));
       query?.delete("cursor");
-
-      setSelectedCategories((prev) => [...prev, catgId]);
-      router.replace(`?${query?.toString()}&cursor=null&${title}=${catgId}`);
       startLoadingBar();
+      setSelectedCategories((prev) => [...prev, catgId]);
+      if (query?.size == 1) {
+        dispatch(setAllProductsBtnStateDispatch(false));
+        dispatch(setFilterBtnStateDispatch(true));
+      }
+      if (query.has("search")) {
+        query.delete("search");
+        return router.replace(
+          `?${query?.toString()}&cursor=null&${title}=${catgId}`,
+        );
+      }
+
+      return router.replace(
+        `?${query?.toString()}&cursor=null&${title}=${catgId}`,
+      );
     }
 
     if (checked == false) {
       dispatch(setAllProductsDispatch([]));
-      dispatch(setAddProductsDispatch([]));
       setSelectedCategories(
         selectedCategories.filter((data) => data != catgId),
       );
+      startLoadingBar();
       query?.delete("cursor");
       query?.delete(title, catgId);
-      router.replace(`?${query.toString()}&cursor=null`);
-      startLoadingBar();
+      if (
+        (query?.size == 2 && query?.has("search")) ||
+        (query?.size == 1 && !query?.has("search"))
+      ) {
+        dispatch(setAllProductsBtnStateDispatch(true));
+        dispatch(setFilterBtnStateDispatch(false));
+      }
+      if (query?.has("search")) {
+        query?.delete("search");
+        return router.replace(`?${query.toString()}&cursor=null`);
+      }
+      return router.replace(`?${query.toString()}&cursor=null`);
     }
   };
   // setDynamicUrlFun is end here
@@ -130,11 +157,13 @@ const FilterModal = ({
   const clearAllfilterFun = () => {
     startLoadingBar();
     router.replace(`?limit=1&cursor=null`);
-    let paginationCursorData = [{ nextCursor: null, hasMore: "false" }];
+    let paginationCursorData = [{ nextCursor: null, hasMore: false }];
     setSelectedCategories([]);
     dispatch(setAllProductsDispatch([]));
     dispatch(setAddProductsDispatch([]));
     dispatch(setInfiniteScrollingCursorDataDispatch(paginationCursorData));
+    dispatch(setAllProductsBtnStateDispatch(true));
+    dispatch(setFilterBtnStateDispatch(false));
   };
   // clearAllfilterFun is end here
 

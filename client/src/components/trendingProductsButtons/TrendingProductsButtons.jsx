@@ -1,26 +1,75 @@
-"use client"
-import Link from 'next/link'
-import React, { useState } from 'react'
+"use client";
+import {
+  setAllProductsBtnStateDispatch,
+  setFilterBtnStateDispatch,
+} from "@/store/allproductsFilterSlice";
+import {
+  startLoadingBar,
+  stopLoadingBar,
+} from "@/topLoadingBarComponent/TopLoadingBarComponent";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import FilterModal from "../allProductsFilter/FilterModal";
 
-const TrendingProductsButtons = () => {
-    const [activeColor,setActiveColor]=useState("allProducts")
-    // getTrendingProductsDataFun is start from here
-   const getTrendingProductsDataFun=(data)=>{
-    console.log("getTrendingProductsDataFun",data)
-    setActiveColor(data)
+const TrendingProductsButtons = ({ allCategoriesData, queryParams }) => {
+  const checkFilterBtnState = useSelector(
+    (state) => state?.allProductsFilterSlice,
+  );
 
-   }
-    // getTrendingProductsDataFun is end here
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [openFilterModal, setOpenFilterModal] = useState(false);
+
+  useEffect(() => {
+    stopLoadingBar();
+  }, []);
+
+  // gotAllProductsFun is start from here
+  const gotAllProductsFun = () => {
+    startLoadingBar();
+    dispatch(setAllProductsBtnStateDispatch(true));
+    dispatch(setFilterBtnStateDispatch(false));
+
+    router.replace("?limit=1&cursor=null");
+  };
+  // gotAllProductsFun is end here
+
+  // openFilterModalFun is start from here
+  const openFilterModalFun = () => {
+    dispatch(setAllProductsBtnStateDispatch(false));
+    dispatch(setFilterBtnStateDispatch(true));
+    setOpenFilterModal(true);
+  };
+  // openFilterModalFun is end here
+
   return (
-    <div className='flex justify-center mt-[50px]'>
-      <div className='py-[10px] md:py-0 flex gap-[40px] md:gap-[80px] overflow-x-auto'>
-      <Link href={"#"} className={`${activeColor==="allProducts"?"border-b-2 border-darkGreen text-darkGreen":"text-textLightGray"} text-nowrap max-w-fit text-[18px] md:text-[22px] font-Poppins text-textLightGray`} onClick={()=>getTrendingProductsDataFun("allProducts")}>All Products</Link>
-      <Link href={"#"} className={`${activeColor==="sale"?"border-b-2 border-darkGreen text-darkGreen":"text-textLightGray"} max-w-fit text-[18px] md:text-[22px] font-Poppins text-textLightGray`} onClick={()=>getTrendingProductsDataFun("sale")}>Sale</Link>
-      <Link href={"#"} className={`${activeColor==="New Arrivals"?"border-b-2 border-darkGreen text-darkGreen":"text-textLightGray"} text-nowrap text-[18px] md:text-[22px] font-Poppins max-w-fit`} onClick={()=>getTrendingProductsDataFun("New Arrivals")}>New Arrivals</Link>
-      <Link href={"#"} className={`${activeColor==="Accessories"?"border-b-2 border-darkGreen text-darkGreen":"text-textLightGray"}  max-w-fit text-[18px] md:text-[22px] font-Poppins `} onClick={()=>getTrendingProductsDataFun("Accessories")}>Accessories</Link>
+    <div className="flex justify-center mt-[50px] bg-lightGreen rounded-md  mx-0 sm:mx-[100px] xl:mx-[300px]">
+      <div className="py-[10px] md:py-3 flex gap-[40px] md:gap-[80px] overflow-x-auto">
+        <Link
+          href={"#"}
+          className={`${checkFilterBtnState?.allProductsBtnState == true ? "border-b-2 border-darkGreen text-darkGreen" : "text-textLightGray"} text-nowrap max-w-fit text-[18px] md:text-[22px] font-Poppins text-textLightGray`}
+          onClick={() => gotAllProductsFun()}
+        >
+          All Products
+        </Link>
+        <Link
+          href={"#"}
+          className={`${checkFilterBtnState?.filterBtnState == true ? "border-b-2 border-darkGreen text-darkGreen" : "text-textLightGray"} max-w-fit text-[18px] md:text-[22px] font-Poppins text-textLightGray`}
+          onClick={() => openFilterModalFun()}
+        >
+          Filters
+        </Link>
       </div>
-    </div> 
-  )
-}
+      <FilterModal
+        queryParams={queryParams}
+        allCategoriesData={allCategoriesData}
+        openFilterModal={openFilterModal}
+        setOpenFilterModal={setOpenFilterModal}
+      />
+    </div>
+  );
+};
 
-export default TrendingProductsButtons
+export default TrendingProductsButtons;

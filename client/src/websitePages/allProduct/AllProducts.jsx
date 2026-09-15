@@ -2,8 +2,8 @@ export const dynamic = "force-dynamic";
 
 import AllProductsCardImgClientComponent from "@/components/allProductsCardImg/AllProductsCardImgClientComponent";
 import AllProductsCrousel from "@/components/allProductsCrousel/AllProductsCrousel";
-import AllProductsApllyFilterBtn from "@/components/allProductsFilter/AllProductsApllyFilterBtn";
 import AllProductsSearchBar from "@/components/allProductsSearchBar/AllProductsSearchBar";
+import TrendingProductsButtons from "@/components/trendingProductsButtons/TrendingProductsButtons";
 import { DevelopmentBaseUrl } from "@/utils/api/main";
 import { userEndPoints } from "@/utils/api/user";
 
@@ -139,28 +139,27 @@ const AllProducts = async ({ queryParams }) => {
       <AllProductsCrousel
         allProductsPageAllCarouselImgs={allProductsPageAllCarouselImgs}
       />
-      <div className="flex flex-col-reverse lg:flex-row lg:items-center justify-between px-[20px] border border-lightGreen ">
-        <AllProductsApllyFilterBtn
-          allCategoriesData={allCategoriesData}
-          allSelectedFiltersProductsData={allSelectedFiltersProductsData}
-          queryParams={queryParams}
-        />
+      <div className="flex justify-end px-[20px] border border-lightGreen ">
         <AllProductsSearchBar />
       </div>
+      {/* in TrendingProductsButtons we have filters button features button is start from here */}
+      <TrendingProductsButtons
+        allCategoriesData={allCategoriesData}
+        queryParams={queryParams}
+      />
+      {/* in TrendingProductsButtons we have filters button features button is end here */}
+
       <div className="mt-[100px]">
         <div className="">
           {/* all products section is start from here */}
-          <div className="w-full grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[30px]">
-            {/* this is AllProductsCardImgClientComponent for get next remaining products get from server side fetch and load in clien componnet through cursor paginantion  */}
-            <AllProductsCardImgClientComponent
-              allProductsData={allProductsData}
-              paginationCursorData={paginationCursorData}
-              allSelectedFiltersProductsData={allSelectedFiltersProductsData}
-            />
-            {/* this is AllProductsCardImgClientComponent for get next remaining products get from server side fetch and load in clien componnet through cursor paginantion  */}
+          {/* this is AllProductsCardImgClientComponent for get next remaining products get from server side fetch and load in clien componnet through cursor paginantion  */}
+          <AllProductsCardImgClientComponent
+            allProductsData={allProductsData}
+            paginationCursorData={paginationCursorData}
+            allSelectedFiltersProductsData={allSelectedFiltersProductsData}
+          />
+          {/* this is AllProductsCardImgClientComponent for get next remaining products get from server side fetch and load in clien componnet through cursor paginantion  */}
 
-            {/* Load More Button  */}
-          </div>
           {/* all products section is end from here */}
         </div>
         {/* <LoadMoreButton

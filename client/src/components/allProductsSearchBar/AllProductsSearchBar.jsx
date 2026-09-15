@@ -6,7 +6,7 @@ import {
 import { startLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { Input } from "antd";
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import "./allProductsSearchBar.css";
 const { Search } = Input;
@@ -14,9 +14,6 @@ const { Search } = Input;
 const AllProductsSearchBar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const reduxCursorData = useSelector(
-    (state) => state?.allProductsSlice?.infiniteScrollingCursorData,
-  );
 
   // searchBar function is startfrom here
   const onSearch = async (value) => {
@@ -40,8 +37,8 @@ const AllProductsSearchBar = () => {
     <div className="mt-[50px] mb-[50px] text-right">
       <Search
         size="large"
-        className="w-full sm:w-[400px] lg:w-[600px] rounded-sm custom-border text-[30px] font-Poppins custom-placeholder "
-        placeholder="Search product"
+        className="w-full sm:w-[400px] lg:w-[600px] rounded-sm text-[30px] font-Poppins custom-placeholder! "
+        placeholder="search product"
         onSearch={onSearch}
         enterButton
       />

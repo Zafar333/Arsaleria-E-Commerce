@@ -13,11 +13,12 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 // import filtersReducer from '../features/filters/filtersSlice'
 import adminDetailSlice from "./adminDetailSlice.js";
+import allProductsFilterSlice from "./allproductsFilterSlice.js";
 import allProductsSlice from "./allProductsPageSlice.js";
 import cartDetailSlice from "./cartDetailSlice.js";
 import userLoginDetailSlice from "./userLoginDetailSlice.js";
-
 const rootReducer = combineReducers({
+  allProductsFilterSlice,
   cartDetailSlice,
   adminDetailSlice,
   userLoginDetailSlice,

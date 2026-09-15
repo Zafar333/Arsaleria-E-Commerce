@@ -13,7 +13,7 @@ const OurProducts = ({ heroSectionAllProducts }) => {
       {/* <TrendingProductsButtons /> */}
       {/* Trendig Products Button section is end here */}
 
-      <div className="mt-[20px] md:mt-[50px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[60px] md:gap-[20px] lg:gap-[40px]">
+      <div className="mt-[20px] md:mt-[50px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-[40px] md:gap-[20px] lg:gap-[40px]">
         {/* card is start from  here  */}
         {heroSectionAllProducts?.length > 0 ? (
           heroSectionAllProducts?.map((prod, ind) => (
@@ -33,16 +33,16 @@ const OurProducts = ({ heroSectionAllProducts }) => {
               </div>
               {/* card text Content */}
               <div className="mt-[10px]">
-                <p className="font-Poppins text-[18px] text-center text-darkGray bolder font-bold">
+                <p className="font-Poppins text-[14px] sm:text-[16px] md:text-[18px] text-center text-darkGray bolder font-bold">
                   {/* {datavalue} */}
                   {prod?.product_name}
                 </p>
                 <div className="mt-[10px] grid grid-cols-3 items-center justify-center">
-                  <p className="font-Poppins text-[18px] text-textLightGray text-end">
+                  <p className="font-Poppins text-[14px] sm:text-[16px] md:text-[18px] text-textLightGray text-end">
                     {prod?.sellproduct_price_1kg}
                   </p>
                   <p className="flex justify-center items-center">|</p>
-                  <p className="font-Poppins text-[18px] text-textLightGray ">
+                  <p className="font-Poppins text-[14px] sm:text-[16px] md:text-[18px] text-textLightGray ">
                     Rs
                   </p>
                 </div>

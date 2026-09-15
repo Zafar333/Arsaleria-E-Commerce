@@ -1,5 +1,9 @@
 "use client";
 import UserLogin from "@/components/userLoginModal/UserLogin";
+import {
+  setAllProductsBtnStateDispatch,
+  setFilterBtnStateDispatch,
+} from "@/store/allproductsFilterSlice";
 import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
 import { setAddToCartModalDispatch } from "@/store/cartDetailSlice";
 import { setUserLoginDetailDispatch } from "@/store/userLoginDetailSlice";
@@ -99,7 +103,6 @@ const Header = ({ token }) => {
 
   // gotoLoginPage fun is satrt from here
   const gotoLoginPageFun = () => {
-    dispatch(setAllProductsDispatch([]));
     startLoadingBar();
     navigate.replace(`/userLogin`);
   };
@@ -108,6 +111,8 @@ const Header = ({ token }) => {
   // navigateFun is start from here
   const navigateFun = () => {
     dispatch(setAllProductsDispatch([]));
+    dispatch(setAllProductsBtnStateDispatch(false));
+    dispatch(setFilterBtnStateDispatch(false));
     startLoadingBar();
     setHeaderHighlighter([path]);
   };
@@ -115,8 +120,6 @@ const Header = ({ token }) => {
 
   // gotToContactUs fun is start from here
   const gotToContactUs = (data) => {
-    dispatch(setAllProductsDispatch([]));
-
     startLoadingBar();
     navigate.push("/contactus");
     setHeaderHighlighter([path]);
@@ -125,7 +128,6 @@ const Header = ({ token }) => {
 
   // gotToAdmin fun is start from here
   const gotToAdmin = () => {
-    dispatch(setAllProductsDispatch([]));
     startLoadingBar();
     navigate.push(
       `/admin?id=${adminLoginDetailState?.adminLoginDetail[0]?.id}`,
@@ -144,7 +146,6 @@ const Header = ({ token }) => {
 
   // handleProfileClick fun is start from here
   const handleProfileClick = ({ key }) => {
-    dispatch(setAllProductsDispatch([]));
     if (key == "logout") {
       userLogoutFun();
       // Call your logout API here
@@ -155,7 +156,7 @@ const Header = ({ token }) => {
   // userLogoutFun is start from here
   const userLogoutFun = async () => {
     // console.log("i", userLoginDetailState);
-    dispatch(setAllProductsDispatch([]));
+
     try {
       startLoadingBar();
       const response = await fetch(
@@ -172,6 +173,9 @@ const Header = ({ token }) => {
       if (result?.status >= 200 && result?.status < 400) {
         toast.success(result?.message);
         dispatch(setUserLoginDetailDispatch([]));
+        dispatch(setAllProductsDispatch([]));
+        dispatch(setAllProductsBtnStateDispatch(false));
+        dispatch(setFilterBtnStateDispatch(false));
         stopLoadingBar();
         return navigate.replace(`${frontendDevelopmentBaseUrl}/`);
       }

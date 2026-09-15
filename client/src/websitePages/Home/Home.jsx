@@ -24,19 +24,19 @@ const Home = ({
   return (
     <div className="max-w-[1400px] mx-auto">
       {/* homeCrousel section is start from here */}
-      <div className="mt-[100px]">
+      <div className="mt-[50px] sm:mt-[70px] md:mt-[100px]">
         <HomeCarousel heroCarouselAllImgs={heroCarouselAllImgs} />
       </div>
       {/* homeCrousel section is end here */}
 
       {/* Best SellerSection is Start from here */}
-      <div className="mt-[100px]">
+      <div className="mt-[50px] sm:mt-[70px] md:mt-[100px]">
         <p className="font-Roboto text-[26px] sm:text-[30px] md:text-[50px] text-darkGreen text-center">
           Featured Products
         </p>
         {/* card Container*/}
         <div
-          className={`mt-[20px] md:mt-[50px] grid ${getAllFeaturedProductsData?.length == 0 ? "grid-cols-1" : getAllFeaturedProductsData?.length == 1 ? "grid-cols-1 px-0 xs:px-[10%] sm:px-[15%] md:px-[30%]" : getAllFeaturedProductsData?.length == 2 ? "grid-cols-1 sm:grid-cols-2 px-0 md:px-[5%]" : "grid-cols-1 px-0 xs:px-[10%] sm:px-[15%] md:px-0 md:grid-cols-3"} gap-[60px] md:gap-[20px] lg:gap-[40px]`}
+          className={`mt-[20px] md:mt-[50px] grid ${getAllFeaturedProductsData?.length == 0 ? "grid-cols-1" : getAllFeaturedProductsData?.length == 1 ? "grid-cols-1 px-0 xs:px-[10%] sm:px-[15%] md:px-[30%]" : getAllFeaturedProductsData?.length == 2 ? "grid-cols-1 sm:grid-cols-2 px-0 md:px-[5%]" : "grid-cols-1 px-0 xs:px-[10%] sm:px-[15%] md:px-0 md:grid-cols-3"}  gap-[40px] md:gap-[20px] lg:gap-[40px]`}
         >
           {/* card is start from  here  */}
           {getAllFeaturedProductsData?.length > 0 ? (
@@ -44,7 +44,7 @@ const Home = ({
               <Link
                 key={ind}
                 href={`/productDetail/${prod?.id}`}
-                className="cursor-pointer border border-gray-200 rounded-sm"
+                className="cursor-pointer border border-gray-200 rounded-sm "
               >
                 <div className=" bg-grayGreen h-[400px] xl:h-[550px] rounded-sm">
                   <Image
@@ -57,16 +57,16 @@ const Home = ({
                 </div>
                 {/* card text Content */}
                 <div className="mt-[10px]">
-                  <p className="font-Poppins text-[18px] text-center text-darkGray bolder font-bold">
+                  <p className="font-Poppins text-[14px] sm:text-[16px] md:text-[18px] text-center text-darkGray bolder font-bold">
                     {/* {datavalue} */}
                     {prod?.product_name}
                   </p>
                   <div className="mt-[10px] grid grid-cols-3 items-center justify-center">
-                    <p className="font-Poppins text-[18px] text-textLightGray text-end">
+                    <p className="font-Poppins text-[14px] sm:text-[16px] md:text-[18px] text-textLightGray text-end">
                       {prod?.sellproduct_price_1kg}
                     </p>
                     <p className="flex justify-center items-center">|</p>
-                    <p className="font-Poppins  text-[18px] text-textLightGray ">
+                    <p className="font-Poppins text-[14px] sm:text-[16px] md:text-[18px] text-textLightGray ">
                       Rs
                     </p>
                   </div>
@@ -89,18 +89,13 @@ const Home = ({
         {/* card Container */}
         {/* <div className="flex justify-center ">
           <OurProductSectionSeeAllButton />
-           <Link
-            href={"/allProducts"}
-            className="py-[10px] px-[60px] rounded-sm bg-lightGreen text-[22px] font-Poppins"
-          >
-            See All
-          </Link> 
+          
         </div> */}
       </div>
       {/* Best Seller Section is end here */}
 
       {/* our all Products Section is start from here */}
-      <div className="mt-[100px]">
+      <div className="mt-[50px] sm:mt-[70px] md:mt-[100px]">
         <OurProducts heroSectionAllProducts={heroSectionAllProducts} />
       </div>
       {/* our Products Section is end here */}
@@ -108,10 +103,6 @@ const Home = ({
       {/* Exclusive Offer Section is start from here */}
       <ExclusiveOfferSection />
       {/* Exclusive Offer Section is end here */}
-
-      {/* <Button type="primary" onClick={() => router.push("/admin")}>
-        Admin Dashboard
-      </Button> */}
     </div>
   );
 };

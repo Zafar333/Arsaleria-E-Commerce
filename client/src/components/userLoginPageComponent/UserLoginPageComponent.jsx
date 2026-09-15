@@ -3,6 +3,11 @@ import UserForgotPasswordEmailModal from "@/components/userForgotPasswordModals/
 import UserForgotPasswordModal from "@/components/userForgotPasswordModals/userForgotPasswordModal/UserForgotPasswordModal";
 import UserForgotPasswordOtpModal from "@/components/userForgotPasswordModals/userForgotPasswordOtpModal/UserForgotPasswordOtpModal";
 import UserUpdatedPasswordSuccessModal from "@/components/userForgotPasswordModals/userUpdatedPasswordSuccessModal/UserUpdatedPasswordSuccessModal";
+import {
+  setAllProductsBtnStateDispatch,
+  setFilterBtnStateDispatch,
+} from "@/store/allproductsFilterSlice";
+import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
 import { setUserLoginDetailDispatch } from "@/store/userLoginDetailSlice";
 import {
   startLoadingBar,
@@ -45,6 +50,9 @@ const UserLoginPageComponent = () => {
 
   useEffect(() => {
     stopLoadingBar();
+    dispatch(setAllProductsDispatch([]));
+    dispatch(setAllProductsBtnStateDispatch(false));
+    dispatch(setFilterBtnStateDispatch(false));
   }, []);
 
   // logiform functions is start from here
