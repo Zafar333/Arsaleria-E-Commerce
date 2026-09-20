@@ -7,7 +7,6 @@ import {
   startLoadingBar,
   stopLoadingBar,
 } from "@/topLoadingBarComponent/TopLoadingBarComponent";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,6 +27,8 @@ const TrendingProductsButtons = ({ allCategoriesData, queryParams }) => {
 
   // gotAllProductsFun is start from here
   const gotAllProductsFun = () => {
+    const query = new URLSearchParams(window.location.search);
+
     startLoadingBar();
     dispatch(setAllProductsBtnStateDispatch(true));
     dispatch(setFilterBtnStateDispatch(false));
@@ -47,20 +48,18 @@ const TrendingProductsButtons = ({ allCategoriesData, queryParams }) => {
   return (
     <div className="flex justify-center mt-[50px] bg-lightGreen rounded-md  mx-0 sm:mx-[100px] xl:mx-[300px]">
       <div className="py-[10px] md:py-3 flex gap-[40px] md:gap-[80px] overflow-x-auto">
-        <Link
-          href={"#"}
-          className={`${checkFilterBtnState?.allProductsBtnState == true ? "border-b-2 border-darkGreen text-darkGreen" : "text-textLightGray"} text-nowrap max-w-fit text-[18px] md:text-[22px] font-Poppins text-textLightGray`}
+        <label
+          className={`${checkFilterBtnState?.allProductsBtnState == true ? "border-b-2 border-darkGreen text-darkGreen" : "text-textLightGray"} text-nowrap max-w-fit text-[18px] md:text-[22px] font-Poppins text-textLightGray cursor-pointer`}
           onClick={() => gotAllProductsFun()}
         >
           All Products
-        </Link>
-        <Link
-          href={"#"}
-          className={`${checkFilterBtnState?.filterBtnState == true ? "border-b-2 border-darkGreen text-darkGreen" : "text-textLightGray"} max-w-fit text-[18px] md:text-[22px] font-Poppins text-textLightGray`}
+        </label>
+        <label
+          className={`${checkFilterBtnState?.filterBtnState == true ? "border-b-2 border-darkGreen text-darkGreen" : "text-textLightGray"} max-w-fit text-[18px] md:text-[22px] font-Poppins text-textLightGray cursor-pointer`}
           onClick={() => openFilterModalFun()}
         >
           Filters
-        </Link>
+        </label>
       </div>
       <FilterModal
         queryParams={queryParams}

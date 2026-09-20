@@ -12,7 +12,7 @@ const ProductDetailBuyNowButton = () => {
   return (
     <div>
       <Button
-        className="w-[250px] xl:min-w-full !bg-darkGreen !text-white  !text-[18px] !sm:text-[20px] !font-Poppins !py-[20px] !px-[20px] sm:!px-[30px]"
+        className="w-[200px] sm:w-[250px] xl:min-w-full !bg-darkGreen !text-white  !text-[17px] !sm:text-[20px] !font-Poppins !py-[20px] !px-[20px] sm:!px-[30px]"
         onClick={gotoCartPageFun}
       >
         Buy Now

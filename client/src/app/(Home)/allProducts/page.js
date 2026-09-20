@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import AllProducts from "@/websitePages/allProduct/AllProducts";
 
 const AllProduct = async ({ params, searchParams }) => {

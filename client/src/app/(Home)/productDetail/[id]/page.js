@@ -1,10 +1,13 @@
-import ProductDetail from '@/websitePages/productDetail/ProductDetail'
-import React from 'react'
+export const dynamic = "force-dynamic";
 
-const page = () => {
+import ProductDetail from "@/websitePages/productDetail/ProductDetail";
+
+const page = ({ params }) => {
   return (
-    <div className='mx-[10px] sm:mx-[20px]'><ProductDetail/></div>
-  )
-}
+    <div className="mx-[10px] sm:mx-[20px]">
+      <ProductDetail params={params} />
+    </div>
+  );
+};
 
-export default page
+export default page;

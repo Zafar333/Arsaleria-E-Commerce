@@ -24,6 +24,10 @@ const userEndPoints = {
 
   // AllProducts page route is end here
 
+  // singleProductDetail route is start from here
+  getSingleProductData: "/user/products/getSingleProductDetail",
+  // singleProductDetail route is end here
+
   // categories route is start from here
   getAllCategories: "/user/categories/getAllCategories",
 

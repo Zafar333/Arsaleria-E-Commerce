@@ -15,7 +15,7 @@ const ContactUsPage = () => {
   useEffect(() => {
     stopLoadingBar();
     dispatch(setAllProductsDispatch([]));
-    dispatch(setAllProductsBtnStateDispatch(false));
+    dispatch(setAllProductsBtnStateDispatch(true));
     dispatch(setFilterBtnStateDispatch(false));
   }, []);
   const { TextArea } = Input;

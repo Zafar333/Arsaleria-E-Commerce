@@ -2,8 +2,25 @@ const { pool } = require("../../../database/db");
 
 const getAllProductsController = async (req, res) => {
   try {
-    console.log("getAllProductsController here");
-    console.log("getAllProductsController here", req?.query);
+    // console.log("getAllProductsController here");
+    if (Object.keys(req?.query)?.length == 0) {
+      return res?.send({
+        status: 500,
+        message: "invalid request",
+        data: [],
+        nextCursor: null,
+        hasMore: false,
+      });
+    }
+    if (Object.keys(req?.query)?.length > 0 && !req?.query?.limit) {
+      return res?.send({
+        status: 500,
+        message: "invalid request",
+        data: [],
+        nextCursor: null,
+        hasMore: false,
+      });
+    }
     const data = req?.query;
     const { limit, cursor, search } = req?.query;
 
@@ -27,43 +44,26 @@ const getAllProductsController = async (req, res) => {
     // console.log("cursor", cursor);
     const values = [];
     const conditions = [];
-    if (Object.keys(req?.query).length == 0) {
-      return res?.send({
-        status: 500,
-        message: "invalid request",
-        data: [],
-        nextCursor: null,
-        hasMore: false,
-      });
-    }
-    if (Object.keys(req?.query).length > 0 && !limit) {
-      return res?.send({
-        status: 500,
-        message: "invalid request",
-        data: [],
-        nextCursor: null,
-        hasMore: false,
-      });
-    }
+
     if (req?.query?.limit) {
       values.push("Available");
       conditions.push(`EXISTS (
 SELECT 1
     FROM products_variants 
         WHERE products_variants.products_id = products.id
-       AND products_variants.stock_status = $${values.length}
+       AND products_variants.stock_status = $${values?.length}
 )`);
 
       // --------------------------------------------------
       // 2. Product name search
       // --------------------------------------------------
 
-      if (req?.query?.search || search) {
+      if (req?.query?.search) {
         // console.log("i am seearch in");
         values.push(`${req?.query?.search}%`);
 
         conditions.push(`
-      products.product_name ILIKE $${values.length}
+      products.product_name ILIKE $${values?.length}
     `);
       }
 
@@ -71,15 +71,15 @@ SELECT 1
       // 3. Category filter
       // --------------------------------------------------
 
-      if (Object.keys(categoryIds).length > 0) {
+      if (Object.keys(categoryIds)?.length > 0) {
         // console.log("i am categories in");
 
-        const categoryId = Object.values(categoryIds);
+        const categoryId = Object?.values(categoryIds);
         // console.log("cat", categoryId);
         values.push(categoryId);
 
         conditions.push(`
-      products.product_category = ANY($${values.length}::int[])
+      products.product_category = ANY($${values?.length}::int[])
     `);
       }
 
@@ -115,7 +115,7 @@ SELECT 1
 
       values.push(req?.query?.limit);
       // console.log("values", values);
-      const qr = `
+      const sqlquery = `
         SELECT
    products.id,product_name,sellproduct_price_1kg,product_category,
    products_media.id AS imgid, 
@@ -133,22 +133,22 @@ LEFT JOIN LATERAL (
     LIMIT 1
 ) AS products_media ON true
 
-WHERE ${conditions.join(" AND ")}
+WHERE ${conditions?.join(" AND ")}
         ORDER BY products.id DESC
         LIMIT $${values?.length}
 
         `;
-      const result = await pool.query(qr, values);
+      const result = await pool.query(sqlquery, values);
 
       if (result?.rows?.length < 1) {
         const products = result?.rows;
 
-        const hasMore = products.length == limit;
+        const hasMore = products?.length == limit;
 
         const nextCursor =
-          products?.length > 0 ? products[products.length - 1].id : null;
-        console.log("results cursor", nextCursor, hasMore);
-        console.log("results", result?.rows);
+          products?.length > 0 ? products[products?.length - 1].id : null;
+        // console.log("results cursor", nextCursor, hasMore);
+        // console.log("results", result?.rows);
         return res.send({
           status: 200,
           message: "no product found",
@@ -160,12 +160,12 @@ WHERE ${conditions.join(" AND ")}
 
       const products = result?.rows;
 
-      const hasMore = products.length == limit;
+      const hasMore = products?.length == limit;
 
       const nextCursor =
-        products.length > 0 ? products[products.length - 1].id : null;
-      console.log("results cursor", nextCursor, hasMore);
-      console.log("results", result?.rows);
+        products?.length > 0 ? products[products?.length - 1]?.id : null;
+      // console.log("results cursor", nextCursor, hasMore);
+      // console.log("results", result?.rows);
       return res.send({ status: 200, data: result?.rows, nextCursor, hasMore });
     }
   } catch (error) {

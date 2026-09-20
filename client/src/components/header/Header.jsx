@@ -111,7 +111,7 @@ const Header = ({ token }) => {
   // navigateFun is start from here
   const navigateFun = () => {
     dispatch(setAllProductsDispatch([]));
-    dispatch(setAllProductsBtnStateDispatch(false));
+    dispatch(setAllProductsBtnStateDispatch(true));
     dispatch(setFilterBtnStateDispatch(false));
     startLoadingBar();
     setHeaderHighlighter([path]);
@@ -174,7 +174,7 @@ const Header = ({ token }) => {
         toast.success(result?.message);
         dispatch(setUserLoginDetailDispatch([]));
         dispatch(setAllProductsDispatch([]));
-        dispatch(setAllProductsBtnStateDispatch(false));
+        dispatch(setAllProductsBtnStateDispatch(true));
         dispatch(setFilterBtnStateDispatch(false));
         stopLoadingBar();
         return navigate.replace(`${frontendDevelopmentBaseUrl}/`);

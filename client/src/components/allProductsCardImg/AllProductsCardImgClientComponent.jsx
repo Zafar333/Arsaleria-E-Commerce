@@ -13,7 +13,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import SeeProductDetail from "./SeeProductDetail";
+import { toast } from "react-toastify";
 
 const AllProductsCardImgClientComponent = ({
   allProductsData,
@@ -90,13 +90,27 @@ const AllProductsCardImgClientComponent = ({
     };
   }, [reduxCursorData[0]?.nextCursor]);
 
+  // seeProductDetailFun i start from here
+  const seeProductDetailFun = (prod) => {
+    if (!prod || !prod?.id) {
+      return toast.error("invalid request");
+    }
+    startLoadingBar();
+    router.replace(`/productDetail/${prod?.id}`);
+  };
+  // seeProductDetailFun i start from here
+
   return (
     /* card */
     <div className="">
       <div className="w-full grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[30px]">
         {reduxAllProductsData?.allProducts?.length > 0 ? (
           reduxAllProductsData?.allProducts?.map((prod, ind) => (
-            <div className="border border-gray-200 h-fit" key={ind}>
+            <div
+              className="border border-gray-200 h-fit cursor-pointer "
+              key={ind}
+              onClick={() => seeProductDetailFun(prod)}
+            >
               <div className=" bg-whiteGray h-[240px] sm:h-[300px] flex rounded-sm">
                 <Image
                   alt="Image"
@@ -120,7 +134,14 @@ const AllProductsCardImgClientComponent = ({
                     Rs
                   </p>
                 </div>
-                <SeeProductDetail prod={prod} />
+                <div className="mt-[15px]">
+                  <p
+                    onClick={() => seeProductDetailFun(prod)}
+                    className="text-center bg-lightGreen text-darkGreen font-Poppins text-[16px] p-1 cursor-pointer"
+                  >
+                    View Detail
+                  </p>
+                </div>
               </div>
             </div>
             //  {/* screenLoader == false ? (

@@ -51,7 +51,7 @@ const UserLoginPageComponent = () => {
   useEffect(() => {
     stopLoadingBar();
     dispatch(setAllProductsDispatch([]));
-    dispatch(setAllProductsBtnStateDispatch(false));
+    dispatch(setAllProductsBtnStateDispatch(true));
     dispatch(setFilterBtnStateDispatch(false));
   }, []);
 

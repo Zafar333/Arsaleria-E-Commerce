@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import AllProductsCardImgClientComponent from "@/components/allProductsCardImg/AllProductsCardImgClientComponent";
 import AllProductsCrousel from "@/components/allProductsCrousel/AllProductsCrousel";
 import AllProductsSearchBar from "@/components/allProductsSearchBar/AllProductsSearchBar";
@@ -82,7 +80,7 @@ const AllProducts = async ({ queryParams }) => {
         }
 
         if (result?.status >= 400 && result?.status <= 550) {
-          return [];
+          return result;
         }
       } else {
         // console.log("getAllProductsFun request is not going");
@@ -149,7 +147,7 @@ const AllProducts = async ({ queryParams }) => {
       />
       {/* in TrendingProductsButtons we have filters button features button is end here */}
 
-      <div className="mt-[100px]">
+      <div className="mt-[50px] sm:mt-[70px] md:mt-[100px]">
         <div className="">
           {/* all products section is start from here */}
           {/* this is AllProductsCardImgClientComponent for get next remaining products get from server side fetch and load in clien componnet through cursor paginantion  */}
