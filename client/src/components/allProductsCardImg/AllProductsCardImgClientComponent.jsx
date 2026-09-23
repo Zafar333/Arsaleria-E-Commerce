@@ -96,7 +96,7 @@ const AllProductsCardImgClientComponent = ({
       return toast.error("invalid request");
     }
     startLoadingBar();
-    router.replace(`/productDetail/${prod?.id}`);
+    router.push(`/productDetail/${prod?.id}`);
   };
   // seeProductDetailFun i start from here
 

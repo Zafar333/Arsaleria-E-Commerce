@@ -23,7 +23,8 @@ const ProductDetailAddToCartButton = () => {
     <div className="">
       {/* Add to cart Button is start from here */}
       <Button
-        className="!bg-lightGreen border !border-lightGreen !text-darkGreen !text-[17px] sm:!text-[20px] !font-Poppins !py-[20px] !px-[20px] sm:!px-[30px] w-[200px] sm:w-[250px] xl:min-w-full"
+        // className="!bg-lightGreen border !border-lightGreen !text-darkGreen !text-[17px] sm:!text-[20px] !font-Poppins !py-[20px] !px-[20px] sm:!px-[30px] w-[200px] sm:w-[250px] xl:min-w-full"
+        className="!bg-lightGreen border !border-lightGreen !text-darkGreen !text-[17px] sm:!text-[20px] !font-Poppins !py-[20px] !px-[20px] sm:!px-[30px] w-[250px]! xl:w-full!"
         onClick={OpenAddToCartModal}
       >
         Add to Cart

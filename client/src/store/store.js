@@ -16,8 +16,10 @@ import adminDetailSlice from "./adminDetailSlice.js";
 import allProductsFilterSlice from "./allproductsFilterSlice.js";
 import allProductsSlice from "./allProductsPageSlice.js";
 import cartDetailSlice from "./cartDetailSlice.js";
+import productDetailSlice from "./productDetailSlice.js";
 import userLoginDetailSlice from "./userLoginDetailSlice.js";
 const rootReducer = combineReducers({
+  productDetailSlice,
   allProductsFilterSlice,
   cartDetailSlice,
   adminDetailSlice,
@@ -30,6 +32,7 @@ const persistConfig = {
 
   // These reducers will NOT be persisted
   blacklist: [
+    "productDetailSlice",
     "allProductsSlice",
     "adminDetailSlice",
     "userLoginDetailSlice",

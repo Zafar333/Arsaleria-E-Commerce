@@ -26,11 +26,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineMail } from "react-icons/ai";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const UserLoginPageComponent = () => {
   const dispatch = useDispatch();
+  const productDetailpagePath = useSelector(
+    (state) => state?.productDetailSlice?.userLoginProductDetailPagePath,
+  );
 
   const [form] = Form.useForm();
   const session = useSession();
@@ -54,6 +57,10 @@ const UserLoginPageComponent = () => {
     dispatch(setAllProductsBtnStateDispatch(true));
     dispatch(setFilterBtnStateDispatch(false));
   }, []);
+
+  useEffect(() => {
+    console.log("productDetailpagePath", productDetailpagePath);
+  }, [productDetailpagePath]);
 
   // logiform functions is start from here
   const onFinish = (values) => {
@@ -103,7 +110,12 @@ const UserLoginPageComponent = () => {
           }),
         );
         // console.log("logindata",result);
-        router.replace(`${frontendDevelopmentBaseUrl}/`);
+        if (Object?.keys(productDetailpagePath)?.length > 0) {
+          router.replace(`${productDetailpagePath?.productDetailPath}`);
+        }
+        if (Object?.keys(productDetailpagePath)?.length < 1) {
+          router.replace(`/`);
+        }
         return toast.success(result?.message);
       }
       if (result.status >= 400 && result?.status <= 550) {

@@ -58,7 +58,7 @@ const getSingleProductDetailController = async (req, res) => {
 
       const query = `
         SELECT
-           products.id,product_name,sellproduct_price_1kg,product_category,product_description,product_discount,delivery_type,delivery_charges,
+           products.id,product_name,sellproduct_price_1kg,product_category,product_description,product_discount,delivery_type,delivery_charges,productbrand_name,
 
             COALESCE(
                 (

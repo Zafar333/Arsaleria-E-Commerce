@@ -1,18 +1,27 @@
 "use client";
+import { setUserLoginProductDetailPagePathSliceDispatch } from "@/store/productDetailSlice";
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
-const ProductDetailBuyNowButton = () => {
+const ProductDetailBuyNowButton = (params) => {
+  const dispatch = useDispatch();
   const navigate = useRouter();
+  const { id } = params;
   // gotoCartPageFun is startf from here
   const gotoCartPageFun = () => {
+    dispatch(
+      setUserLoginProductDetailPagePathSliceDispatch({
+        productDetailPath: `/productDetail/${id}`,
+      }),
+    );
     navigate.push(`/checkout/${2}`);
   };
   // gotoCartPageFun is end here
   return (
     <div>
       <Button
-        className="w-[200px] sm:w-[250px] xl:min-w-full !bg-darkGreen !text-white  !text-[17px] !sm:text-[20px] !font-Poppins !py-[20px] !px-[20px] sm:!px-[30px]"
+        className=" w-[250px]! xl:w-full! !bg-darkGreen !text-white  !text-[17px] !sm:text-[20px] !font-Poppins !py-[20px] !px-[20px] sm:!px-[30px]"
         onClick={gotoCartPageFun}
       >
         Buy Now

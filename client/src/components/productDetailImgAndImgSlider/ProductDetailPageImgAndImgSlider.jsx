@@ -1,16 +1,21 @@
 "use client";
+import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
 import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Button, Image } from "antd";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const ProductDetailPageImgAndImgSlider = ({ singleProductDetailData }) => {
+  const dispatch = useDispatch();
   const [signleProductImgs, setSingleProductImgs] = useState([]);
   const [selectedImgIndx, setSelectedImgIndx] = useState(0);
 
   useEffect(() => {
     stopLoadingBar();
+    dispatch(setAllProductsDispatch([]));
   }, []);
+
   useEffect(() => {
     if (singleProductDetailData?.length > 0) {
       setSingleProductImgs(singleProductDetailData[0]?.media);
@@ -39,13 +44,11 @@ const ProductDetailPageImgAndImgSlider = ({ singleProductDetailData }) => {
       setSelectedImgIndx(decrement);
     }
   };
-  useEffect(() => {
-    console.log("signleProductImgs", signleProductImgs);
-  }, [signleProductImgs]);
+
   // Arrow handlePrev fun is end here
   return (
     <div className="h-fit">
-      <div className="flex flex-col bg-whiteGray rounded-sm border border-green-500 min-h-[410px] max-w-[700px]">
+      <div className="flex flex-col bg-whiteGray rounded-sm min-h-[410px] ">
         {/* next and previous button control section is start from here */}
         <div className="flex justify-between relative top-[205px] ">
           <Button
@@ -63,20 +66,22 @@ const ProductDetailPageImgAndImgSlider = ({ singleProductDetailData }) => {
         </div>
         {/* next and previous button control section is start from here */}
 
-        <Image.PreviewGroup items={signleProductImgs}>
+        <Image.PreviewGroup
+          items={signleProductImgs.map((img) => img?.secure_url)}
+        >
           <Image
-            className="max-h-[410px] w-full md:min-w-[700px] object-contain"
+            className="max-h-[410px] w-full  object-contain"
             src={signleProductImgs[selectedImgIndx]?.secure_url}
           />
         </Image.PreviewGroup>
       </div>
 
-      <div className="h-[140px]  flex gap-[20px] items-center px-[5px]  overflow-auto border border-red-400">
+      <div className="h-[140px]  flex gap-[20px] items-center px-[5px]  overflow-auto bg-lightGreen ">
         {signleProductImgs.map((img, ind) => (
           <img
             key={ind}
             onClick={() => ImgIndxFun(ind)}
-            className={`${selectedImgIndx == ind ? "border border-darkGreen" : ""} bg-amber-500  rounded-md cursor-pointer max-h-[80px]! w-[130px] `}
+            className={`${selectedImgIndx == ind ? "border border-darkGreen" : ""} bg-whiteGray  rounded-md cursor-pointer max-h-[80px]! w-[130px] `}
             src={img?.secure_url}
           />
         ))}
