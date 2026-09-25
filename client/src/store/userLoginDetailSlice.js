@@ -9,7 +9,7 @@ const userLoginDetailSlice = createSlice({
   initialState,
   reducers: {
     setUserLoginDetailDispatch(state, action) {
-      state.userLoginDetail = [action.payload];
+      state.userLoginDetail = action.payload;
       // console.log("dispatchadminlogindetails", action.payload);
     },
   },

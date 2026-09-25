@@ -103,11 +103,13 @@ const UserLoginPageComponent = () => {
         setLoading(false);
         form.resetFields(null);
         dispatch(
-          setUserLoginDetailDispatch({
-            userId: result?.id,
-            name: result?.name,
-            useraccessToken: result?.useraccesstoken,
-          }),
+          setUserLoginDetailDispatch([
+            {
+              userId: result?.id,
+              name: result?.name,
+              useraccessToken: result?.useraccesstoken,
+            },
+          ]),
         );
         // console.log("logindata",result);
         if (Object?.keys(productDetailpagePath)?.length > 0) {

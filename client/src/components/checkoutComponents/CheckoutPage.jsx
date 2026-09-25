@@ -14,6 +14,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const CheckoutPage = () => {
+  const cartProducts = useSelector(
+    (state) => state?.productDetailSlice?.selectedSizeProductDetail,
+  );
+
   const stripe = useStripe();
   const elements = useElements();
   const dispatch = useDispatch();
@@ -21,6 +25,9 @@ const CheckoutPage = () => {
     (state) => state.cartDetailSlice.cartdetail,
   );
   const navigate = useRouter();
+  useEffect(() => {
+    console.log("cartProducts", cartProducts);
+  }, [cartProducts]);
   const [cartItems, setCartItems] = useState([
     {
       img: "/cover1.svg",

@@ -2,25 +2,28 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  selectedSizeProductQunatity: {},
+  selectedSizeProductDetail: [],
   userLoginProductDetailPagePath: {},
 };
 const productDetailSlice = createSlice({
   name: "productDetailSlice",
   initialState,
   reducers: {
-    setSelectedSizeProductQuantitySliceDispatch(state, action) {
-      state.selectedSizeProductQunatity = action.payload;
+    setSelectedSizeProductDetailSliceDispatch(state, action) {
+      state.selectedSizeProductDetail = action.payload;
       // console.log("dispatchadminlogindetails",state.adminLoginDetail)
     },
     setUserLoginProductDetailPagePathSliceDispatch(state, action) {
       state.userLoginProductDetailPagePath = action.payload;
-      // console.log("dispatchadminlogindetails",state.adminLoginDetail)
+      console.log(
+        "dispatchadminlogindetails",
+        state.userLoginProductDetailPagePath,
+      );
     },
   },
 });
 export const {
-  setSelectedSizeProductQuantitySliceDispatch,
+  setSelectedSizeProductDetailSliceDispatch,
   setUserLoginProductDetailPagePathSliceDispatch,
 } = productDetailSlice.actions;
 

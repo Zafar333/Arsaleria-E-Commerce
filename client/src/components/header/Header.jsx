@@ -6,6 +6,7 @@ import {
 } from "@/store/allproductsFilterSlice";
 import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
 import { setAddToCartModalDispatch } from "@/store/cartDetailSlice";
+import { setUserLoginProductDetailPagePathSliceDispatch } from "@/store/productDetailSlice";
 import { setUserLoginDetailDispatch } from "@/store/userLoginDetailSlice";
 import {
   startLoadingBar,
@@ -176,6 +177,7 @@ const Header = ({ token }) => {
         dispatch(setAllProductsDispatch([]));
         dispatch(setAllProductsBtnStateDispatch(true));
         dispatch(setFilterBtnStateDispatch(false));
+        dispatch(setUserLoginProductDetailPagePathSliceDispatch({}));
         stopLoadingBar();
         return navigate.replace(`${frontendDevelopmentBaseUrl}/`);
       }

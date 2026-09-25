@@ -116,7 +116,10 @@ const ProductDetail = async ({ params }) => {
             {/* productDescriptionDetail section is end here */}
           </div>
           <div className="flex flex-col gap-[20px] py-[40px] items-start md:items-end xl:items-stretch">
-            <ProductDetailBuyNowButton params={params} />
+            <ProductDetailBuyNowButton
+              id={id}
+              singleProductDetailData={singleProductDetailData}
+            />
             <ProductDetailAddToCartButton />
             <ProductDetailChatWhatsappButton />
           </div>

@@ -160,10 +160,6 @@ const AllProducts = async ({ queryParams }) => {
 
           {/* all products section is end from here */}
         </div>
-        {/* <LoadMoreButton
-          allProductsData={allProductsData}
-          paginationCursorData={paginationCursorData}
-        /> */}
       </div>
     </div>
   );

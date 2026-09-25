@@ -1,5 +1,5 @@
 "use client";
-import { setSelectedSizeProductQuantitySliceDispatch } from "@/store/productDetailSlice";
+import { setSelectedSizeProductDetailSliceDispatch } from "@/store/productDetailSlice";
 import { Select } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -12,14 +12,19 @@ const ProductDetailSizeMenu = ({ singleProductDetailData }) => {
   const selectedSizeFun = (value, obj) => {
     setSizes([value]);
     dispatch(
-      setSelectedSizeProductQuantitySliceDispatch({
-        variantId: obj?.id,
-        size: obj?.value,
-        quantity: obj?.quantity,
-        price: obj?.price,
-        unit: obj?.unit,
-        stock_status: obj?.stock_status,
-      }),
+      setSelectedSizeProductDetailSliceDispatch([
+        {
+          productId: singleProductDetailData[0]?.id,
+          product_name: singleProductDetailData[0]?.product_name,
+          buyQuantity: 1,
+          productVariantId: obj?.id,
+          size: obj?.value,
+          stock_quantity: obj?.quantity,
+          price: obj?.price,
+          unit: obj?.unit,
+          stock_status: obj?.stock_status,
+        },
+      ]),
     );
   };
   // selected size fun is end here
@@ -41,21 +46,30 @@ const ProductDetailSizeMenu = ({ singleProductDetailData }) => {
         quantity: data?.quantity,
         label: data?.size,
         value: data?.size,
+        price: data?.price,
+        unit: data?.unit,
+        stock_status: data?.stock_status,
       })),
     );
   };
   useEffect(() => {
     if (dairyWeightOptions?.length > 0) {
+      console.log("dairyWeightOptions", dairyWeightOptions);
       setSizes([dairyWeightOptions[0]?.value]);
       dispatch(
-        setSelectedSizeProductQuantitySliceDispatch({
-          variantId: dairyWeightOptions[0]?.id,
-          size: dairyWeightOptions[0]?.value,
-          quantity: dairyWeightOptions[0]?.quantity,
-          price: dairyWeightOptions[0]?.price,
-          unit: dairyWeightOptions[0]?.unit,
-          stock_status: dairyWeightOptions[0]?.stock_status,
-        }),
+        setSelectedSizeProductDetailSliceDispatch([
+          {
+            productId: singleProductDetailData[0]?.id,
+            product_name: singleProductDetailData[0]?.product_name,
+            buyQuantity: 1,
+            productVariantId: dairyWeightOptions[0]?.id,
+            size: dairyWeightOptions[0]?.value,
+            stock_quantity: dairyWeightOptions[0]?.quantity,
+            price: dairyWeightOptions[0]?.price,
+            unit: dairyWeightOptions[0]?.unit,
+            stock_status: dairyWeightOptions[0]?.stock_status,
+          },
+        ]),
       );
     } else {
       return;
