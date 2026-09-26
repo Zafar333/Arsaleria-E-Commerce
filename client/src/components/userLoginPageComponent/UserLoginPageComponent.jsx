@@ -8,7 +8,8 @@ import {
   setFilterBtnStateDispatch,
 } from "@/store/allproductsFilterSlice";
 import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
-import { setUserLoginDetailDispatch } from "@/store/userLoginDetailSlice";
+import { setCheckUserLoginSliceDispatch } from "@/store/userLoginDetailSlice";
+import { setUserProfileDetailDispatch } from "@/store/userProfileDetailSlice";
 import {
   startLoadingBar,
   stopLoadingBar,
@@ -102,12 +103,13 @@ const UserLoginPageComponent = () => {
       if (result?.status >= 200 && result?.status <= 300) {
         setLoading(false);
         form.resetFields(null);
+        dispatch(setCheckUserLoginSliceDispatch([{ login: true }]));
+
         dispatch(
-          setUserLoginDetailDispatch([
+          setUserProfileDetailDispatch([
             {
               userId: result?.id,
               name: result?.name,
-              useraccessToken: result?.useraccesstoken,
             },
           ]),
         );

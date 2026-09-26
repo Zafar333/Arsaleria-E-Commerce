@@ -1,5 +1,6 @@
 "use client";
-import { setUserLoginDetailDispatch } from "@/store/userLoginDetailSlice";
+import { setCheckUserLoginSliceDispatch } from "@/store/userLoginDetailSlice";
+import { setUserProfileDetailDispatch } from "@/store/userProfileDetailSlice";
 import {
   startLoadingBar,
   stopLoadingBar,
@@ -98,11 +99,12 @@ const UserLogin = ({
         form.resetFields(null);
         stopLoadingBar();
         setLoading(false);
+        dispatch(setCheckUserLoginSliceDispatch([{ login: true }]));
+
         dispatch(
-          setUserLoginDetailDispatch({
+          setUserProfileDetailDispatch({
             userId: result?.id,
             name: result?.name,
-            useraccessToken: result?.useraccesstoken,
           }),
         );
         setIsLoginModalOpen(false);

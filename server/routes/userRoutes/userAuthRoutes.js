@@ -23,12 +23,17 @@ const {
 const {
   userLogoutController,
 } = require("../../controllers/users/userLogoutController");
+const {
+  checkUserLoginORNotController,
+} = require("../../controllers/users/checkUserLoginORNotController");
+
 const router = express.Router();
 
 // module.exports=()=>{
 // login,signup and authentication routes is start from herer
 router.post("/signup", userSignup);
 router.post("/login", userLogin);
+router.get("/checkUserLoginORNot", checkUserLoginORNotController);
 router.patch("/logout", userLogoutController);
 router.post("/signinWithGoogle", signinWithGoogleLoginController);
 router.post("/checkToken", checkJwtToken);

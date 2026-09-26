@@ -7,7 +7,8 @@ import {
 import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
 import { setAddToCartModalDispatch } from "@/store/cartDetailSlice";
 import { setUserLoginProductDetailPagePathSliceDispatch } from "@/store/productDetailSlice";
-import { setUserLoginDetailDispatch } from "@/store/userLoginDetailSlice";
+import { setCheckUserLoginSliceDispatch } from "@/store/userLoginDetailSlice";
+import { setUserProfileDetailDispatch } from "@/store/userProfileDetailSlice";
 import {
   startLoadingBar,
   stopLoadingBar,
@@ -39,6 +40,9 @@ const Header = ({ token }) => {
   const adminLoginDetailState = useSelector((state) => state?.adminDetailSlice);
   const userLoginDetailState = useSelector(
     (state) => state?.userLoginDetailSlice,
+  );
+  const userProfileDetailState = useSelector(
+    (state) => state?.userProfileDetailSlice,
   );
   const dispatch = useDispatch();
   const navigate = useRouter();
@@ -74,6 +78,7 @@ const Header = ({ token }) => {
 
   useEffect(() => {
     stopLoadingBar();
+    checkUserLoginOrNotFun();
   }, []);
   useEffect(() => {
     setHeaderHighlighter([path]);
@@ -101,6 +106,46 @@ const Header = ({ token }) => {
   //   }
   // };
   // openLoginModal fun is end here
+
+  // checkUserLoginOrNotFun is start from here
+  const checkUserLoginOrNotFun = async () => {
+    try {
+      const response = await fetch(
+        `${DevelopmentBaseUrl}${userEndPoints?.checkUserLoginORNot}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        dispatch(
+          setCheckUserLoginSliceDispatch([
+            {
+              login: result?.login,
+            },
+          ]),
+        );
+      }
+
+      if (result?.status >= 400 && result?.status <= 550) {
+        dispatch(
+          setCheckUserLoginSliceDispatch([
+            {
+              login: result?.login,
+            },
+          ]),
+        );
+      }
+    } catch (error) {
+      console.log(error?.message);
+      return toast.error("front server error");
+    }
+  };
+  // checkUserLoginOrNotFun is end here
 
   // gotoLoginPage fun is satrt from here
   const gotoLoginPageFun = () => {
@@ -161,7 +206,7 @@ const Header = ({ token }) => {
     try {
       startLoadingBar();
       const response = await fetch(
-        `${DevelopmentBaseUrl}${userEndPoints?.logout}?userLogout=logout&id=${userLoginDetailState?.userLoginDetail[0]?.userId}`,
+        `${DevelopmentBaseUrl}${userEndPoints?.logout}?userLogout=logout&id=${userProfileDetailState?.userProfileDetail[0]?.userId}`,
         {
           method: "PATCH",
           headers: {
@@ -173,7 +218,8 @@ const Header = ({ token }) => {
       const result = await response.json();
       if (result?.status >= 200 && result?.status < 400) {
         toast.success(result?.message);
-        dispatch(setUserLoginDetailDispatch([]));
+        dispatch(setUserProfileDetailDispatch([]));
+        dispatch(setCheckUserLoginSliceDispatch([]));
         dispatch(setAllProductsDispatch([]));
         dispatch(setAllProductsBtnStateDispatch(true));
         dispatch(setFilterBtnStateDispatch(false));
@@ -236,8 +282,8 @@ const Header = ({ token }) => {
               onClick={openAddToCartModal}
             />
             {userLoginDetailState &&
-            userLoginDetailState?.userLoginDetail?.length > 0 &&
-            userLoginDetailState?.userLoginDetail[0]?.useraccessToken ? (
+            userLoginDetailState?.checkUserLogin?.length > 0 &&
+            userLoginDetailState?.checkUserLogin[0]?.login ? (
               <div>
                 <Dropdown
                   menu={{ items, onClick: handleProfileClick }}
@@ -245,7 +291,7 @@ const Header = ({ token }) => {
                 >
                   <div className="cursor-pointer rounded-full h-[30px] min-w-[30px] md:h-[50px] md:min-w-[50px] flex items-center justify-center bg-darkGreen">
                     <p className="text-[14px] md:text-[22px] text-lightGreen font-Poppins">
-                      {userLoginDetailState?.userLoginDetail[0]?.name
+                      {userProfileDetailState?.userProfileDetail[0]?.name
                         ?.charAt(0)
                         .toUpperCase()}
                     </p>
@@ -318,8 +364,8 @@ const Header = ({ token }) => {
           </label>
 
           {userLoginDetailState &&
-          userLoginDetailState?.userLoginDetail?.length > 0 &&
-          userLoginDetailState?.userLoginDetail[0]?.useraccessToken ? (
+          userLoginDetailState?.checkUserLogin?.length > 0 &&
+          userLoginDetailState?.checkUserLogin[0]?.login ? (
             <Button
               className="text-[14px]! py-[14px]! px-[18px]! text-darkGreen! font-Poppins! bg-lightGreen! "
               onClick={userLogoutFun}

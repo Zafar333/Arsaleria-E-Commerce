@@ -56,13 +56,11 @@ const userLogin = async (req, res) => {
               httpOnly: true, // prevent XSS attacks
               secure: false, // true in production (HTTPS)
               sameSite: "lax", // CSRF protection
-              // maxAge: 24 * 60 * 60 * 1000 // 1 day
             });
             res.cookie("userAccessToken", accesstoken, {
               httpOnly: true, // prevent XSS attacks
               secure: false, // true in production (HTTPS)
               sameSite: "lax", // CSRF protection
-              // maxAge: 24 * 60 * 60 * 1000 // 1 day
             });
 
             return res.json({

@@ -7,6 +7,7 @@ const userEndPoints = {
   updateForgotPassword: "/user/auth/updateForgotPassword",
   resetPasswordSendOtpEmail: "/user/auth/resetPassword/sendOtpEmail",
   resetPasswordVerifyOtp: "/user/auth/resetPassword/verifyOtp",
+  checkUserLoginORNot: "/user/auth/checkUserLoginORNot",
   // signin with google route is start from here
   signinWithGoogleBackendAuth: "/user/auth/signinWithGoogle",
 
