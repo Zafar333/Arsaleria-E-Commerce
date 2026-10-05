@@ -1,5 +1,8 @@
 "use client";
-import { setAddToCartModalDispatch } from "@/store/cartDetailSlice";
+import {
+  setAddToCartDetailDispatch,
+  setAddToCartModalDispatch,
+} from "@/store/cartDetailSlice";
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +10,9 @@ import { useDispatch, useSelector } from "react-redux";
 const ProductDetailAddToCartButton = () => {
   const dispatch = useDispatch();
   const navigate = useRouter();
-  const cartData = useSelector((state) => state.cartDetailSlice.cartdetail);
+  const selectedProductData = useSelector(
+    (state) => state?.productDetailSlice?.selectedSizeProductDetail,
+  );
   const AddToCartModalState = useSelector(
     (state) => state.cartDetailSlice.AddToCartModal,
   );
@@ -15,6 +20,7 @@ const ProductDetailAddToCartButton = () => {
   // OpenAddToCartModal is startf from here
   const OpenAddToCartModal = () => {
     // navigate.push(`/cart/${2}`)
+    dispatch(setAddToCartDetailDispatch(selectedProductData));
     dispatch(setAddToCartModalDispatch(true));
   };
   // OpenAddToCartModal is end here

@@ -1,9 +1,11 @@
 "use client";
 import {
+  deleteProductCartDetailDispatch,
+  incrementDecrementProductCartDetailDispatch,
   setAddToCartModalDispatch,
-  setCartDetailDispatch,
   setDispatchGrandTotal,
 } from "@/store/cartDetailSlice";
+import { setUserLoginProductDetailPagePathSliceDispatch } from "@/store/productDetailSlice";
 import {
   startLoadingBar,
   stopLoadingBar,
@@ -15,6 +17,7 @@ import { useEffect, useState } from "react";
 import { AiTwotoneDelete } from "react-icons/ai";
 import { IoCloseSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const AddToCartModal = () => {
   const AddToCartModalState = useSelector(
@@ -22,53 +25,18 @@ const AddToCartModal = () => {
   );
   const dispatch = useDispatch();
   const navigate = useRouter();
-  const cartData = useSelector((state) => state.cartDetailSlice.cartdetail);
-  const tot = useSelector((state) => state.cartDetailSlice.grandTotal);
+  const cartData = useSelector(
+    (state) => state.cartDetailSlice.addToCartProduct,
+  );
+  const tot = useSelector((state) => state?.cartDetailSlice?.grandTotal);
   const [btnLoader, setBtnLoader] = useState(false);
 
-  const [cartItems, setCartItems] = useState([
-    {
-      img: "/cover1.svg",
-      title: "shirt round neck",
-      quantity: 1,
-      productPrice: "1899",
-      deliveryCharges: "200",
-    },
-    {
-      img: "/cover1.svg",
-      title: "shirt round neck",
-      quantity: 1,
-      productPrice: "1899",
-      deliveryCharges: "200",
-    },
-    {
-      img: "/cover1.svg",
-      title: "shirt round neck",
-      quantity: 1,
-      productPrice: "1899",
-      deliveryCharges: "200",
-    },
-    {
-      img: "/cover1.svg",
-      title: "shirt round neck",
-      quantity: 1,
-      productPrice: "1899",
-      deliveryCharges: "200",
-    },
-    {
-      img: "/cover1.svg",
-      title: "shirt round neck",
-      quantity: 1,
-      productPrice: "1899",
-      deliveryCharges: "200",
-    },
-  ]);
-  const [total, settotal] = useState([]);
   useEffect(() => {
-    dispatch(setCartDetailDispatch(cartItems));
-    grandTotalFun();
     stopLoadingBar();
   }, []);
+  useEffect(() => {
+    grandTotalFun();
+  }, [cartData]);
 
   useEffect(() => {
     if (AddToCartModalState == true) {
@@ -91,46 +59,40 @@ const AddToCartModal = () => {
   // close modal fun is end here
 
   // deleteShoppingCartFun is start from here
-  const deleteShoppingCartFun = (indx) => {
-    console.log("index", indx);
-    // let data=cartItems.splice(indx,1)
-    let data = cartData?.filter((item, ind) => ind != indx);
-    // console.log("cartitems",data)
-    dispatch(setCartDetailDispatch(data));
+  const deleteShoppingCartFun = (productVariantId) => {
+    let data = cartData?.filter(
+      (item) => item?.productVariantId != productVariantId,
+    );
+    // console.log("cartitems", data);
+    dispatch(deleteProductCartDetailDispatch(data));
   };
   // deleteShoppingCartFun is end here
 
   // minusOrderQuantityFun is start from here
-  const minusOrderQuantityFun = (itemData, ind) => {
+  const minusOrderQuantityFun = (itemData, variantid) => {
     // console.log("item",itemData,ind)
-    if (itemData?.quantity > 1) {
-      const temp = cartData?.map((data, i) =>
-        i == ind
-          ? {
-              ...data,
-              quantity: itemData.quantity - 1,
-            }
-          : data,
+    if (itemData?.buyQuantity > 1) {
+      const temp = cartData?.filter(
+        (data, i) => data?.productVariantId == variantid,
       );
-      // setCartItems(temp)
-      dispatch(setCartDetailDispatch(temp));
+      let newtemp = [{ ...temp[0], buyQuantity: temp[0]?.buyQuantity - 1 }];
+
+      // console.log("temp", newtemp);
+      dispatch(incrementDecrementProductCartDetailDispatch(newtemp));
     }
   };
   // minusOrderQuantityFun is end here
 
   // plusOrderQuantityFun is start from here
-  const plusOrderQuantityFun = (itemData, ind) => {
+  const plusOrderQuantityFun = (itemData, variantid) => {
     // console.log("item",itemData,ind)
-    const temp = cartData?.map((data, i) =>
-      i == ind
-        ? {
-            ...data,
-            quantity: itemData.quantity + 1,
-          }
-        : data,
+    const temp = cartData?.filter(
+      (data) => data?.productVariantId == variantid,
     );
+    let newtemp = [{ ...temp[0], buyQuantity: temp[0]?.buyQuantity + 1 }];
+
     // setCartItems(temp)
-    dispatch(setCartDetailDispatch(temp));
+    dispatch(incrementDecrementProductCartDetailDispatch(newtemp));
   };
   // plusOrderQuantityFun is end here
 
@@ -139,26 +101,43 @@ const AddToCartModal = () => {
     if (cartData?.length > 0) {
       let totalRupees = 0;
       {
-        cartData.map((data, i) => {
-          const total = data?.quantity * Number(data?.productPrice);
+        cartData?.map((data, i) => {
+          const total = data?.buyQuantity * Number(data?.price);
           totalRupees += total;
         });
-        let grandtotal = totalRupees + Number(cartData[0]?.deliveryCharges);
-        dispatch(setDispatchGrandTotal(grandtotal));
-        // console.log("fun call");
-        settotal(grandtotal);
-        return grandtotal;
+        if (cartData[0]?.delivery_type == "paid") {
+          let grandtotal = totalRupees + Number(cartData[0]?.delivery_charges);
+          dispatch(setDispatchGrandTotal([grandtotal]));
+          return grandtotal;
+        }
+        return dispatch(setDispatchGrandTotal([totalRupees]));
       }
     } else {
-      return 0;
+      return dispatch(setDispatchGrandTotal([0]));
     }
   };
   // GrandTotal Fun is end here
 
   //  gotoCartPageFun is start from here
   const gotoCartPageFun = () => {
+    if (cartData?.length == 0) {
+      return toast.error("please add product in to cart");
+    }
+
+    const url = window.location.pathname;
+
+    const newurl = url.split("/");
+    const index = newurl.length - 1;
     setBtnLoader(true);
     dispatch(setAddToCartModalDispatch(false));
+    if (url == `/productDetail/${newurl[index]}`) {
+      dispatch(
+        setUserLoginProductDetailPagePathSliceDispatch({
+          productDetailPath: `/productDetail/${newurl[index]}`,
+        }),
+      );
+    }
+
     startLoadingBar();
     navigate.push("/checkout/2");
   };
@@ -169,9 +148,8 @@ const AddToCartModal = () => {
     <Drawer
       onClose={onClose}
       title="Shopping Cart"
-      className=""
       extra={
-        <Space>
+        <Space className="">
           <IoCloseSharp
             onClick={onClose}
             className=" text-darkGreen text-[25px] cursor-pointer "
@@ -191,37 +169,47 @@ const AddToCartModal = () => {
               <div className="flex gap-[5px]">
                 <img
                   src={data?.img}
-                  className="border-2 border-gray-300 max-w-[100px]"
+                  className="border-2 border-gray-300 max-w-[100px] object-contain"
                 />
                 <div className="flex flex-col gap-[5px]">
-                  <p className="font-Poppins text-[16px]">{data?.title}</p>
+                  <p className="font-Poppins text-[16px]">
+                    {data?.product_name}
+                  </p>
+                  <div className="flex gap-[10px]">
+                    <p className="font-Poppins text-[18px]">Size</p>
+                    <p className="font-Poppins text-[18px]">{data?.size}</p>
+                  </div>
                   <div className="flex gap-[10px]">
                     <p className="font-Poppins text-[18px]">Price</p>
-                    <p className="font-Poppins text-[18px]">
-                      {data?.productPrice}
-                    </p>
+                    <p className="font-Poppins text-[18px]">{data?.price}</p>
                   </div>
-                  <div className="flex gap-[25px] items-center mt-[10px]">
+                  <div className="flex gap-[15px] sm:gap-[25px] items-center mt-[10px]">
                     <div className="flex max-w-[80px]">
                       <Button
                         className="w-[10px] p-2 rounded-none text-[18px] font-bold"
-                        onClick={() => minusOrderQuantityFun(data, ind)}
+                        onClick={() =>
+                          minusOrderQuantityFun(data, data?.productVariantId)
+                        }
                       >
                         -
                       </Button>
                       <p className="rounded-none w-[60px] bg-white border border-gray-300 text-[16px] flex items-center justify-center">
-                        {data?.quantity}
+                        {data?.buyQuantity}
                       </p>
                       <Button
                         className="w-[10px] p-2 rounded-none text-[18px] font-bold "
-                        onClick={() => plusOrderQuantityFun(data, ind)}
+                        onClick={() =>
+                          plusOrderQuantityFun(data, data?.productVariantId)
+                        }
                       >
                         +
                       </Button>
                     </div>
                     <AiTwotoneDelete
                       className="text-[24px] text-red-500 cursor-pointer"
-                      onClick={() => deleteShoppingCartFun(ind)}
+                      onClick={() =>
+                        deleteShoppingCartFun(data?.productVariantId)
+                      }
                     />
                   </div>
                 </div>
@@ -240,7 +228,9 @@ const AddToCartModal = () => {
               SUBTOTAL:
             </p>
             <p className="font-Poppins text-[18] md:text-[20px] text-darkGreen font-bold">
-              {tot}
+              {/* {grandTotalFun()} */}
+
+              {tot[0]}
             </p>
           </div>
           {btnLoader == false ? (

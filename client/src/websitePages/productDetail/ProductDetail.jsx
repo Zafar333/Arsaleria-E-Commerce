@@ -40,7 +40,7 @@ const ProductDetail = async ({ params }) => {
     }
   };
   singleProductDetailData = await getSingleProductDetailData();
-  console.log("singleProductDetailData", singleProductDetailData);
+  // console.log("singleProductDetailData", singleProductDetailData);
   // getSingleProductDetailData fun is end here
 
   return (
@@ -115,7 +115,7 @@ const ProductDetail = async ({ params }) => {
 
             {/* productDescriptionDetail section is end here */}
           </div>
-          <div className="flex flex-col gap-[20px] py-[40px] items-start md:items-end xl:items-stretch">
+          <div className="flex flex-col gap-[20px] py-0 md:py-[40px] items-start md:items-end xl:items-stretch">
             <ProductDetailBuyNowButton
               id={id}
               singleProductDetailData={singleProductDetailData}

@@ -1,5 +1,6 @@
 "use client";
 import { setUserLoginProductDetailPagePathSliceDispatch } from "@/store/productDetailSlice";
+import { startLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { Button } from "antd";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,7 +18,8 @@ const ProductDetailBuyNowButton = ({ id, singleProductDetailData }) => {
         productDetailPath: `/productDetail/${id}`,
       }),
     );
-    navigate.push(`/checkout/${2}`);
+    startLoadingBar();
+    navigate.push(`/buyNowSingleProduct`);
   };
   // gotoCartPageFun is end here
   return (

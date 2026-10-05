@@ -15,6 +15,7 @@ const ProductDetailSizeMenu = ({ singleProductDetailData }) => {
       setSelectedSizeProductDetailSliceDispatch([
         {
           productId: singleProductDetailData[0]?.id,
+          img: singleProductDetailData[0]?.media[0]?.secure_url,
           product_name: singleProductDetailData[0]?.product_name,
           buyQuantity: 1,
           productVariantId: obj?.id,
@@ -23,11 +24,14 @@ const ProductDetailSizeMenu = ({ singleProductDetailData }) => {
           price: obj?.price,
           unit: obj?.unit,
           stock_status: obj?.stock_status,
+          delivery_charges: singleProductDetailData[0]?.delivery_charges,
+          delivery_type: singleProductDetailData[0]?.delivery_type,
         },
       ]),
     );
   };
   // selected size fun is end here
+
   useEffect(() => {
     if (
       singleProductDetailData?.length > 0 &&
@@ -61,6 +65,7 @@ const ProductDetailSizeMenu = ({ singleProductDetailData }) => {
           {
             productId: singleProductDetailData[0]?.id,
             product_name: singleProductDetailData[0]?.product_name,
+            img: singleProductDetailData[0]?.media[0]?.secure_url,
             buyQuantity: 1,
             productVariantId: dairyWeightOptions[0]?.id,
             size: dairyWeightOptions[0]?.value,
@@ -68,6 +73,8 @@ const ProductDetailSizeMenu = ({ singleProductDetailData }) => {
             price: dairyWeightOptions[0]?.price,
             unit: dairyWeightOptions[0]?.unit,
             stock_status: dairyWeightOptions[0]?.stock_status,
+            delivery_charges: singleProductDetailData[0]?.delivery_charges,
+            delivery_type: singleProductDetailData[0]?.delivery_type,
           },
         ]),
       );

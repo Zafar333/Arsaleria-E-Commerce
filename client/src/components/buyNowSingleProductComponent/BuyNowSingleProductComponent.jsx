@@ -1,10 +1,8 @@
 "use client";
-
 import {
-  deleteProductCartDetailDispatch,
-  incrementDecrementProductCartDetailDispatch,
-  setDispatchGrandTotal,
-} from "@/store/cartDetailSlice.js";
+  setDispatchGrandTotalProductDetailSlice,
+  setSelectedSizeProductDetailSliceDispatch,
+} from "@/store/productDetailSlice";
 import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { Button, Form, Input, Radio, Select } from "antd";
@@ -14,9 +12,9 @@ import { AiTwotoneDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-const CheckoutPage = () => {
+const BuyNowSingleProductComponent = () => {
   const cartProducts = useSelector(
-    (state) => state?.cartDetailSlice?.addToCartProduct,
+    (state) => state?.productDetailSlice?.selectedSizeProductDetail,
   );
 
   const stripe = useStripe();
@@ -24,7 +22,7 @@ const CheckoutPage = () => {
   const dispatch = useDispatch();
   const [payementMethod, setPaymentMethod] = useState(false);
   const grandTotalState = useSelector(
-    (state) => state?.cartDetailSlice?.grandTotal,
+    (state) => state?.productDetailSlice?.grandTotal,
   );
   const navigate = useRouter();
   // useEffect(() => {
@@ -34,7 +32,6 @@ const CheckoutPage = () => {
   useEffect(() => {
     stopLoadingBar();
   }, []);
-
   useEffect(() => {
     grandTotalFun();
   }, [cartProducts]);
@@ -61,27 +58,23 @@ const CheckoutPage = () => {
       if (cartProducts[0]?.delivery_type == "paid") {
         let grandtotal =
           totalRupees + Number(cartProducts[0]?.delivery_charges);
-        // console.log("grandTotal", typeof grandtotal);
-        dispatch(setDispatchGrandTotal([grandtotal]));
+        dispatch(setDispatchGrandTotalProductDetailSlice([grandtotal]));
 
         return grandtotal;
       }
-      dispatch(setDispatchGrandTotal([totalRupees]));
+      return dispatch(setDispatchGrandTotalProductDetailSlice([totalRupees]));
     } else {
       // console.log("else ")
 
-      return dispatch(setDispatchGrandTotal([0]));
+      return dispatch(setDispatchGrandTotalProductDetailSlice([0]));
     }
   };
   // GrandTotal Fun is end here
 
   // deleteShoppingCartFun is start from here
-  const deleteShoppingCartFun = (productVariantId) => {
-    let data = cartProducts?.filter(
-      (item) => item?.productVariantId != productVariantId,
-    );
-    // console.log("cartitems", data);
-    dispatch(deleteProductCartDetailDispatch(data));
+  const deleteShoppingCartFun = (id) => {
+    let data = cartProducts?.filter((item) => item?.productId != id);
+    dispatch(setSelectedSizeProductDetailSliceDispatch(data));
   };
   // deleteShoppingCartFun is end here
 
@@ -90,12 +83,12 @@ const CheckoutPage = () => {
     // console.log("item",itemData,ind)
     if (itemData?.buyQuantity > 1) {
       const temp = cartProducts?.filter(
-        (data, i) => data?.productVariantId == variantid,
+        (data) => data?.productVariantId == variantid,
       );
       let newtemp = [{ ...temp[0], buyQuantity: temp[0]?.buyQuantity - 1 }];
 
-      // console.log("temp", newtemp);
-      dispatch(incrementDecrementProductCartDetailDispatch(newtemp));
+      // setCartItems(temp)
+      dispatch(setSelectedSizeProductDetailSliceDispatch(newtemp));
     }
   };
   // minusOrderQuantityFun is end here
@@ -107,15 +100,14 @@ const CheckoutPage = () => {
       (data) => data?.productVariantId == variantid,
     );
     let newtemp = [{ ...temp[0], buyQuantity: temp[0]?.buyQuantity + 1 }];
-
     // setCartItems(temp)
-    dispatch(incrementDecrementProductCartDetailDispatch(newtemp));
+    dispatch(setSelectedSizeProductDetailSliceDispatch(newtemp));
   };
   // plusOrderQuantityFun is end here
 
   // checkPaymentMethodFun is start from here
   const checkPaymentMethodFun = (e) => {
-    // console.log("helllo payment", e.target.value);
+    console.log("helllo payment", e.target.value);
     if (e.target.value == "Cash On Delivery") {
       setPaymentMethod(false);
     }
@@ -156,7 +148,7 @@ const CheckoutPage = () => {
       if (error) {
         toast.error(error.message);
       } else if (paymentIntent.status === "succeeded") {
-        // console.log("pay", paymentIntent);
+        console.log("pay", paymentIntent);
         toast.success("Payment Successful 🎉");
       }
     } catch (error) {
@@ -167,10 +159,16 @@ const CheckoutPage = () => {
 
   // form onfinish fun is start from here
   const onFinish = (values) => {
-    // console.log("Success:", values);
+    console.log("Success:", values);
+    if (cartProducts?.length == 0) {
+      return toast.error("please select product");
+    }
+
     if (values) {
       if (payementMethod == true) {
-        if (!stripe || !elements) return;
+        if (!stripe || !elements) {
+          return;
+        }
         sendPaymentFun();
       }
       if (values) {
@@ -191,6 +189,7 @@ const CheckoutPage = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 py-[30px] border border-black ">
       {/* checkout Product information  card is start from here */}
+
       <div className="flex flex-col">
         {/* order summmary section is start from here */}
         <div className="mx-[10px] sm-mx-[40px] flex flex-col gap-[10px] bg-darkGreen p-[10px] rounded-sm">
@@ -216,7 +215,6 @@ const CheckoutPage = () => {
               </p>
               <p className="font-Poppins text-[14px] sm-text-[16px] text-lightGreen">
                 {grandTotalState[0]}
-                {/* {grandTotalFun()}{" "} */}
               </p>
             </div>
           </div>
@@ -264,24 +262,17 @@ const CheckoutPage = () => {
                     </div>
                     <AiTwotoneDelete
                       className="text-[24px] text-red-500 cursor-pointer"
-                      onClick={() =>
-                        deleteShoppingCartFun(item?.productVariantId)
-                      }
+                      onClick={() => deleteShoppingCartFun(item?.productId)}
                     />
                   </div>
                 </div>
                 <div className="flex flex-col gap-[8px]">
-                  <div className="flex justify-between">
-                    <p className="font-Poppins text-[16px]">Size</p>
-                    <p className="font-Poppins text-[16px]">{item?.size}</p>
-                  </div>
                   <div className="flex justify-between">
                     <label className="font-Poppins text-[16px]">Price</label>
                     <label className="font-Poppins text-[16px]">
                       {item?.price}
                     </label>
                   </div>
-
                   <div className="flex justify-between">
                     <label className="font-Poppins text-[16px]">Quantity</label>
                     <label className="font-Poppins text-[16px]">
@@ -305,9 +296,7 @@ const CheckoutPage = () => {
         )}
       </div>
       {/* checkout Product information  card is end here */}
-
       {/* delivery Order form is start from here */}
-
       <div className="bg-white py-[30px] px-[10px] sm:p-[30px] rounded-sm h-fit">
         <p className="font-Poppins text-[22px] mb-[20px] text-darkGreen">
           Delivery Details
@@ -481,10 +470,9 @@ const CheckoutPage = () => {
           </div>
         </Form>
       </div>
-
       {/* delivery Order form is end here */}
     </div>
   );
 };
 
-export default CheckoutPage;
+export default BuyNowSingleProductComponent;

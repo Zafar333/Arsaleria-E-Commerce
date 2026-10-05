@@ -18,10 +18,20 @@ export function proxy(request) {
       return NextResponse.redirect(new URL("/userLogin", request.url));
     }
   }
+  if (pathname.startsWith("/buyNowSingleProduct")) {
+    if (!userAccessToken && !userRefreshtoken) {
+      return NextResponse.redirect(new URL("/userLogin", request.url));
+    }
+  }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*", "/checkout/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/dashboard/:path*",
+    "/checkout/:path*",
+    "/buyNowSingleProduct/:path*",
+  ],
 };

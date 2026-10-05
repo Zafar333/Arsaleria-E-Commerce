@@ -1,8 +1,8 @@
 const { pool } = require("../../database/db");
 
 const getSingleProductDetailController = async (req, res) => {
-  console.log("getSingleProductDetailController here");
-  console.log("getSingleProductDetailController here", req?.params);
+  // console.log("getSingleProductDetailController here");
+  // console.log("getSingleProductDetailController here", req?.params);
 
   try {
     if (Object.keys(req?.query)?.length > 0) {
@@ -115,14 +115,14 @@ const getSingleProductDetailController = async (req, res) => {
       //////
       const result = await pool.query(query, [req?.params?.id]);
       if (result?.rows?.length < 1) {
-        console.log("result not found", result?.rows);
+        // console.log("result not found", result?.rows);
         return res.send({
           status: 200,
           message: "no product found",
           data: [],
         });
       }
-      console.log("result found", result?.rows);
+      // console.log("result found", result?.rows);
 
       return res.send({ status: 200, data: result?.rows });
     }

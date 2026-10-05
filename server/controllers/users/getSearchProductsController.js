@@ -1,11 +1,10 @@
 const { pool } = require("../../database/db");
 
 const getSearchProductsController = async (req, res) => {
-  console.log("getSearchProductsController here", req?.query);
+  console.log("getSearchProductsController here");
   const { limit } = req?.query;
   const cursor = Number(req?.query?.cursor);
   // console.log("cursor", typeof cursor);
-  console.log("getAllProductsController here");
   try {
     if (Object.keys(req?.query).length == 0) {
       return res?.send({
