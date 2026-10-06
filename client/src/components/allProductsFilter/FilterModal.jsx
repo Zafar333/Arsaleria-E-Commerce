@@ -136,7 +136,7 @@ const FilterModal = ({
         ...category,
         title: (
           <Checkbox
-            className="text-darkGreen! text-[12px]! font-Poppins"
+            className="text-darkGreen! text-[10px]! sm:text-[12px]! font-Poppins"
             onChange={(e) => {
               setDynamicUrlFun(
                 category?.title,
@@ -192,7 +192,7 @@ const FilterModal = ({
             showIcon
             defaultExpandAll
             titleRender={(node) => (
-              <span className="text-darkGreen! text-[14px]! font-Poppins">
+              <span className="text-darkGreen! text-[12px]! sm:text-[14px]! font-Poppins">
                 {node.title}
               </span>
             )}

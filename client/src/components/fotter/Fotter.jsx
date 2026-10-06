@@ -62,20 +62,26 @@ const Fotter = () => {
                 Social Media
               </p>
               <div className="flex gap-[15px] sm:gap-[20px] md:gap-[30px] px-[12px]">
+                {/* fb page link start here */}
                 <a
                   className="cursor-pointer "
                   target="_blank"
-                  href="https://www.facebook.com/profile.php?id=61561000816583"
+                  href="https://www.facebook.com/profile.php?id=61587900782743"
                 >
                   <FaSquareFacebook className="text-[18px] sm:text-[20px] md:text-[30px] text-lightGreen" />
                 </a>
+                {/* fb page link end here */}
+
+                {/* instagram page link start here */}
+
                 <a
                   className="cursor-pointer"
                   target="_blank"
-                  href="https://www.instagram.com/arslanzafar11/?hl=en"
+                  href="https://www.instagram.com/thewhitegolddairyfarm/"
                 >
                   <FaInstagramSquare className="text-[18px] sm:text-[20px] md:text-[30px] text-lightGreen" />
                 </a>
+                {/* instagram page link end here */}
               </div>
             </div>
             {/* social Media */}
