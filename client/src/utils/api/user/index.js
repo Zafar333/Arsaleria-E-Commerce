@@ -33,5 +33,10 @@ const userEndPoints = {
   getAllCategories: "/user/categories/getAllCategories",
 
   // categories route is end here
+
+  // placeorder payment route is start from here
+  userOrder: "/user/order/placeOrder",
+
+  // placeorder payment route is end here
 };
 export { userEndPoints };

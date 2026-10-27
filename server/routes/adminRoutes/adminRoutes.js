@@ -78,6 +78,9 @@ const {
 const {
   adminEditFeaturedProductsController,
 } = require("../../controllers/admin/adminAddProductControllerfile/adminEditFeaturedProductsController");
+const {
+  admiGetAllOrdersController,
+} = require("../../controllers/admin/admiGetAllOrdersController");
 
 const router = express.Router();
 
@@ -204,5 +207,11 @@ router.get(
 );
 
 //adminHomeCarousel  route is end here
+
+//admin orders page  route is start from here
+
+router.get("/getAllOrders", checkAdminJwtToken, admiGetAllOrdersController);
+
+//admin orders page  route is end here
 
 module.exports = router;

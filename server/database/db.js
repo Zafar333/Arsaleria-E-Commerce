@@ -10,13 +10,14 @@ const {
 const {
   productsMediaModel,
 } = require("../models/adminModels/productmodels/productsMediaModel");
-const { orderDetailModel } = require("../models/adminModels/orderDetailModel");
 const {
   productsVariantModel,
 } = require("../models/adminModels/productmodels/productsVariantModel");
 const {
   HomeCarouselMediaModel,
 } = require("../models/adminModels/HomeCarouselMediaModel");
+const { ordersModel } = require("../models/adminModels/ordersModel");
+const { orderDetailModel } = require("../models/adminModels/orderDetailModel");
 
 const pool = new Pool({
   host: "localhost",
@@ -34,8 +35,10 @@ async function initDB() {
     await pool.query(createUsersTable);
     await pool.query(createProductCategoriesTable);
     await pool.query(productsModel);
-    await pool.query(productsMediaModel);
+    await pool.query(ordersModel);
     await pool.query(orderDetailModel);
+
+    await pool.query(productsMediaModel);
     await pool.query(productsVariantModel);
     await pool.query(HomeCarouselMediaModel);
 

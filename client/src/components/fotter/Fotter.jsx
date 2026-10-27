@@ -36,7 +36,7 @@ const Fotter = () => {
                   Email
                 </p>
                 <p className="font-Poppins text-[9px] sm:text-[11px] text-lightGreen">
-                  whitegolddairy@gmail.com
+                  thewhitegolddairyfarm@gmail.com
                 </p>
               </div>
             </div>

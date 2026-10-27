@@ -1,7 +1,6 @@
 import { FaWhatsapp } from "react-icons/fa";
 
 const WhatsappButtonComponent = () => {
-  console.log("number", process.env.NEXT_PUBLIC_WHATSAPP_NUMBER);
   const phoneNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER; // country code + number, without +
 
   const message = "Hello, I would like to know more about your products.";

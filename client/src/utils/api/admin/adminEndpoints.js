@@ -42,5 +42,10 @@ const adminEndpoints = {
   adminGetAllHomeCarouselImgs: "/admin/getAllHomeCarouselImgs",
   adminEditFeaturedProducts: "/admin/editFeaturedProducts",
   //  adminHomeCarouselImg  media  route is end here
+
+  //  admin usersOrders   route is start from here
+  adminAllOrders: "/admin/getAllOrders",
+
+  //  admin usersOrders   route is end here
 };
 module.exports = { adminEndpoints };

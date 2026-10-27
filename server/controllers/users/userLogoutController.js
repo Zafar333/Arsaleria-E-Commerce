@@ -13,7 +13,7 @@ const userLogoutController = async (req, res) => {
     const result = await pool.query(
       `UPDATE users
       SET
-      user_jwt_refereshToken = $1
+      user_jwt_refereshtoken = $1
       WHERE id = $2
   
   `,

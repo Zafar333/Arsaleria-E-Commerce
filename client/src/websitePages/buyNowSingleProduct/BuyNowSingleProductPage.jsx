@@ -4,7 +4,7 @@ import BuyNowSingleProductPayemntProvider from "@/components/buyNowSingleProduct
 
 const BuyNowSingleProductPage = () => {
   return (
-    <div className="mt-[100px] max-w-[1400px] m-auto">
+    <div className="mt-[40px] sm:mt-[60px] md:mt-[100px] max-w-[1400px] m-auto">
       <BuyNowSingleProductPayemntProvider />
     </div>
   );

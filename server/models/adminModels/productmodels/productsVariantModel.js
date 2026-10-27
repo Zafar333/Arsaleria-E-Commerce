@@ -5,7 +5,7 @@ const productsVariantModel = `
       product_size VARCHAR (255) NOT NULL,
       dairyfarm_unit VARCHAR(30) NOT NULL,
       product_quantity INT NOT NULL,
-      sellproduct_price DECIMAL(10,2) NOT NULL,
+      sellproduct_price DECIMAL(15,2) NOT NULL,
       stock_status VARCHAR(100) NOT NULL,
       sku VARCHAR(255)
     )

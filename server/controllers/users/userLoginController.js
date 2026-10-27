@@ -40,7 +40,7 @@ const userLogin = async (req, res) => {
           }
 
           const dat = await pool?.query(
-            `UPDATE users SET user_jwt_refereshToken=$1 WHERE id=$2`,
+            `UPDATE users SET user_jwt_refereshtoken=$1 WHERE id=$2`,
             [refreshtoken, result?.rows[0]?.id],
           );
 
