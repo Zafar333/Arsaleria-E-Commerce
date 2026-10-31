@@ -37,7 +37,6 @@ const persistConfig = {
     "userLoginDetailSlice",
     "productDetailSlice",
     "allProductsSlice",
-    "adminDetailSlice",
     "cartDetailSlice",
   ],
 };

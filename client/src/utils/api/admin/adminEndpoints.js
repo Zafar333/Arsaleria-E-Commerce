@@ -45,6 +45,8 @@ const adminEndpoints = {
 
   //  admin usersOrders   route is start from here
   adminAllOrders: "/admin/getAllOrders",
+  adminEditOrderProgressState: "/admin/editOrderProgressState",
+  adminGetSpecificOrderDetail: "/admin/getSpecificOrderDetail",
 
   //  admin usersOrders   route is end here
 };

@@ -81,6 +81,12 @@ const {
 const {
   admiGetAllOrdersController,
 } = require("../../controllers/admin/admiGetAllOrdersController");
+const {
+  admiEditOrderProgressStateController,
+} = require("../../controllers/admin/admiEditOrderProgressStateController");
+const {
+  admiGetSpecificOrderDetailController,
+} = require("../../controllers/admin/admiGetSpecificOrderDetailController");
 
 const router = express.Router();
 
@@ -211,6 +217,16 @@ router.get(
 //admin orders page  route is start from here
 
 router.get("/getAllOrders", checkAdminJwtToken, admiGetAllOrdersController);
+router.get(
+  "/editOrderProgressState",
+  checkAdminJwtToken,
+  admiEditOrderProgressStateController,
+);
+router.get(
+  "/getSpecificOrderDetail/:id",
+  checkAdminJwtToken,
+  admiGetSpecificOrderDetailController,
+);
 
 //admin orders page  route is end here
 

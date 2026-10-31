@@ -93,11 +93,7 @@ const AdminLogin = () => {
       if (result?.status >= 200 && result?.status < 400) {
         form.resetFields(null);
         // console.log("adminlogin data",result)
-        dispatch(
-          setAdminLoginDetailDispatch([
-            { id: result.id, adminaccestoken: result?.adminaccestoken },
-          ]),
-        );
+        dispatch(setAdminLoginDetailDispatch([{ id: result.id }]));
         setLoading(false);
         setPageLoading(true);
         toast.success(result?.message);

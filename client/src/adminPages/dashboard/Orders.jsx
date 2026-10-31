@@ -8,25 +8,27 @@ import {
   DevelopmentBaseUrl,
   frontendDevelopmentBaseUrl,
 } from "@/utils/api/main";
-import { Input, Radio, Spin, Table } from "antd";
-import { usePathname, useSearchParams } from "next/navigation";
+import { Button, Input, Radio, Spin, Table } from "antd";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 const { Search } = Input;
 
 const Orders = () => {
   const searchparams = useSearchParams();
+  const router = useRouter();
   const pathname = usePathname();
   const [pageLoading, setPageLoading] = useState(false);
-  const [manageOrdersFilter, setManageOrdersFilter] = useState(["pending"]);
-  const [orderAction, setorderAction] = useState(["pending"]);
   const [ordersData, setOrdersData] = useState([]);
   const [allOrdersData, setAllOrdersData] = useState([]);
+  const filters = searchparams.get("filter");
 
   useEffect(() => {
     stopLoadingBar();
-    adminGetAllOrdersFunApi("pending");
   }, []);
+  useEffect(() => {
+    adminGetAllOrdersFunApi(filters);
+  }, [filters]);
   useEffect(() => {
     if (ordersData?.length > 0) {
       addKeysAllorderDataFun();
@@ -34,9 +36,6 @@ const Orders = () => {
       setAllOrdersData([]);
     }
   }, [ordersData]);
-  useEffect(() => {
-    console.log("allOrdersData", allOrdersData);
-  }, [allOrdersData]);
 
   // for route changes useffect calling the fun mange page loading start here
   useEffect(() => {
@@ -46,7 +45,7 @@ const Orders = () => {
 
   // addKeysAllorderDataFun is start from here
   const addKeysAllorderDataFun = () => {
-    const newdata = ordersData.map((data) => ({ ...data, key: data?.id }));
+    const newdata = ordersData.map((data, ind) => ({ ...data, key: ind + 1 }));
     setAllOrdersData(newdata);
   };
 
@@ -56,22 +55,24 @@ const Orders = () => {
   const onSearch = async (value, info) => {
     try {
       if (!value) {
-        return;
+        return toast.error("search bar is empty");
       }
-      console.log("search", value);
+      startLoadingBar();
       setPageLoading(true);
       const response = await fetch(
-        `${DevelopmentBaseUrl}${adminEndpoints?.adminAllOrders}?name=${value}&order=${manageOrdersFilter[0]}`,
+        `${DevelopmentBaseUrl}${adminEndpoints?.adminAllOrders}?name=${value}&order=${filters}`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
           credentials: "include",
+          cache: "no-store",
         },
       );
       const result = await response.json();
       if (result?.status >= 200 && result?.status < 400) {
+        stopLoadingBar();
         setPageLoading(false);
         return setOrdersData(result?.data);
       }
@@ -85,11 +86,15 @@ const Orders = () => {
         result?.status == 400
       ) {
         setOrdersData([]);
+        stopLoadingBar();
+
         setPageLoading(false);
         return toast.error(result?.message);
       }
     } catch (error) {
       setPageLoading(false);
+      stopLoadingBar();
+
       // console.log(error?.message)
       return toast.error("server error");
     }
@@ -97,7 +102,6 @@ const Orders = () => {
   // onSearch bar fun api is end here
 
   // adminGetAllOrdersFunApi is start from here
-
   const adminGetAllOrdersFunApi = async (ord) => {
     try {
       startLoadingBar();
@@ -110,6 +114,7 @@ const Orders = () => {
             "Content-Type": "application/json",
           },
           credentials: "include",
+          cache: "no-store",
         },
       );
       const result = await response.json();
@@ -143,83 +148,60 @@ const Orders = () => {
 
   // getOrders fun is start from here
   const getOrders = async (val) => {
-    setManageOrdersFilter([val]);
-    if (val == "allorders") {
-      return await adminGetAllOrdersFunApi("allorders");
-    }
-    if (val == "pending") {
-      return await adminGetAllOrdersFunApi("pending");
-    }
-    if (val == "delivered") {
-      return await adminGetAllOrdersFunApi("delivered");
-    }
-    if (val == "completed") {
-      return await adminGetAllOrdersFunApi("completed");
-    }
-    if (val == "inprogress") {
-      return await adminGetAllOrdersFunApi("inprogress");
-    }
-
-    if (val == "canceled") {
-      return await adminGetAllOrdersFunApi("canceled");
-    }
+    const adminid = searchparams.get("id");
+    router.replace(`/admin/orders?id=${adminid}&filter=${val}`);
   };
   // getOrders fun is end here
 
   // table data is start from here
-  const handleStatusChange = (id, status) => {
-    // console.log("Order ID:", id);
-    // console.log("New Status:", status);
-    setorderAction([status]);
+  const handleStatusChange = async (id, status) => {
+    try {
+      startLoadingBar();
+      setPageLoading(true);
+      const response = await fetch(
+        `${DevelopmentBaseUrl}${adminEndpoints?.adminEditOrderProgressState}?orderProgressState=${status}&id=${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        },
+      );
+      const result = await response.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        setOrdersData([]);
+        adminGetAllOrdersFunApi(filters);
+        return toast.success(result?.message);
+      }
+      if (result?.status == 401) {
+        setPageLoading(true);
+        router.replace("/adminLogin");
+        return toast.error(result?.message);
+      }
+      if (
+        (result?.status >= 402 && result?.status <= 550) ||
+        result?.status == 400
+      ) {
+        stopLoadingBar();
+        setPageLoading(false);
+        return toast.error(result?.message);
+      }
+    } catch (error) {
+      stopLoadingBar();
+      setPageLoading(false);
+      // console.log(error?.message);
+      return toast.error("server error", error?.message);
+    }
   };
 
-  // const dataSource = [
-  //   {
-  //     key: "1",
-  //     id: "1",
-  //     name: "arslan",
-  //     orderid: 32,
-  //     product: (
-  //       <div className="flex items-center gap-3">
-  //         <Image
-  //           alt="images"
-  //           src="https://res.cloudinary.com/tbf1ausw/image/upload/v1785165430/DairyFarmMedia/products/filefeed3fd7-81a2-4542-94ed-c88dc751cb5a/ssthhsmr5twmguo2ence.jpg"
-  //           width={50}
-  //           height={50}
-  //         />{" "}
-  //         <span className="tex-[13px] font-Poppins">ghee</span>
-  //       </div>
-  //     ),
-  //     price: "5456",
-  //     payment: "cod",
-  //     contact: "0302-6878646",
-  //     status: orderAction,
-  //     action: orderAction[0],
-  //   },
-  //   {
-  //     key: "2",
-  //     id: "2",
-  //     name: "ali",
-  //     orderid: 32,
-  //     product: (
-  //       <div className="flex items-center gap-3">
-  //         <Image
-  //           alt="images"
-  //           src="https://res.cloudinary.com/tbf1ausw/image/upload/v1785062665/DairyFarmMedia/products/filebda6a5cc-a5e9-4cb2-a5cb-ea2013303070/pnkt09nxvdd2uffrzbsn.jpg"
-  //           width={50}
-  //           height={50}
-  //         />{" "}
-  //         <span className="tex-[13px] font-Poppins">yogurt</span>
-  //       </div>
-  //     ),
-  //     price: "5456",
-  //     payment: "cod",
-  //     contact: "0302-6878646",
-  //     status: "pending",
-  //     action: orderAction[0],
-  //   },
-  // ];
   const columns = [
+    {
+      title: "NO",
+      width: 100,
+      dataIndex: "key",
+      fixed: "start",
+    },
     {
       title: "Order Id",
       width: 100,
@@ -238,11 +220,6 @@ const Orders = () => {
       dataIndex: "users_id",
     },
 
-    // {
-    //   title: "Product Name",
-    //   width: 100,
-    //   dataIndex: "product",
-    // },
     {
       title: "Total Price",
       width: 100,
@@ -277,6 +254,11 @@ const Orders = () => {
       title: "Order Date",
       width: 100,
       dataIndex: "created_dat",
+      render: (date) => {
+        if (!date) return "N/A";
+
+        return new Date(date).toLocaleDateString("en-GB");
+      },
     },
     {
       title: "Action",
@@ -307,17 +289,39 @@ const Orders = () => {
         </Radio.Group>
       ),
     },
+    {
+      title: "Order Detail",
+      key: "orderDetail",
+      render: (_, record) => (
+        <Button
+          className="bg-lightGreen! text-[12px]! font-Poppins! text-darkGreen! cursor-pointer! border-none!"
+          onClick={() => ViewOrderDetail(record)}
+        >
+          View Detail
+        </Button>
+      ),
+      fixed: "end",
+    },
   ];
 
   // table data is end here
-  //
+  // ViewOrderDetail fun is start from here
+  const ViewOrderDetail = (record) => {
+    // console.log("Selected Order:", record);
+    // console.log("Order ID:", record.id);
+
+    startLoadingBar();
+    router.push(
+      `/admin/orders/orderDetail/${record.id}?id=${searchparams.get("id")}&filter=${filters}`,
+    );
+
+    // You can open a Drawer or navigate to the order detail page here.
+  };
+  // ViewOrderDetail fun is start from here
 
   // browserUrlChangePageloadingfun is start from here
   const browserUrlChangePageloadingfun = () => {
-    // console.log("pageloadinfun call",pathname)
-    // console.log("pageloadinfun call",frontendDevelopmentBaseUrl)
     const queryparam = searchparams.getAll("id");
-    // console.log("pageloadinfun call",queryparam[0])
 
     if (
       `${frontendDevelopmentBaseUrl}/admin/orders?id=${queryparam[0]}` ==
@@ -347,43 +351,47 @@ const Orders = () => {
           {/* filter section is start from here */}
           <div className="overflow-x-auto rounded-sm mt-[50px] flex items-center gap-4 py-[9px] sm:py-[5px] bg-lightGreen w-full sm:max-w-fit px-[50px]">
             <p
-              className={`${manageOrdersFilter[0] == "pending" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
+              className={`${filters == "pending" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
               onClick={() => getOrders("pending")}
             >
               Pending
             </p>
             <p
-              className={`${manageOrdersFilter[0] == "inprogress" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
-              onClick={() => getOrders("inprogress")}
+              className={`${filters == "inProgress" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
+              onClick={() => getOrders("inProgress")}
             >
               InProgress
             </p>
             <p
-              className={`${manageOrdersFilter[0] == "delivered" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
+              className={`${filters == "delivered" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
               onClick={() => getOrders("delivered")}
             >
               Dilvered
             </p>
             <p
-              className={`${manageOrdersFilter[0] == "completed" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
+              className={`${filters == "completed" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
               onClick={() => getOrders("completed")}
             >
               Completed
             </p>
             <p
-              className={`${manageOrdersFilter[0] == "canceled" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
-              onClick={() => getOrders("canceled")}
+              className={`${filters == "cancelled" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
+              onClick={() => getOrders("cancelled")}
             >
               Canceled
             </p>
             <p
-              className={`${manageOrdersFilter[0] == "allorders" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
+              className={`${filters == "allorders" ? "bg-white rounded-sm" : ""} text-darkGreen text-[14px] px-2 my-1 cursor-pointer text-nowrap`}
               onClick={() => getOrders("allorders")}
             >
               All orders
             </p>
           </div>
           {/* filter section is end here */}
+
+          <div className="flex justify-center mt-[40px]">
+            <p className="text-darkGreen text-[25px] font-Poppins">Orders</p>
+          </div>
 
           {/* table section is start from  */}
           <Table

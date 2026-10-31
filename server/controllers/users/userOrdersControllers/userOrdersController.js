@@ -56,7 +56,7 @@ const userOrdersController = async (req, res) => {
 
         const data = await client?.query(
           `
-          INSERT INTO orders_detail (order_id,products_variantid,product_name,sellproduct_price,image_url,size,unit,buy_qunatity,delivery_charges) values($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id
+          INSERT INTO orders_detail (order_id,products_variantid,product_name,sellproduct_price,image_url,size,unit,buy_quantity,delivery_charges) values($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id
           `,
           [
             orderId?.rows[0]?.id,

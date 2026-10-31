@@ -8,7 +8,7 @@ const orderDetailModel = `
       image_url TEXT,
       size VARCHAR(255) NOT NULL,
       unit VARCHAR(50) NOT NULL,
-      buy_qunatity BIGINT NOT NULL,
+      buy_quantity BIGINT NOT NULL,
       delivery_charges  DECIMAL(10,2) 
     )
    `;

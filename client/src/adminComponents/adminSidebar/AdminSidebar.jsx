@@ -1,4 +1,5 @@
 "use client";
+import { setAdminLoginDetailDispatch } from "@/store/adminDetailSlice";
 import { startLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { adminEndpoints } from "@/utils/api/admin/adminEndpoints";
 import {
@@ -8,11 +9,13 @@ import {
 import { Drawer, Spin } from "antd";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import "./adminsidebar.css";
 const AdminSidebar = ({ openSidebar, setOpensSidebar }) => {
   //  const [sidebarstate,setsidebarstate]=useState(["addcategories","addproducts","products","home","login"])
   const [sidebarstate, setsidebarstate] = useState();
+  const dispatch = useDispatch();
   const [queryparams, setquerparams] = useState("addcategories");
   const [btnLoader, setBtnLoader] = useState(false);
   const router = useRouter();
@@ -55,6 +58,7 @@ const AdminSidebar = ({ openSidebar, setOpensSidebar }) => {
       );
       const result = await response.json();
       if (result?.status >= 200 && result?.status < 400) {
+        dispatch(setAdminLoginDetailDispatch([]));
         setBtnLoader(false);
         toast.success(result?.message);
         return router.replace(`${frontendDevelopmentBaseUrl}/`);
@@ -92,7 +96,7 @@ const AdminSidebar = ({ openSidebar, setOpensSidebar }) => {
       return adminlogoutfunapi();
     }
     if (val == "orders") {
-      router?.replace(`/admin/orders?id=${queryparams?.id}`);
+      router?.replace(`/admin/orders?id=${queryparams?.id}&filter=pending`);
     }
     if (val == "allUsers") {
       router?.replace(`/admin/allUsers?id=${queryparams?.id}`);
