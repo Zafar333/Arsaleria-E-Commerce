@@ -26,6 +26,9 @@ const CheckoutPage = () => {
   const grandTotalState = useSelector(
     (state) => state?.cartDetailSlice?.grandTotal,
   );
+
+  const [btnLoader, setBtnLoader] = useState(false);
+
   const navigate = useRouter();
   // useEffect(() => {
   //   console.log("cartProducts", cartProducts);
@@ -55,12 +58,14 @@ const CheckoutPage = () => {
       // console.log("in")
       let totalRupees = 0;
       cartProducts?.map((data) => {
-        const total = data?.buyQuantity * Number(data?.price);
+        const total = Math.round(
+          Number(data?.buyQuantity) * Number(data?.price),
+        );
         totalRupees += total;
       });
       if (cartProducts[0]?.delivery_type == "paid") {
         let grandtotal =
-          totalRupees + Number(cartProducts[0]?.delivery_charges);
+          totalRupees + Math.round(Number(cartProducts[0]?.delivery_charges));
         // console.log("grandTotal", typeof grandtotal);
         dispatch(setDispatchGrandTotal([grandtotal]));
 
@@ -135,6 +140,7 @@ const CheckoutPage = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ amount: 1000 }),
+          cache: "no-store",
         },
       );
 
@@ -189,32 +195,32 @@ const CheckoutPage = () => {
   // registerOrderFun is end here
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 py-[30px] border border-black ">
+    <div className="grid grid-cols-1 lg:grid-cols-2 py-[30px] ">
       {/* checkout Product information  card is start from here */}
       <div className="flex flex-col">
         {/* order summmary section is start from here */}
         <div className="mx-[10px] sm-mx-[40px] flex flex-col gap-[10px] bg-darkGreen p-[10px] rounded-sm">
-          <p className="font-Poppins text-[20px] text-lightGreen">
+          <p className="font-Poppins text-[18px] md:text-[20px] text-lightGreen">
             Order Summary
           </p>
           <div className="flex flex-col gap-[5px] px-[20px]">
             <div className="flex justify-between">
-              <p className="font-Poppins tex-[14px] sm-text-[16px] text-lightGreen">
+              <p className="font-Poppins text-[12px] sm:text-[16px] text-lightGreen">
                 Delivery Charges{" "}
               </p>
-              <p className="font-Poppins text-[14px] sm-text-[16px] text-lightGreen">
+              <p className="font-Poppins text-[12px] sm:text-[16px] text-lightGreen">
                 {" "}
                 {cartProducts?.length > 0 &&
                 cartProducts[0]?.delivery_type == "paid"
-                  ? cartProducts[0]?.delivery_charges
+                  ? Number(cartProducts[0]?.delivery_charges)
                   : 0}{" "}
               </p>
             </div>
             <div className="flex justify-between">
-              <p className="font-Poppins text-[14px] sm-text-[16px] text-lightGreen">
+              <p className="font-Poppins text-[12px] sm:text-[16px] text-lightGreen">
                 GrandTotal{" "}
               </p>
-              <p className="font-Poppins text-[14px] sm-text-[16px] text-lightGreen">
+              <p className="font-Poppins text-[12px] sm:text-[16px] text-lightGreen">
                 {grandTotalState[0]}
                 {/* {grandTotalFun()}{" "} */}
               </p>
@@ -272,26 +278,36 @@ const CheckoutPage = () => {
                 </div>
                 <div className="flex flex-col gap-[8px]">
                   <div className="flex justify-between">
-                    <p className="font-Poppins text-[16px]">Size</p>
-                    <p className="font-Poppins text-[16px]">{item?.size}</p>
+                    <p className="font-Poppins text-[14px] md:text-[16px]">
+                      Size
+                    </p>
+                    <p className="font-Poppins text-[14px] md:text-[16px]">
+                      {item?.size}
+                    </p>
                   </div>
                   <div className="flex justify-between">
-                    <label className="font-Poppins text-[16px]">Price</label>
-                    <label className="font-Poppins text-[16px]">
-                      {item?.price}
+                    <label className="font-Poppins text-[14px] md:text-[16px]">
+                      Price
+                    </label>
+                    <label className="font-Poppins text-[14px] md:text-[16px]">
+                      {Math.round(Number(item?.price))}
                     </label>
                   </div>
 
                   <div className="flex justify-between">
-                    <label className="font-Poppins text-[16px]">Quantity</label>
-                    <label className="font-Poppins text-[16px]">
+                    <label className="font-Poppins text-[14px] md:text-[16px]">
+                      Quantity
+                    </label>
+                    <label className="font-Poppins text-[14px] md:text-[16px]">
                       {item?.buyQuantity}
                     </label>
                   </div>
                   <div className="flex justify-between">
-                    <label className="font-Poppins text-[16px]">Total</label>
-                    <label className="font-Poppins text-[16px]">
-                      {Number(item?.price * item?.buyQuantity)}
+                    <label className="font-Poppins text-[14px] md:text-[16px]">
+                      Total
+                    </label>
+                    <label className="font-Poppins text-[14px] md:text-[16px]">
+                      {Math.round(Number(item?.price * item?.buyQuantity))}
                     </label>
                   </div>
                 </div>
@@ -299,7 +315,7 @@ const CheckoutPage = () => {
             </div>
           ))
         ) : (
-          <div className="font-Poppins text-[20px] text-center text-red-500 mt-[50px]">
+          <div className="font-Poppins text-[16px] md:text-[20px] text-center text-red-500 mt-[50px]">
             your Cart is empty
           </div>
         )}
@@ -309,7 +325,7 @@ const CheckoutPage = () => {
       {/* delivery Order form is start from here */}
 
       <div className="bg-white py-[30px] px-[10px] sm:p-[30px] rounded-sm h-fit">
-        <p className="font-Poppins text-[22px] mb-[20px] text-darkGreen">
+        <p className="font-Poppins text-[18px] md:text-[22px] mb-[20px] text-darkGreen">
           Delivery Details
         </p>
 
@@ -461,7 +477,7 @@ const CheckoutPage = () => {
           {/* debit card detail form is start */}
           {payementMethod == true ? (
             <div>
-              <p className="font-Poppins text-[22px] mt-[28px] mb-[14px] text-darkGreen">
+              <p className="font-Poppins text-[18px] md:text-[22px] mt-[28px] mb-[14px] text-darkGreen">
                 Card Details
               </p>
 
@@ -475,9 +491,19 @@ const CheckoutPage = () => {
           {/* debit card detail form is end here */}
 
           <div className="flex justify-center">
-            <Button type="primary" htmlType="submit">
-              Complete Order
-            </Button>
+            {btnLoader == false ? (
+              <Button
+                className="border-none! w-[140px] sm:w-[170px] text-[14px]! md:text-[16px]! font-Poppins! bg-darkGreen! text-white!"
+                htmlType="submit"
+              >
+                Complete Order
+              </Button>
+            ) : (
+              <Button
+                loading
+                className="border-none! w-[140px] sm:w-[170px] bg-darkGreen! text-white! py-[5px]!"
+              ></Button>
+            )}
           </div>
         </Form>
       </div>

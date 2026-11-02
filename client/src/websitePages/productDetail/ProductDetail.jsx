@@ -43,6 +43,8 @@ const ProductDetail = async ({ params }) => {
   // console.log("singleProductDetailData", singleProductDetailData);
   // getSingleProductDetailData fun is end here
 
+  // const discountPriceFun
+
   return (
     <div className=" mt-[50px] sm:mt-[70px] md:mt-[100px] max-w-[1400px] m-auto min-h-[50vh] ">
       {/* productDetail section is sstart from here */}
@@ -68,22 +70,36 @@ const ProductDetail = async ({ params }) => {
             {/* productDescriptionDetail section is start from here */}
             <div className="flex flex-col py-[20px] px-[10px]  gap-[25px] ">
               <div className="flex items-center ">
+                {/* old price without discount */}
                 <p className="">
                   {singleProductDetailData[0]?.product_discount > 0 && (
                     <span className="text-gray-500 line-through text-[12px] md:text-[14px] font-Poppins mr-3">
-                      {singleProductDetailData[0]?.sellproduct_price_1kg}
+                      {Number(
+                        singleProductDetailData[0]?.sellproduct_price_1kg,
+                      )}
                     </span>
                   )}
                 </p>
+                {/* old price without discount */}
+
+                {/* new price with discount */}
                 <p className="text-darkGreen text-[18px] sm:text-[20px] md:text-[24px] font-Poppins">
                   {singleProductDetailData[0]?.product_discount > 0
-                    ? `${
-                        (singleProductDetailData[0]?.sellproduct_price_1kg *
-                          singleProductDetailData[0]?.product_discount) /
-                        100
-                      } Rs`
-                    : `${singleProductDetailData[0]?.sellproduct_price_1kg}  Rs`}
+                    ? `${Math.round(
+                        Number(
+                          singleProductDetailData[0]?.sellproduct_price_1kg,
+                        ) -
+                          (Number(
+                            singleProductDetailData[0]?.sellproduct_price_1kg,
+                          ) *
+                            Number(
+                              singleProductDetailData[0]?.product_discount,
+                            )) /
+                            100,
+                      )} Rs`
+                    : `${Number(singleProductDetailData[0]?.sellproduct_price_1kg)}  Rs`}
                 </p>
+                {/* new price with discount */}
               </div>
               {singleProductDetailData[0]?.productbrand_name && (
                 <div className="flex items-center ">
