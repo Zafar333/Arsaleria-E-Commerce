@@ -100,18 +100,37 @@ const AddToCartModal = () => {
   const grandTotalFun = () => {
     if (cartData?.length > 0) {
       let totalRupees = 0;
-      {
-        cartData?.map((data, i) => {
-          const total = data?.buyQuantity * Number(data?.price);
+
+      cartData?.map((data, i) => {
+        if (data?.product_discount > 0) {
+          Math.round(
+            Number(data?.price) -
+              (Number(data?.price) * Number(data?.product_discount)) / 100,
+          );
+
+          const total =
+            data?.buyQuantity *
+            Number(
+              Math.round(
+                Number(data?.price) -
+                  (Number(data?.price) * Number(data?.product_discount)) / 100,
+              ),
+            );
           totalRupees += total;
-        });
-        if (cartData[0]?.delivery_type == "paid") {
-          let grandtotal = totalRupees + Number(cartData[0]?.delivery_charges);
-          dispatch(setDispatchGrandTotal([grandtotal]));
-          return grandtotal;
+        } else {
+          const total = Math.round(
+            Number(data?.buyQuantity) * Number(data?.price),
+          );
+          totalRupees += total;
         }
-        return dispatch(setDispatchGrandTotal([totalRupees]));
+      });
+      if (cartData[0]?.delivery_type == "paid") {
+        let grandtotal =
+          totalRupees + Math.round(Number(cartData[0]?.delivery_charges));
+        dispatch(setDispatchGrandTotal([grandtotal]));
+        return grandtotal;
       }
+      return dispatch(setDispatchGrandTotal([totalRupees]));
     } else {
       return dispatch(setDispatchGrandTotal([0]));
     }
@@ -139,7 +158,7 @@ const AddToCartModal = () => {
     }
 
     startLoadingBar();
-    navigate.push("/checkout/2");
+    navigate.push("/checkout");
   };
   //  gotoCartPageFun is end here
 
@@ -172,18 +191,33 @@ const AddToCartModal = () => {
                   className="border-2 border-gray-300 max-w-[100px] object-contain"
                 />
                 <div className="flex flex-col gap-[5px]">
-                  <p className="font-Poppins text-[16px]">
+                  <p className="font-Poppins text-[13px] md:text-[16px]">
                     {data?.product_name}
                   </p>
                   <div className="flex gap-[10px]">
-                    <p className="font-Poppins text-[18px]">Size</p>
-                    <p className="font-Poppins text-[18px]">{data?.size}</p>
+                    <p className="font-Poppins text-[13px] md:text-[16px]">
+                      Size
+                    </p>
+                    <p className="font-Poppins text-[13px] md:text-[16px]">
+                      {data?.size}
+                    </p>
                   </div>
                   <div className="flex gap-[10px]">
-                    <p className="font-Poppins text-[18px]">Price</p>
-                    <p className="font-Poppins text-[18px]">{data?.price}</p>
+                    <p className="font-Poppins text-[13px] md:text-[16px]">
+                      Price
+                    </p>
+                    <p className="font-Poppins text-[13px] md:text-[16px]">
+                      {data?.product_discount > 0
+                        ? `${Math.round(
+                            Number(data?.price) -
+                              (Number(data?.price) *
+                                Number(data?.product_discount)) /
+                                100,
+                          )} Rs`
+                        : `${Number(data?.price)}  Rs`}
+                    </p>
                   </div>
-                  <div className="flex gap-[15px] sm:gap-[25px] items-center mt-[10px]">
+                  <div className="flex gap-[7px] xs:gap-[10px] sm:gap-[25px] items-center mt-[10px]">
                     <div className="flex max-w-[80px]">
                       <Button
                         className="w-[10px] p-2 rounded-none text-[18px] font-bold"
@@ -193,7 +227,7 @@ const AddToCartModal = () => {
                       >
                         -
                       </Button>
-                      <p className="rounded-none w-[60px] bg-white border border-gray-300 text-[16px] flex items-center justify-center">
+                      <p className="rounded-none w-[60px] bg-white border border-gray-300 text-[14px] md:text-[16px] flex items-center justify-center">
                         {data?.buyQuantity}
                       </p>
                       <Button
@@ -206,7 +240,7 @@ const AddToCartModal = () => {
                       </Button>
                     </div>
                     <AiTwotoneDelete
-                      className="text-[24px] text-red-500 cursor-pointer"
+                      className="text-[18px] md:text-[24px] text-red-500 cursor-pointer"
                       onClick={() =>
                         deleteShoppingCartFun(data?.productVariantId)
                       }

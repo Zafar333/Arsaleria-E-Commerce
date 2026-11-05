@@ -58,10 +58,22 @@ const CheckoutPage = () => {
       // console.log("in")
       let totalRupees = 0;
       cartProducts?.map((data) => {
-        const total = Math.round(
-          Number(data?.buyQuantity) * Number(data?.price),
-        );
-        totalRupees += total;
+        if (data?.product_discount > 0) {
+          const total =
+            data?.buyQuantity *
+            Number(
+              Math.round(
+                Number(data?.price) -
+                  (Number(data?.price) * Number(data?.product_discount)) / 100,
+              ),
+            );
+          totalRupees += total;
+        } else {
+          const total = Math.round(
+            Number(data?.buyQuantity) * Number(data?.price),
+          );
+          totalRupees += total;
+        }
       });
       if (cartProducts[0]?.delivery_type == "paid") {
         let grandtotal =
@@ -290,7 +302,14 @@ const CheckoutPage = () => {
                       Price
                     </label>
                     <label className="font-Poppins text-[14px] md:text-[16px]">
-                      {Math.round(Number(item?.price))}
+                      {item?.product_discount > 0
+                        ? `${Math.round(
+                            Number(item?.price) -
+                              (Number(item?.price) *
+                                Number(item?.product_discount)) /
+                                100,
+                          )} `
+                        : `${Number(item?.price)}`}
                     </label>
                   </div>
 
@@ -307,7 +326,17 @@ const CheckoutPage = () => {
                       Total
                     </label>
                     <label className="font-Poppins text-[14px] md:text-[16px]">
-                      {Math.round(Number(item?.price * item?.buyQuantity))}
+                      {item?.product_discount > 0
+                        ? Number(item?.buyQuantity) *
+                          Math.round(
+                            Number(item?.price) -
+                              (Number(item?.price) *
+                                Number(item?.product_discount)) /
+                                100,
+                          )
+                        : Math.round(
+                            Number(item?.buyQuantity) * Number(item?.price),
+                          )}
                     </label>
                   </div>
                 </div>
