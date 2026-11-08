@@ -3,13 +3,28 @@ import { setAllProductsDispatch } from "@/store/allProductsPageSlice";
 import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Button, Image } from "antd";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const ProductDetailPageImgAndImgSlider = ({ singleProductDetailData }) => {
+  const navigate = useRouter();
   const dispatch = useDispatch();
   const [signleProductImgs, setSingleProductImgs] = useState([]);
   const [selectedImgIndx, setSelectedImgIndx] = useState(0);
+
+  useEffect(() => {
+    // console.log("i am call");
+    const handlePopState = (event) => {
+      navigate.replace("/allProducts?limit=10&cursor=null");
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   useEffect(() => {
     stopLoadingBar();

@@ -4,14 +4,21 @@ import {
   setAllProductsBtnStateDispatch,
   setFilterBtnStateDispatch,
 } from "@/store/allproductsFilterSlice";
-import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
+import {
+  startLoadingBar,
+  stopLoadingBar,
+} from "@/topLoadingBarComponent/TopLoadingBarComponent";
+import { DevelopmentBaseUrl } from "@/utils/api/main";
+import { userEndPoints } from "@/utils/api/user";
 import { Button, Form, Input } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import "./contactUs.css";
 
 const ContactUsPage = () => {
   const dispatch = useDispatch();
+  const [btnLoader, setBtnLoader] = useState(false);
   useEffect(() => {
     stopLoadingBar();
     dispatch(setAllProductsDispatch([]));
@@ -20,11 +27,48 @@ const ContactUsPage = () => {
   }, []);
   const { TextArea } = Input;
 
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  // contactus fun page is start from hrer
+  const onFinish = async (values) => {
+    toast.success("contact us");
+    try {
+      setBtnLoader(true);
+      startLoadingBar();
+      const response = await fetch(
+        `${DevelopmentBaseUrl}${userEndPoints.contactus}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          cache: "no-store",
+          body: JSON.stringify(values),
+        },
+      );
+      const result = await response.json();
+      if (result?.status >= 200 && result?.status < 400) {
+        stopLoadingBar();
+        setBtnLoader(false);
+        return toast.success(result?.message);
+        // return toast.success(result?.message);
+      }
+
+      if (result?.status >= 400 && result?.status <= 550) {
+        stopLoadingBar();
+        setBtnLoader(false);
+        return toast.error(result?.message);
+      }
+    } catch (error) {
+      stopLoadingBar();
+      setBtnLoader(false);
+      // console.log(error?.message);
+      return toast.error("server error");
+    }
   };
+  // contactus fun page is end here
+
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    toast.error("server error");
   };
 
   return (

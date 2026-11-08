@@ -19,12 +19,12 @@ const AllProductsCardImgClientComponent = ({
   allProductsData,
   paginationCursorData,
 }) => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const reduxAllProductsData = useSelector((state) => state?.allProductsSlice);
   const reduxCursorData = useSelector(
     (state) => state?.allProductsSlice,
   )?.infiniteScrollingCursorData;
-  const router = useRouter();
   const [screenLoader, setScreenLoader] = useState(false);
 
   useEffect(() => {
@@ -33,8 +33,8 @@ const AllProductsCardImgClientComponent = ({
     const query = new URLSearchParams(window.location.search);
     if (navigation?.type === "reload") {
       // dispatch(setAllProductsDispatch([]));
-
       if (query?.has("cursor") && query?.get("cursor") != "null") {
+        console.log("reload call");
         query?.delete("cursor");
         router.replace(`?${query?.toString()}&cursor=null`);
         dispatch(setAllProductsDispatch([]));
@@ -96,7 +96,7 @@ const AllProductsCardImgClientComponent = ({
       return toast.error("invalid request");
     }
     startLoadingBar();
-    router.push(`/productDetail/${prod?.id}`);
+    router.replace(`/productDetail/${prod?.id}`);
   };
   // seeProductDetailFun i start from here
 
@@ -127,7 +127,15 @@ const AllProductsCardImgClientComponent = ({
                 </p>
                 <div className="grid grid-cols-3 mt-[5px]">
                   <p className="font-Poppins text-[15px] md:text-[18px] text-textLightGray text-end">
-                    {prod?.sellproduct_price_1kg}
+                    {prod?.product_discount > 0
+                      ? Math.round(
+                          Number(prod?.sellproduct_price_1kg) -
+                            (Number(prod?.sellproduct_price_1kg) *
+                              Number(prod?.product_discount)) /
+                              100,
+                        )
+                      : Math.round(Number(prod?.sellproduct_price_1kg))}
+                    {/* {prod?.sellproduct_price_1kg} */}
                   </p>
                   <p className="flex justify-center items-center">|</p>
                   <p className="font-Poppins text-[15px] md:text-[18px] text-textLightGray ">

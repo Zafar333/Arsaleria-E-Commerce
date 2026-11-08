@@ -117,7 +117,7 @@ SELECT 1
       // console.log("values", values);
       const sqlquery = `
         SELECT
-   products.id,product_name,sellproduct_price_1kg,product_category,
+   products.id,product_name,sellproduct_price_1kg,product_category,products.product_discount,
    products_media.id AS imgid, 
     products_media.products_id,
     products_media.secure_url,

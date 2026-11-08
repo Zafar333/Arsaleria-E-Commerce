@@ -39,19 +39,14 @@ const OurProducts = ({ heroSectionAllProducts }) => {
                 </p>
                 <div className="mt-[10px] grid grid-cols-3 items-center justify-center">
                   <p className="font-Poppins text-[14px] sm:text-[16px] md:text-[18px] text-textLightGray text-end">
-                    {/* {prod?.product_discount > 0
-                        ? Number(prod?.buyQuantity) *
-                          Math.round(
-                            Number(prod?.sellproduct_price_1kg) -
-                              (Number(prod?.sellproduct_price_1kg) *
-                                Number(prod?.product_discount)) /
-                                100,
-                          )
-                        : Math.round(
-                            Number(prod?.buyQuantity) * Number(prod?.sellproduct_price_1kg),
-                          )} */}
-
-                    {prod?.sellproduct_price_1kg}
+                    {prod?.product_discount > 0
+                      ? Math.round(
+                          Number(prod?.sellproduct_price_1kg) -
+                            (Number(prod?.sellproduct_price_1kg) *
+                              Number(prod?.product_discount)) /
+                              100,
+                        )
+                      : Math.round(Number(prod?.sellproduct_price_1kg))}
                   </p>
                   <p className="flex justify-center items-center">|</p>
                   <p className="font-Poppins text-[14px] sm:text-[16px] md:text-[18px] text-textLightGray ">

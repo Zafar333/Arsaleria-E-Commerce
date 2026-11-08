@@ -38,5 +38,9 @@ const userEndPoints = {
   userOrder: "/user/order/placeOrder",
 
   // placeorder payment route is end here
+
+  // user contactus  route is start from here
+  contactus: "/user/contactus",
+  // user contactus  route is end here
 };
 export { userEndPoints };

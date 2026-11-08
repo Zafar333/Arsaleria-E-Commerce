@@ -8,7 +8,7 @@ const getAllFeaturedProductsController = async (req, res) => {
     // }
     const { editFeatureProduct, productId } = req?.query;
     const result = await pool.query(
-      `   SELECT products.id,product_name,sellproduct_price_1kg,product_category,is_featured,
+      `   SELECT products.id,product_name,sellproduct_price_1kg,product_category,is_featured,products.product_discount,
           
             json_agg(json_build_object(
             'media.id',products_media.id,
@@ -24,18 +24,12 @@ const getAllFeaturedProductsController = async (req, res) => {
             WHERE products.is_featured=$1
               GROUP BY
         products.id,
-        product_name,sellproduct_price_1kg,product_category,is_featured
+        product_name,sellproduct_price_1kg,product_category,is_featured,products.product_discount
         ORDER BY id ASC
         LIMIT $2`,
       [true, limit],
     );
-    // "Available"
-    //    WHERE EXISTS (
-    //           SELECT 1
-    //          FROM products_variants
-    //          WHERE products_variants.products_id = products.id
-    //         AND products_variants.stock_status = $1
-    //           )
+
     if (result?.rows?.length < 1) {
       return res.json({ status: 200, data: [] });
     }

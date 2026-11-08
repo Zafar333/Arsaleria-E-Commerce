@@ -4,6 +4,8 @@ import AllProductsSearchBar from "@/components/allProductsSearchBar/AllProductsS
 import TrendingProductsButtons from "@/components/trendingProductsButtons/TrendingProductsButtons";
 import { DevelopmentBaseUrl } from "@/utils/api/main";
 import { userEndPoints } from "@/utils/api/user";
+import Link from "next/link";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 // await getAllProductsFun();
 
@@ -137,7 +139,12 @@ const AllProducts = async ({ queryParams }) => {
       <AllProductsCrousel
         allProductsPageAllCarouselImgs={allProductsPageAllCarouselImgs}
       />
-      <div className="flex justify-end px-[20px] border border-lightGreen ">
+
+      {/* <div className="flex justify-end px-[20px] border border-lightGreen "> */}
+      <div className="flex justify-between px-[20px] border border-lightGreen ">
+        <Link href={"/"} key={"h"} className="inline-block mt-3">
+          <IoMdArrowRoundBack className="text-[18px] text-darkGreen" />
+        </Link>
         <AllProductsSearchBar />
       </div>
       {/* in TrendingProductsButtons we have filters button features button is start from here */}
