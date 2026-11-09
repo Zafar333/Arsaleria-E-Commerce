@@ -2,7 +2,6 @@
 // import { Button } from "antd";
 // import { useRouter } from "next/navigation";
 
-import ExclusiveOfferSection from "@/components/exclusiveOfferSection/ExclusiveOfferSection";
 import HomeCarousel from "@/components/homePageCarousel/HomeCarousel";
 import OurProducts from "@/components/ourProducts/OurProducts";
 import Image from "next/image";
@@ -109,8 +108,67 @@ const Home = ({
       </div>
       {/* our Products Section is end here */}
 
+      <div className="bg-lightGreen px-[10px] xs:px-[25px] md:px-[50px] py-[25px] md:py-[50px] mt-[50px] sm:mt-[70px] md:mt-[100px] ">
+        <section className="">
+          <div className="py-10 flex flex-col gap-4">
+            <h1 className="text-darkGreen font-Poppins ">
+              A Little More Goodness in Every Drop
+            </h1>
+
+            <p className="text-[14px] text-darkGreen ">
+              Bring home the simple goodness of dairy with fresh milk,
+              traditional desi ghee and carefully selected dairy essentials.
+              Honest taste, everyday freshness, and quality you can enjoy with
+              your family.
+            </p>
+          </div>
+
+          {/* boxes start */}
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+            <div className="bg-white p-[20px]">
+              <div className="flex gap-4">
+                <img
+                  className="max-h-[50px] md:max-h-[90px] max-w-[50px] md:max-w-[90px] object-contain"
+                  src="./content-milk-img.jpg"
+                  alt="Fresh dairy milk"
+                />
+                <div>
+                  <h2 className="text-darkGreen font-Poppins text-[10px] md:text-[16px]!">
+                    Fresh Milk, Every Day
+                  </h2>
+                  <p className="text-[10px] sm:text-[14px] text-darkGreen">
+                    Enjoy fresh dairy goodness for your everyday needs.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Second small box */}
+            <div className="bg-white p-[20px]">
+              <div className="flex gap-4">
+                <img
+                  src="./ghee.jpg"
+                  alt="Desi ghee"
+                  className="max-h-[50px] md:max-h-[90px] max-w-[50px] md:max-w-[90px] object-contain"
+                />
+                <div>
+                  <h2 className="text-darkGreen font-Poppins text-[10px] md:text-[16px]">
+                    Traditional Desi Ghee
+                  </h2>
+                  <p className="text-[10px] sm:text-[14px] text-darkGreen">
+                    Bring home the rich aroma and familiar taste of traditional
+                    desi ghee.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* boxes end */}
+        </section>
+      </div>
+
       {/* Exclusive Offer Section is start from here */}
-      <ExclusiveOfferSection />
+      {/* <ExclusiveOfferSection /> */}
       {/* Exclusive Offer Section is end here */}
     </div>
   );

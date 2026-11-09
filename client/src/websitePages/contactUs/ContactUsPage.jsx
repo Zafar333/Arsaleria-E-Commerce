@@ -72,9 +72,9 @@ const ContactUsPage = () => {
   };
 
   return (
-    <div>
+    <div className="">
       <div className="h-[300px] contantusBgImg">
-        <div className="absolute right-[20px] h-[300px] flex items-center text-[35px] font-Poppins text-darkGreen font-bold">
+        <div className="absolute right-[20px] h-[300px] flex items-center text-[25px] md:text-[35px] font-Poppins text-darkGreen font-bold">
           ContactUs
         </div>
         <img
@@ -89,12 +89,12 @@ const ContactUsPage = () => {
 
       <div className="mt-[60px] sm:mt-[100px] flex flex-col items-center px-[20px] sm:px-0]">
         <div className="mb-4">
-          <p className="text-[28px] text-darkGreen font-Poppins">
+          <p className="text-[24px] md:text-[28px] text-darkGreen font-Poppins">
             Let&quot;s talk with us
           </p>
         </div>
         <Form
-          className="py-[20px] px-[20px] bg-gray-100 rounded-sm w-full"
+          className="py-[20px]! px-[20px]! bg-gray-100 rounded-sm w-full"
           layout="vertical"
           name="basic"
           labelCol={{
@@ -147,15 +147,21 @@ const ContactUsPage = () => {
             <TextArea rows={4} placeholder="Your message ..." />
           </Form.Item>
 
-          <Form.Item label={null}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="text-white bg-darkGreen text-[16px] font-Poppins"
-            >
-              Submit
-            </Button>
-          </Form.Item>
+          <div className="flex justify-center">
+            {btnLoader == false ? (
+              <Button
+                htmlType="submit"
+                className="text-white! bg-darkGreen! text-[14px]! md:text-[16px]! font-Poppins! min-w-[120px] sm:min-w-[150px]! py-[12px]!"
+              >
+                Submit
+              </Button>
+            ) : (
+              <Button
+                loading
+                className="text-white! bg-darkGreen! text-[14px]! md:text-[16px]! font-Poppins! min-w-[120px] sm:min-w-[150px]! py-[12px]!"
+              ></Button>
+            )}
+          </div>
         </Form>
       </div>
       {/* contact us form is end here */}

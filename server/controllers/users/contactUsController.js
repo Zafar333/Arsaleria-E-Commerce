@@ -1,36 +1,71 @@
 const nodemailer = require("nodemailer");
+const validator = require("validator");
+require("dotenv").config();
 
 const contactUsController = async (req, res) => {
   console.log("contactUsController here", req?.body);
-  let testAccount = await nodemailer.createTestAccount();
-
-  // craete a connetion emtp server is start from here
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // Use `true` for port 465, `false` for all other ports
-    auth: {
-      user: req.body.email,
-      pass: process.env.PASSWORD,
-    },
-
-    // host: "smtp.ethereal.email",
-    // port: 587,
-    // secure: false, // Use `true` for port 465, `false` for all other ports
-    // auth: {
-    //     user: 'margarete.mante@ethereal.email',
-    //     pass: 'TrPvBgWxxu7gRNasNe'
-    // },
-  });
-
-  // craete a connetion emtp server is end here
 
   // send mail with defined transport object is start from here
   try {
+    if (
+      Object.keys(req?.body)?.length == 0 ||
+      !req?.body?.username ||
+      !req?.body?.email ||
+      !req?.body?.description
+    ) {
+      return res.json({ status: 500, message: "invalid request" });
+    }
+    // Ensure fields are strings
+    if (
+      typeof req?.body?.username !== "string" ||
+      typeof req?.body?.email !== "string" ||
+      typeof req?.body?.description !== "string"
+    ) {
+      return res.status(400).json({
+        status: 500,
+        message: "Invalid input data.",
+      });
+    }
+    const cleanUserName = req?.body?.username.trim();
+    const cleanEmail = req?.body?.email.trim();
+    const cleanDescription = req?.body?.description.trim();
+    if (!cleanUserName || !cleanEmail || !cleanDescription) {
+      return res.json({ status: 500, message: "invalid data" });
+    }
+
+    // Email format validation start here
+    if (!validator.isEmail(cleanEmail)) {
+      return res.status(400).json({
+        status: 500,
+        message: "Please provide a valid email address.",
+      });
+    }
+    // Email format validation end here
+
+    //     // Prevent invalid email header values
+    if (/[\r\n]/.test(cleanEmail)) {
+      return res.json({
+        status: 500,
+        message: "Invalid email address.",
+      });
+    }
+
+    // craete a connetion emtp server is start from here
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // Use `true` for port 465, `false` for all other ports
+      auth: {
+        user: process.env.SMTP_BUISNESS_OWNER_MAIL,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+    // craete a connetion emtp server is end here
+    await transporter.verify();
+
     const info = await transporter.sendMail({
-      from: { name: req.body.username, address: req.body.email }, // sender address
-      // to: "syedhaideralishah79@gmail.com", // list of receivers
+      from: { name: req.body.username, address: req?.body?.email }, // sender address
       to: "arslanz499@gmail.com", // list of receivers
       subject: "Mail ✔", // Subject line
       // text: "my mail", // plain text body
@@ -39,11 +74,15 @@ const contactUsController = async (req, res) => {
 
     //   console.log("Message sent: %s", info);
     if (info?.rejected?.length == 0) {
-      res.json({ message: "Email send sucessfully" });
+      return res.json({ status: 200, message: "Email send sucessfully" });
+    }
+    if (info?.rejected?.length == 1) {
+      return res.json({ status: 200, message: "Email is not send" });
     }
     // send mail with defined transport object is end here
   } catch (error) {
-    res.send(error);
+    console.log("contactUsController error", error?.message);
+    res.json({ status: 500, message: "server error" });
   }
 };
 
