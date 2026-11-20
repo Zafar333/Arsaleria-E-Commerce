@@ -29,7 +29,6 @@ const ContactUsPage = () => {
 
   // contactus fun page is start from hrer
   const onFinish = async (values) => {
-    toast.success("contact us");
     try {
       setBtnLoader(true);
       startLoadingBar();

@@ -190,7 +190,7 @@ const BuyNowSingleProductComponent = () => {
     };
     try {
       const response = await fetch(
-        `${DevelopmentBaseUrl}${userEndPoints?.userOrder}`,
+        `${DevelopmentBaseUrl}${userEndPoints?.userSingleProductOrder}`,
         {
           method: "POST",
           headers: {
@@ -225,15 +225,14 @@ const BuyNowSingleProductComponent = () => {
         return toast?.error(result?.message);
       }
     } catch (error) {
-      toast.error("server error");
+      return toast.error("server error");
     }
-    toast.success("order is register sucessfully");
   };
   // registerOrderFun is end here
 
   // form onfinish fun is start from here
   const onFinish = (values) => {
-    console.log("Success:", values);
+    // console.log("Success:", values);
     setBtnLoader(true);
     if (cartProducts?.length == 0) {
       setBtnLoader(false);
@@ -243,16 +242,16 @@ const BuyNowSingleProductComponent = () => {
 
     if (values) {
       if (payementMethod == "onlineCard") {
-        console.log("payementMethod", payementMethod);
+        // console.log("payementMethod", payementMethod);
         if (!stripe || !elements) {
           return;
         }
         // sendPaymentFun();
-      } else {
-        if (payementMethod == "cashOnDelivery") {
-          console.log("payementMethod", payementMethod);
-          registerOrderFun(values);
-        }
+        registerOrderFun(values);
+      }
+      if (payementMethod == "cashOnDelivery") {
+        // console.log("payementMethod", payementMethod);
+        registerOrderFun(values);
       }
     }
   };
@@ -557,14 +556,14 @@ const BuyNowSingleProductComponent = () => {
               <Button
                 type="primary"
                 htmlType="submit"
-                className="w-[140px] sm:w-[170px] py-[5px]! text-[14px]! md:text-[16px]! font-Poppins! bg-darkGreen! text-white!"
+                className="w-[140px]! sm:w-[170px]! py-[5px]! text-[14px]! md:text-[16px]! font-Poppins! bg-darkGreen! text-white!"
               >
                 Complete Order
               </Button>
             ) : (
               <Button
                 loading
-                className="w-[140px] sm:w-[170px] bg-darkGreen! text-white! py-[5px]!"
+                className="w-[140px]! sm:w-[170px]! bg-darkGreen! text-white! py-[5px]!"
               ></Button>
             )}
           </div>

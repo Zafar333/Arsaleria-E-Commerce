@@ -35,7 +35,8 @@ const userEndPoints = {
   // categories route is end here
 
   // placeorder payment route is start from here
-  userOrder: "/user/order/placeOrder",
+  userSingleProductOrder: "/user/order/singleProductPlaceOrder",
+  userMultipleProductsOrder: "/user/order/multipleProductsPlaceOrder",
 
   // placeorder payment route is end here
 

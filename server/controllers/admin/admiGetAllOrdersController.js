@@ -97,7 +97,7 @@ const admiGetAllOrdersController = async (req, res) => {
     }
     // for serach and only allorders filter query end here
   } catch (error) {
-    console.log("", error?.message);
+    console.log("admiGetAllOrdersController", error?.message);
     return res.json({ status: 500, message: "server error" });
   }
 };

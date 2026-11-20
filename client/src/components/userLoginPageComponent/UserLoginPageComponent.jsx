@@ -146,6 +146,12 @@ const UserLoginPageComponent = () => {
 
   // openSignupModal is end here
 
+  // goHomePageFun is start from here
+  const goHomePageFun = () => {
+    router.replace("/");
+  };
+  // goHomePageFun is end here
+
   // signin with google fun is start from here
   const SignWithGoogle = async () => {
     try {
@@ -300,6 +306,12 @@ const UserLoginPageComponent = () => {
               onClick={openSignupModal}
             >
               New here? SignUp
+            </p>
+            <p
+              className="text-blue-700 underline cursor-pointer text-[12px] md:text-[14px] font-Poppins"
+              onClick={goHomePageFun}
+            >
+              Go home
             </p>
           </div>
         </Form>

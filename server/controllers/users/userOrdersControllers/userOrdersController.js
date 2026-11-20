@@ -2,6 +2,9 @@ const { pool } = require("../../../database/db");
 
 const userOrdersController = async (req, res) => {
   console.log("userOrdersController here", req?.body);
+
+  // single product cashonDelivery query is start from here
+
   const client = await pool.connect();
   try {
     if (
@@ -25,7 +28,7 @@ const userOrdersController = async (req, res) => {
         await client.query("ROLLBACK");
 
         return res?.json({
-          status: "400",
+          status: "500",
           message: "sorry product is out of stock",
         });
       }
@@ -90,8 +93,8 @@ const userOrdersController = async (req, res) => {
            RETURNING id,product_quantity`,
           [
             qua,
-            req?.body?.cartProducts[0]?.productVariantId,
-            req?.body?.cartProducts[0]?.buyQuantity,
+            Number(req?.body?.cartProducts[0]?.productVariantId),
+            Number(req?.body?.cartProducts[0]?.buyQuantity),
           ],
         );
         if (productQunatity?.rowCount == 0) {
@@ -104,7 +107,6 @@ const userOrdersController = async (req, res) => {
             `UPDATE products_variants
               SET stock_status = $1
               WHERE id = $2
-
               `,
             ["UnAvailable", productQunatity?.rows[0]?.id],
           );
@@ -130,7 +132,7 @@ const userOrdersController = async (req, res) => {
         });
       }
 
-      if (req?.body?.shippingDetails?.paymentMethod == "online") {
+      if (req?.body?.shippingDetails?.paymentMethod == "onlineCard") {
         return res?.json({
           status: "200",
           message: "online order is submit",
@@ -138,18 +140,20 @@ const userOrdersController = async (req, res) => {
       }
     } else {
       return res?.json({
-        status: "400",
+        status: "500",
         message: "please send valid credentials",
       });
     }
-  } catch (err) {
-    console.log("userOrdersController error", err?.message);
+  } catch (error) {
+    console.log("userOrdersController error", error?.message);
     await client.query("ROLLBACK");
     return res.send({ status: 500, message: "server error" });
   } finally {
     // Always release the client
     client.release();
   }
+
+  // single product cashonDelivery query is end from here
 };
 
 module.exports = { userOrdersController };

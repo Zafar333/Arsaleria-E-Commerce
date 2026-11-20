@@ -57,19 +57,26 @@ const contactUsController = async (req, res) => {
       port: 465,
       secure: true, // Use `true` for port 465, `false` for all other ports
       auth: {
-        user: process.env.SMTP_BUISNESS_OWNER_MAIL,
-        pass: process.env.SMTP_PASSWORD,
+        user: "thewhitegolddairyfarm@gmail.com",
+        pass: "tomorvtkqsxolkct",
       },
     });
     // craete a connetion emtp server is end here
     await transporter.verify();
 
     const info = await transporter.sendMail({
-      from: { name: req.body.username, address: req?.body?.email }, // sender address
-      to: "arslanz499@gmail.com", // list of receivers
+      // from: {
+      //   name: "whiteGold",
+      //   address: process.env.SMTP_BUISNESS_OWNER_MAIL,
+      // },
+      // to: "thewhitegolddairyfarm@gmail.com",
+      // replyTo: req.body.email,
+
+      from: { name: req?.body?.username, address: req?.body?.email }, // sender address
+      to: "thewhitegolddairyfarm@gmail.com", // list of receivers
       subject: "Mail ✔", // Subject line
       // text: "my mail", // plain text body
-      html: `<b>${req.body.message}</b>`, // html body
+      html: `<b>${req?.body?.message}</b>`, // html body
     });
 
     //   console.log("Message sent: %s", info);
@@ -77,7 +84,7 @@ const contactUsController = async (req, res) => {
       return res.json({ status: 200, message: "Email send sucessfully" });
     }
     if (info?.rejected?.length == 1) {
-      return res.json({ status: 200, message: "Email is not send" });
+      return res.json({ status: 500, message: "Email is not send" });
     }
     // send mail with defined transport object is end here
   } catch (error) {

@@ -6,8 +6,10 @@ import {
   setDispatchGrandTotal,
 } from "@/store/cartDetailSlice.js";
 import { stopLoadingBar } from "@/topLoadingBarComponent/TopLoadingBarComponent";
+import { DevelopmentBaseUrl } from "@/utils/api/main";
+import { userEndPoints } from "@/utils/api/user";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { Button, Form, Input, Radio, Select } from "antd";
+import { Button, Form, Input, Radio } from "antd";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AiTwotoneDelete } from "react-icons/ai";
@@ -17,6 +19,9 @@ import { toast } from "react-toastify";
 const CheckoutPage = () => {
   const cartProducts = useSelector(
     (state) => state?.cartDetailSlice?.addToCartProduct,
+  );
+  const userDetail = useSelector(
+    (state) => state?.userProfileDetailSlice?.userProfileDetail,
   );
 
   const stripe = useStripe();
@@ -133,10 +138,10 @@ const CheckoutPage = () => {
   // checkPaymentMethodFun is start from here
   const checkPaymentMethodFun = (e) => {
     // console.log("helllo payment", e.target.value);
-    if (e.target.value == "Cash On Delivery") {
+    if (e.target.value == "cashOnDelivery") {
       setPaymentMethod(false);
     }
-    if (e.target.value == "online card") {
+    if (e.target.value == "online") {
       setPaymentMethod(true);
     }
   };
@@ -146,39 +151,37 @@ const CheckoutPage = () => {
   const sendPaymentFun = async () => {
     try {
       // 1. Get client secret from backend
-      const data = await fetch(
-        "http://localhost:5000/user/create-payment-intent",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ amount: 1000 }),
-          cache: "no-store",
-        },
-      );
-
-      const res = await data.json();
-      if (res?.status >= 300) {
-        return toast.error(res?.message);
-      }
-      const { clientSecret } = res;
-
-      // 2. Confirm payment
-      const { error, paymentIntent } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-          payment_method: {
-            card: elements.getElement(CardElement),
-          },
-        },
-      );
-      if (error) {
-        toast.error(error.message);
-      } else if (paymentIntent.status === "succeeded") {
-        // console.log("pay", paymentIntent);
-        toast.success("Payment Successful 🎉");
-      }
+      // const data = await fetch(
+      //   "http://localhost:5000/user/create-payment-intent",
+      //   {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({ amount: 1000 }),
+      //     cache: "no-store",
+      //   },
+      // );
+      // const res = await data.json();
+      // if (res?.status >= 300) {
+      //   return toast.error(res?.message);
+      // }
+      // const { clientSecret } = res;
+      // // 2. Confirm payment
+      // const { error, paymentIntent } = await stripe.confirmCardPayment(
+      //   clientSecret,
+      //   {
+      //     payment_method: {
+      //       card: elements.getElement(CardElement),
+      //     },
+      //   },
+      // );
+      // if (error) {
+      //   toast.error(error.message);
+      // } else if (paymentIntent.status === "succeeded") {
+      //   // console.log("pay", paymentIntent);
+      //   toast.success("Payment Successful 🎉");
+      // }
     } catch (error) {
-      toast.error(error);
+      toast.error("server error");
     }
   };
   // sendpaymentfun is end from here
@@ -186,23 +189,75 @@ const CheckoutPage = () => {
   // form onfinish fun is start from here
   const onFinish = (values) => {
     // console.log("Success:", values);
-    if (values) {
+    if (values && cartProducts?.length > 0) {
+      setBtnLoader(true);
+
+      // online payment fun is start from here
       if (payementMethod == true) {
         if (!stripe || !elements) return;
-        sendPaymentFun();
+        registerOrderFun(values);
+        // sendPaymentFun();
       }
-      if (values) {
-        if (payementMethod == false) {
-          registerOrderFun();
-        }
+      // online payment fun is end here
+
+      // cashonDelivery  fun is start from here
+      if (payementMethod == false) {
+        registerOrderFun(values);
       }
+      // cashonDelivery  fun is end here
+    } else {
+      return toast.error("please first add product in to cart");
     }
   };
   // form onfinish fun is end here
 
   // registerOrderFun is start from here
-  const registerOrderFun = () => {
-    toast.success("order is register sucessfully");
+  const registerOrderFun = async (formValu) => {
+    const data = {
+      userId: userDetail[0]?.userId,
+      cartProducts,
+      grandTotalState,
+      shippingDetails: formValu,
+    };
+    try {
+      const response = await fetch(
+        `${DevelopmentBaseUrl}${userEndPoints?.userMultipleProductsOrder}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(data),
+          cache: "no-store",
+        },
+      );
+
+      // Handle successful response
+      const result = await response.json();
+      if (result?.status >= 200 && result?.status <= 300) {
+        setBtnLoader(false);
+        // form.resetFields(null);
+
+        // console.log("logindata",result);
+
+        return toast.success(result?.message);
+      }
+      if (result?.status == 401) {
+        toast?.error(result?.message);
+        return navigate.replace("/userLogin");
+      }
+      if (
+        result?.status == 400 ||
+        (result?.status > 401 && result?.status <= 550)
+      ) {
+        // stopLoadingBar();
+        setBtnLoader(false);
+        return toast?.error(result?.message);
+      }
+    } catch (error) {
+      return toast.error("server error");
+    }
   };
   // registerOrderFun is end here
 
@@ -414,20 +469,6 @@ const CheckoutPage = () => {
 
           <div className="grid grid-cols-2 gap-[30px]">
             <Form.Item
-              label="Country"
-              name="country"
-              rules={[
-                {
-                  required: true,
-                  message: "please select your country!",
-                },
-              ]}
-            >
-              <Select placeholder="country">
-                <Select.Option value="pakistan">Pakistan</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
               label="City"
               name="city"
               rules={[
@@ -439,9 +480,6 @@ const CheckoutPage = () => {
             >
               <Input placeholder="City" />
             </Form.Item>
-          </div>
-
-          <div className="grid grid-cols-2 gap-[30px]">
             <Form.Item
               label="PostalCode"
               name="postalcode"
@@ -454,21 +492,8 @@ const CheckoutPage = () => {
             >
               <Input placeholder="postal code / zipcode optional" />
             </Form.Item>
-
-            <Form.Item
-              label="Shipping"
-              name="standardShipping"
-              initialValue={"Standard Shipping"}
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter your shipping method!",
-                },
-              ]}
-            >
-              <Input placeholder="Standard Shipping" />
-            </Form.Item>
           </div>
+
           <Form.Item
             label="Address"
             name="address"
@@ -494,10 +519,10 @@ const CheckoutPage = () => {
             ]}
           >
             <Radio.Group>
-              <Radio onChange={checkPaymentMethodFun} value="Cash On Delivery">
+              <Radio onChange={checkPaymentMethodFun} value="cashOnDelivery">
                 Cash On Delivery{" "}
               </Radio>
-              <Radio onChange={checkPaymentMethodFun} value="online card">
+              <Radio onChange={checkPaymentMethodFun} value="online">
                 Debit or Credit Card{" "}
               </Radio>
             </Radio.Group>
@@ -522,7 +547,7 @@ const CheckoutPage = () => {
           <div className="flex justify-center">
             {btnLoader == false ? (
               <Button
-                className="border-none! w-[140px] sm:w-[170px] text-[14px]! md:text-[16px]! font-Poppins! bg-darkGreen! text-white!"
+                className="border-none! w-[140px]! sm:w-[170px]! text-[14px]! md:text-[16px]! font-Poppins! bg-darkGreen! text-white!"
                 htmlType="submit"
               >
                 Complete Order
@@ -530,7 +555,7 @@ const CheckoutPage = () => {
             ) : (
               <Button
                 loading
-                className="border-none! w-[140px] sm:w-[170px] bg-darkGreen! text-white! py-[5px]!"
+                className="border-none! w-[140px]! sm:w-[170px]! bg-darkGreen! text-white! py-[5px]!"
               ></Button>
             )}
           </div>

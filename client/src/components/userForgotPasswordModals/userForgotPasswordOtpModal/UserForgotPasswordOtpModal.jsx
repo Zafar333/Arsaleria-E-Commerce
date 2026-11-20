@@ -210,7 +210,12 @@ const UserForgotPasswordOtpModal = ({
       <div className="text-center mt-[10px]">
         <label className="text-darkGreen text-[10px] sm:text-[14px]">
           Haven’t got the email yet?{" "}
-          <a className=" font-Poppins text-blue-600">Resend email</a>
+          <a
+            className=" font-Poppins text-blue-600"
+            onClick={goToForgotEmailModal}
+          >
+            Resend email
+          </a>
         </label>
       </div>
     </Modal>
