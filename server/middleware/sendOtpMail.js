@@ -3,26 +3,26 @@ const { generateOtpFun } = require("./generateOtpFun");
 
 require("dotenv").config();
 
-const sendOtpMail = async (userEmail, otp) => {
+const sendOtpMail = async (userEmail, otp, res) => {
   // console.log("mailreq",req.body)
-  let testAccount = await nodemailer.createTestAccount();
-
-  // craete a connetion emtp server is start from here
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true, // Use `true` for port 465, `false` for all other ports
-    auth: {
-      user: "thewhitegolddairyfarm@gmail.com",
-      pass: process.env.SMTP_PASSWORD,
-    },
-  });
-
-  // craete a connetion emtp server is end here
 
   // send mail with defined transport object is start from here
   try {
+    // craete a connetion emtp server is start from here
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // Use `true` for port 465, `false` for all other ports
+      auth: {
+        user: "thewhitegolddairyfarm@gmail.com",
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+
+    // craete a connetion emtp server is end here
+    await transporter.verify();
+
     const info = await transporter.sendMail({
       from: {
         name: "WhiteGoldDairy",
@@ -41,7 +41,7 @@ const sendOtpMail = async (userEmail, otp) => {
     }
     // send mail with defined transport object is end here
   } catch (error) {
-    return error?.message;
+    return res.json({ status: 500, message: "server error" });
   }
 };
 

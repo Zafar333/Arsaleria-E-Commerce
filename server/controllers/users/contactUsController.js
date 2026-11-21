@@ -76,7 +76,7 @@ const contactUsController = async (req, res) => {
       to: "thewhitegolddairyfarm@gmail.com", // list of receivers
       subject: "Mail ✔", // Subject line
       // text: "my mail", // plain text body
-      html: `<b>${req?.body?.message}</b>`, // html body
+      html: `<b>${req?.body?.description}</b>`, // html body
     });
 
     //   console.log("Message sent: %s", info);
